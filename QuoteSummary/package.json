@@ -1,0 +1,22 @@
+{
+  "name": "crm-enhanced-pcf",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "pcf-scripts build",
+    "clean": "pcf-scripts clean",
+    "start": "pcf-scripts start",
+    "rebuild": "pcf-scripts rebuild"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/powerapps-component-framework": "^1.3.18",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "pcf-scripts": "^1.0.0",
+    "pcf-start": "^1.51.1",
+    "typescript": "^5.0.0"
+  }
+}
