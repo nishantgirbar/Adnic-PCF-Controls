@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="QuoteSummaryPCF"
+           constructor="QuoteSummaryPCF"
+           version="1.2.4"
+           display-name-key="Quote Summary"
+           description-key="Quote Summary from API"
+           control-type="standard">
+
+    <!-- Record Id -->
+    <property 
+      name="quoterecordId"
+      display-name-key="Quote  Record Id"
+      description-key="Quote Record Id"
+      of-type="Whole.None"
+      usage="bound"
+      required="true" />
+
+    <!-- Quote Number -->
+    <property 
+      name="quoteNumber"
+      display-name-key="Quote Number"
+      description-key="Quote Number"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="true" />
+
+    <!-- ✅ API URL INPUT -->
+    <property 
+      name="apiUrl"
+      display-name-key="API URL"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="style.css" order="1"/>
+    </resources>
+
+    <feature-usage>
+      <uses-feature name="Utility" required="true" />
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
+
+  </control>
+</manifest>
