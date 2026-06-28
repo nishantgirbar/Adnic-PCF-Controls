@@ -1,0 +1,19 @@
+.pcf-search-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 16px 12px 16px;
+}
+
+.pcf-search-box {
+    width: 260px;
+}
+
+/* 🔥 Hide OOB Dynamics Search */
+
+div[data-id="data-set-quickFind-container"] {
+    display: none !important;
+}
+
+button[aria-label="Start search"] {
+    display: none !important;
+}

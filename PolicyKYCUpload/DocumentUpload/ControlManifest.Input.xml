@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control
+    namespace="KycDocumentControl"
+    constructor="KycDocumentUpload"
+    version="1.0.1"
+    display-name-key="KYC Document Upload"
+    description-key="KYC Document Upload Control"
+    control-type="standard">
+
+    <property
+      name="referenceId"
+      display-name-key="Reference Id"
+      description-key="Reference Id"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="true" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+    </resources>
+
+    <feature-usage>
+      <uses-feature
+        name="WebAPI"
+        required="true" />
+    </feature-usage>
+
+  </control>
+</manifest>

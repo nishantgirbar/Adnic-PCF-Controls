@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+
+  <control
+    namespace="B2EControl"
+    constructor="PolicyMedicalControl"
+    version="1.0.0"
+    display-name-key="Policy MedicalControl Display"
+    description-key="Policy MedicalControl Desc"
+    control-type="standard">
+
+    <property
+      name="medicalJson"
+      display-name-key="MedicalJson_Display"
+      description-key="MedicalJson_Desc"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <resx path="strings/MedicalControl.1033.resx" version="1.0.0" />
+    </resources>
+
+  </control>
+
+</manifest>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control 
+    namespace="crmInput"
+    constructor="InputPCF"
+    version="1.2.0"
+    display-name-key="InputControl"
+    description-key="Input control"
+    control-type="standard">
+
+    <!-- ✅ ADD THIS BACK -->
+    <property 
+      name="inputType" 
+      display-name-key="Input Type"
+      description-key="text / number / date"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <property 
+      name="placeholder" 
+      display-name-key="Placeholder"
+      description-key="Placeholder text"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <property
+      name="maxLength"
+      display-name-key="Maximum Length"
+      description-key="Optional maximum number of characters. Leave blank for no limit."
+      of-type="Whole.None"
+      usage="input" />
+
+    <property 
+      name="value" 
+      display-name-key="Value"
+      description-key="Value"
+      of-type="SingleLine.Text"
+      usage="bound" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+    </resources>
+
+  </control>
+</manifest>

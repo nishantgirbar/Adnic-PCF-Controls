@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control 
+    namespace="policyDropDownControl"
+    constructor="policyDropDownControl"
+    version="1.0.0"
+    display-name-key="policyDropDownControl"
+    description-key="policyDropDownControl"
+    control-type="standard">
+
+    <external-service-usage enabled="true">
+      <domain>https://*</domain>
+    </external-service-usage>
+
+    <property
+      name="apiUrl"
+      display-name-key="API Endpoint"
+      description-key="API Endpoint"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false" />
+
+    <!-- Bound field -->
+    <property
+        name="selectedValue"
+        display-name-key="Selected Value"
+        description-key="Selected Value"
+        of-type="SingleLine.Text"
+        usage="bound"
+        required="false" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+    </resources>
+
+     <feature-usage>
+    <uses-feature
+      name="WebAPI"
+      required="true" />
+  </feature-usage>
+
+
+  </control>
+</manifest>

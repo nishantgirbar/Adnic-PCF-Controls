@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<manifest>
+  <control namespace="B2EControl" constructor="PolicyInsuanceControlB2E" version="1.0.2" display-name-key="Policy Insuance Members" description-key=" Policy Insuance Members Grid" control-type="standard" api-version="1.3.18">
+    <property name="memberData" display-name-key="Member Data" description-key="Members JSON from API" of-type="Multiple" usage="bound" required="false"/>
+    <property name="adnic_name" display-name-key="productType_Field" description-key="productType_Field_Desc" of-type="SingleLine.Text" usage="bound" required="false"/>
+    <property name="enableUpload" display-name-key="Enable Upload" description-key="Toggle upload functionality" of-type="TwoOptions" usage="input" required="false"/>
+    <resources>
+      <code path="bundle.js" order="1"/>
+      <css path="style.css" order="1"/>
+    </resources>
+    <feature-usage/>
+    <built-by name="pac" version="1.51.1"/>
+  </control>
+</manifest>

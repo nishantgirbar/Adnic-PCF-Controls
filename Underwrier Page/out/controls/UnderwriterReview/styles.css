@@ -1,0 +1,738 @@
+/* styles.css */
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.main-container {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    margin-top: 0;
+    margin-bottom: 6px;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.sub-title {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+/* =========================
+   QUOTE INFO
+========================= */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+}
+
+.info-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.info-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+}
+
+.premium-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0078d4;
+}
+
+.premium-load-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #a50303;
+}
+
+.priority-low {
+    color: #0078d4;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.priority-medium {
+    color: #eae85d;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.priority-high {
+    color: #d13438;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* =========================
+   PRODUCT DETAILS
+========================= */
+
+.product-table {
+    width: 100%;
+}
+
+.product-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.product-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.product-value {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background: #fafafa;
+}
+
+.table th {
+    padding: 14px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.table td {
+    padding: 14px;
+    font-size: 13px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table tr:hover {
+    background: #fafafa;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    background: #f5f9ff;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+
+.pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.pagination-left {
+    justify-self: start;
+}
+
+.pagination-center {
+    justify-self: center;
+    font-size: 13px;
+    color: #666;
+}
+
+.pagination-right {
+    justify-self: end;
+}
+
+.page-btn {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    min-width: 90px;
+}
+
+.page-btn:hover {
+    background: #106ebe;
+}
+
+.page-btn:disabled {
+    background: #c8c8c8;
+    cursor: not-allowed;
+}
+
+/* =========================
+   MEDICAL SECTION LAYOUT
+========================= */
+
+.medical-layout {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.medical-left {
+    flex: 2;
+    min-width: 0;
+}
+
+.medical-right {
+    flex: 1;
+    min-width: 320px;
+}
+
+.section {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =========================
+   RIGHT PANEL
+========================= */
+* {
+    box-sizing: border-box;
+}
+
+.medical-panel {
+     width: 100%;
+    box-sizing: border-box;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.medical-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.member-title {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.member-subtitle {
+    font-size: 13px;
+    color: #666;
+}
+
+.premium-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.premium-load-label {
+    font-size: 12px;
+    color: #a50303;
+}
+
+.loading-section {
+    margin-bottom: 24px;
+}
+
+.loading-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.loading-input {
+    flex: 1;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0 12px;
+}
+
+.apply-btn {
+    background: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+.document-title {
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.document-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.document-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.pdf-icon {
+    width: 42px;
+    height: 42px;
+    background: #d13438;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.doc-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.doc-date {
+    font-size: 11px;
+    color: #777;
+}
+
+.view-btn {
+    border: 1px solid #0078d4;
+    color: #0078d4;
+    background: white;
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.member-count {
+    text-align: right;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #666;
+}
+/* =========================
+   PRODUCT DETAILS GRID
+========================= */
+
+.table-container {
+    overflow-x: auto;
+}
+
+.coverage-table {
+    min-width: max-content;
+}
+
+.coverage-table thead th:nth-child(n + 3),
+.coverage-table .premium-footer {
+    min-width: 180px;
+    white-space: nowrap;
+}
+
+/* =========================
+   PRODUCT BENEFITS
+========================= */
+
+.benefit-name {
+    font-weight: 600;
+    min-width: 260px;
+    background: #fafafa;
+}
+.sticky-column {
+    min-width: 260px;
+}
+.detail-label {
+    width: 320px;
+    font-weight: 600;
+    background: #fafafa;
+}
+.coverage-table tfoot td {
+    border-top: 2px solid #e5e5e5;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.premium-footer {
+    text-align: center;
+}
+
+.premium-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f3b73;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+
+.premium-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f3b73;
+    white-space: nowrap;
+}
+
+.product-top-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid #ececec;
+    margin-bottom: 20px;
+}
+
+.product-info-card {
+    padding: 8px;
+    border-right: 1px solid #ececec;
+}
+
+.product-info-card:last-child {
+    border-right: none;
+}
+
+.product-info-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.product-info-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+.product-top-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.product-top-item {
+    padding: 24px;
+    border-right: 1px solid #ececec;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    min-height: 120px;
+}
+
+.product-top-item:last-child {
+    border-right: none;
+}
+
+.product-top-label {
+    font-size: 15px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.product-top-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+.plan-type-section {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.maf-section {
+    margin-top: 30px;
+}
+
+.maf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.maf-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.maf-subtitle {
+    color: #666;
+    margin-top: 4px;
+}
+
+.maf-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.maf-tab {
+    padding: 12px 20px;
+    border: 1px solid #d9d9d9;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.maf-tab.active {
+    background: #1296f3;
+    color: white;
+    border-color: #1296f3;
+}
+
+.overall-container {
+    display: flex;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.loading-card {
+    border: 1px solid #ececec;
+    padding: 20px;
+    border-radius: 8px;
+    background: white;
+}
+
+.loading-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.current-status {
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.current-value {
+    font-size: 34px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.loading-label {
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.toggle-container {
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.toggle-item {
+    flex: 1;
+    border: 1px solid #d9d9d9;
+    text-align: center;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.active-toggle {
+    background: #1296f3;
+    color: white;
+}
+
+.loading-input-row {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.loading-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    font-size: 16px;
+}
+
+.currency-box {
+    width: 80px;
+    border: 1px solid #d9d9d9;
+    border-left: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.apply-load-btn {
+    width: 100%;
+    background: #1296f3;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.loading-note {
+    color: #666;
+    line-height: 1.6;
+    font-size: 13px;
+}
+.selected-row {
+    background: #e8f3ff !important;
+}
+
+.selected-row td {
+    font-weight: 600;
+}
+.clickable-row {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-row:hover {
+    background: #f4f9ff;
+}
+
+.selected-row {
+    background: #dcebff !important;
+}
+
+.selected-row td {
+    font-weight: 600;
+}
+
+/* =========================
+   API LOADER
+========================= */
+
+.api-loader-container {
+
+    width: 100%;
+    min-height: 500px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.api-loader-card {
+
+    width: 360px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    border: 1px solid #e5e5e5;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,0.08);
+}
+
+.loader-spinner {
+
+    width: 60px;
+    height: 60px;
+
+    margin: 0 auto 24px auto;
+
+    border: 6px solid #e5e5e5;
+
+    border-top: 6px solid #1296f3;
+
+    border-radius: 50%;
+
+    animation: spin 1s linear infinite;
+}
+
+.loader-title {
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #111;
+
+    margin-bottom: 12px;
+}
+
+.loader-subtitle {
+
+    font-size: 14px;
+
+    color: #666;
+
+    line-height: 1.6;
+}
+
+@keyframes spin {
+
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

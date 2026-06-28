@@ -1,0 +1,80 @@
+.kyc-container {
+    padding: 16px;
+    font-family: Segoe UI, Arial;
+}
+
+.field-row {
+    margin-bottom: 16px;
+}
+
+.field-row label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.field-row select {
+    width: 300px;
+    padding: 8px;
+}
+
+.entity-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.entity-tab {
+    padding: 10px 18px;
+    border: 1px solid #d9d9d9;
+    background: #f5f5f5;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.entity-tab.active {
+    background: #071d49;
+    color: white;
+}
+
+.document-section {
+    border: 1px solid #d9d9d9;
+    margin-top: 20px;
+}
+
+.document-header {
+    background: #f4f4f4;
+    padding: 12px;
+    font-weight: 600;
+}
+
+.document-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-top: 1px solid #ececec;
+}
+
+.document-name {
+    flex: 1;
+}
+
+.document-action {
+    min-width: 250px;
+    text-align: right;
+}
+
+.upload-btn {
+    background: white;
+    border: 1px solid #d0d0d0;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.file-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="B2EControl"
+           constructor="PolicyContactList"
+           version="1.0.2"
+           display-name-key="Policy Contact List"
+           description-key="Policy Contact List"
+           control-type="standard">
+
+    <property name="contactlist"
+              display-name-key="Contact List"
+              description-key="Contact List JSON"
+              of-type="Multiple"
+              usage="bound"
+              required="false" />
+
+    <property name="email"
+          display-name-key="Email"
+          description-key="Email"
+          of-type="SingleLine.Email"
+          usage="bound"
+          required="false" />
+
+      <property name="contactnumber"
+                display-name-key="Contact Number"
+                description-key="Contact Number"
+                of-type="SingleLine.Text"
+                usage="bound"
+                required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="style.css" order="1"/>
+    </resources>
+
+  </control>
+</manifest>

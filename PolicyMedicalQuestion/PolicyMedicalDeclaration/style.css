@@ -1,0 +1,75 @@
+.medical-pcf {
+    width: 100%;
+    font-family: Segoe UI, sans-serif;
+}
+
+/* QUESTIONS */
+.medical-pcf .question-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* ALERT */
+.medical-pcf .medical-alert {
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-left: 3px solid #f76363;
+    color: #605e5c;
+    font-size: 13px;
+}
+
+/* GRID WRAPPER */
+.medical-pcf .grid-wrapper {
+    border: 1px solid #edebe9;
+    border-radius: 6px;
+    padding: 10px;
+    background: #fff;
+}
+
+/* HEADER BAR */
+.medical-pcf .grid-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+/* GRID */
+.medical-pcf .grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 10px;
+    padding: 8px;
+}
+
+/* HEADER */
+.medical-pcf .row.header {
+    background: #f3f2f1;
+    border-left: 4px solid #6298c2;
+    font-weight: 600;
+}
+
+/* MEMBER BLOCK */
+.medical-pcf .member-block {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* ERROR HIGHLIGHT */
+.medical-pcf .member-block.error {
+    border-left: 3px solid #d13438;
+}
+
+/* BELOW SECTION */
+.medical-pcf .row-details {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    align-items: center;
+}
+
+/* TEXTAREA */
+.medical-pcf .ms-TextField-fieldGroup {
+    width: 100%;
+}

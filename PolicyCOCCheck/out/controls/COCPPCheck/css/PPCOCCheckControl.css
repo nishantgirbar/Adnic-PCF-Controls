@@ -1,0 +1,18 @@
+.ppcoc-container {
+    padding: 16px;
+}
+
+.pp-status-valid {
+    color: green;
+    font-weight: 600;
+}
+
+.pp-status-invalid {
+    color: red;
+    font-weight: 600;
+}
+
+.pp-status-error {
+    color: orange;
+    font-weight: 600;
+}

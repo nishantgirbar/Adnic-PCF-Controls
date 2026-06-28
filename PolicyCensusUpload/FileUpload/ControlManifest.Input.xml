@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+
+  <control
+    namespace="ADNIC"
+    constructor="PolicyCensusUpload"
+    version="1.0.0"
+    display-name-key="Policy Census Upload"
+    description-key="Policy Census Upload Control"
+    control-type="standard">
+
+    <!-- Policy Id from form -->
+    <property
+      name="policyId"
+      display-name-key="Policy Id"
+      description-key="Policy Id"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="true" />
+
+    <!-- Output JSON for downstream PCF controls -->
+    <property
+      name="validatedMembersJson"
+      display-name-key="Validated Members Json"
+      description-key="Validated Members Json"
+      of-type="SingleLine.Text"
+      usage="output"
+      required="false" />
+
+    <resources>
+
+      <code
+        path="index.ts"
+        order="1" />
+
+      <css
+        path="css/CensusUploadControl.css"
+        order="1" />
+
+      <css
+        path="css/Grid.css"
+        order="2" />
+
+      <css
+        path="css/Dialog.css"
+        order="3" />
+
+    </resources>
+
+    <feature-usage>
+
+      <uses-feature
+        name="WebAPI"
+        required="true" />
+
+    </feature-usage>
+
+  </control>
+
+</manifest>

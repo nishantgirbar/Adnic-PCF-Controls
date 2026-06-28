@@ -1,0 +1,77 @@
+.policy-container {
+    padding: 12px;
+    font-family: Segoe UI;
+}
+
+.header {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  background-color: #F4F2FF;
+  border: #D9D5EC;
+  padding: 5px;
+}
+
+.document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.document-row {
+    display: grid;
+    grid-template-columns: 350px 180px 1fr;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background: white;
+}
+
+.document-row.mandatory {
+    background: #fff5f5;
+    border-left: 4px solid #d13438;
+}
+
+.document-name {
+    font-weight: 500;
+}
+
+.mandatory-star {
+    color: red;
+    margin-right: 4px;
+}
+
+.upload-btn {
+    border: 1px solid #d0d0d0;
+    background: #fafafa;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.file-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.delete {
+    color: red;
+}
+
+.loading {
+    padding: 20px;
+}

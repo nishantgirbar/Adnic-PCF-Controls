@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest >
+  <control 
+    namespace="crmCustomB2EControl"
+    constructor="ProductDetailsB2E"
+    version="1.5.8"
+    display-name-key="ProductDetails_DisplayName"
+    description-key="ProductDetails_Description"
+    control-type="standard">
+
+    <!-- API URL -->
+    <property name="apiUrl"
+              display-name-key="ApiUrl_DisplayName"
+              description-key="ApiUrl_Description"
+              of-type="SingleLine.Text"
+              usage="input"
+              required="false" />
+
+    <!-- CATEGORY CODES -->
+    <property name="categoryCodes"
+              display-name-key="CategoryCodes_DisplayName"
+              description-key="CategoryCodes_Description"
+              of-type="SingleLine.Text"
+              usage="bound"
+              required="false" />
+
+    <!-- PRODUCT TYPE -->
+    <property name="adnic_name"
+              display-name-key="productType_Field"
+              description-key="productType_Field_Desc"
+              of-type="SingleLine.Text"
+              usage="bound"
+              required="false" />
+
+    <property name="adnic_memberlistjson"
+          display-name-key="MemberList"
+          description-key="MemberList"
+          of-type="Multiple"
+          usage="bound"
+          required="false" />
+
+    <!-- OUTPUT -->
+    <property name="adnic_productdetails"
+              display-name-key="ProductDetails_Field"
+              description-key="ProductDetails_Field_Desc"
+              of-type="Multiple"
+              usage="bound"
+              required="false" />
+
+    <property name="categoryPremiums"
+              display-name-key="category_premiums"
+              description-key="category_premiums"
+              of-type="Multiple"
+              usage="input"
+              required="false" />
+    
+    <!-- 🔹 RESOURCES -->
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+      <resx path="strings/ProductDetailsB2E.1033.resx" version="1.0.0" />
+    </resources>
+
+  </control>
+
+</manifest>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+
+  <control
+    namespace="UWDetails"
+    constructor="QuoteDetailsPCF"
+    version="1.5.0"
+    display-name-key="UW detail"
+    description-key="UW Detail desc"
+    control-type="standard">
+
+    <property
+      name="quoteId"
+      display-name-key="quoteId_Display"
+      description-key="quoteId_Desc"
+      of-type="Whole.None"
+      usage="bound"
+      required="true" />
+
+    <property
+      name="quoteNumber"
+      display-name-key="quoteNumber_Display"
+      description-key="quoteNumber_Desc"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="false" />
+
+    <property
+      name="apiUrl"
+      display-name-key="apiUrl_Display"
+      description-key="apiUrl_Desc"
+      of-type="SingleLine.Text"
+      usage="input" 
+      required="true" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="styles.css" order="2" />
+      <resx path="strings/QuoteDetailsPCF.1033.resx" version="1.0.0" />
+    </resources>
+
+  <feature-usage>
+    <uses-feature
+      name="WebAPI"
+      required="true" />
+  </feature-usage>
+
+
+  </control>
+
+</manifest>

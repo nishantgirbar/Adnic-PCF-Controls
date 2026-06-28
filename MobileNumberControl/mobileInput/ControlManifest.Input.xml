@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control
+    namespace="MobileNumberControl"
+    constructor="MobileNumberControl"
+    version="1.0.1"
+    display-name-key="Mobile Number Control"
+    description-key="Mobile Number Control"
+    control-type="standard">
+
+    <property
+      name="value"
+      display-name-key="Value"
+      description-key="Mobile Number"
+      of-type="SingleLine.Text"
+      usage="bound" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+    </resources>
+  </control>
+</manifest>

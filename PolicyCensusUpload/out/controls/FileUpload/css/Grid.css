@@ -1,0 +1,140 @@
+.grid-container {
+    width: 100%;
+}
+
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.grid-title {
+    white-space: nowrap;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.grid-count {
+    color: #666;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.member-grid {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.member-grid th {
+    background: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #e5e5e5;
+    font-size: 13px;
+}
+
+.member-grid td {
+    padding: 12px;
+    border: 1px solid #e5e5e5;
+    font-size: 13px;
+    vertical-align: top;
+}
+
+.member-grid tbody tr:hover {
+    background: #fafafa;
+}
+
+.empty-grid {
+    text-align: center;
+    padding: 30px;
+    border: 1px dashed #ccc;
+    color: #666;
+}
+
+.status-badge {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-badge.matched {
+    background: #dff6dd;
+    color: #107c10;
+}
+
+.status-badge.mismatched {
+    background: #fde7e9;
+    color: #a4262c;
+}
+
+.mismatch-row {
+    background: #fffaf9;
+}
+
+.mismatch-row:hover {
+    background: #fff3f1 !important;
+}
+
+.reason-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.reason-tag {
+    background: #fde7e9;
+    color: #a4262c;
+    border-radius: 12px;
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+.edit-btn {
+    background: #0078d4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: #106ebe;
+}
+.action-column {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+}
+
+.icon-btn:hover {
+    background: #f3f3f3;
+    border-radius: 4px;
+}
+
+.icon-btn.edit {
+    color: #0f6cbd;
+}
+
+.icon-btn.delete {
+    color: #d13438;
+}
+
+
+
+.grid-count {
+    white-space: nowrap;
+}

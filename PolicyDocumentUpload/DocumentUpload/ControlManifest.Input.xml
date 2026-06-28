@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control
+    namespace="PolicyDocumentControl"
+    constructor="PolicyDocumentUpload"
+    version="1.0.0"
+    display-name-key="Policy Document Upload"
+    description-key="Policy Document Upload"
+    control-type="standard">
+
+    <property
+      name="referenceId"
+      display-name-key="Reference Id"
+      description-key="Reference Id"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="true" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+    </resources>
+
+    <feature-usage>
+      <uses-feature
+        name="WebAPI"
+        required="true" />
+    </feature-usage>
+
+  </control>
+</manifest>

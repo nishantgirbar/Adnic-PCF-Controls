@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control namespace="B2EControl"
+           constructor="PolicyInsuanceControlB2E"
+           version="1.0.2"
+           display-name-key="Policy Insuance Members"
+           description-key=" Policy Insuance Members Grid"
+           control-type="standard">
+
+    <!-- 🔥 Main Data (API JSON) -->
+    <property name="memberData"
+              display-name-key="Member Data"
+              description-key="Members JSON from API"
+              of-type="Multiple"
+              usage="bound"
+              required="false" />
+
+        <!-- PRODUCT TYPE -->
+    <property name="adnic_name"
+              display-name-key="productType_Field"
+              description-key="productType_Field_Desc"
+              of-type="SingleLine.Text"
+              usage="bound"
+              required="false" />
+
+    <!-- 🔥 Optional: Enable upload (if you want later) -->
+    <property name="enableUpload"
+              display-name-key="Enable Upload"
+              description-key="Toggle upload functionality"
+              of-type="TwoOptions"
+              usage="input"
+              required="false" />
+
+    <resources>
+      <code path="index.ts" order="1"/>
+      <css path="style.css" order="1"/>
+    </resources>
+
+  </control>
+</manifest>

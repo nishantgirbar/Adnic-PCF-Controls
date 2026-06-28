@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control 
+    namespace="crmCustomB2EControl"
+    constructor="ApiDropdownB2E"
+    version="1.1.3"
+    display-name-key="CustomDropDownB2E"
+    description-key="CustomDropDownB2E_Desc"
+    control-type="standard">
+
+    <external-service-usage enabled="true">
+      <domain>https://*</domain>
+    </external-service-usage>
+
+    <!-- Bound field -->
+    <property 
+      name="selectedValue"
+      display-name-key="Selected_Value"
+      description-key="Selected_Value_Desc"
+      of-type="SingleLine.Text"
+      usage="bound" />
+
+    <!-- API -->
+    <property 
+      name="apiUrl"
+      display-name-key="Api_Url"
+      description-key="Api_Url_Desc"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <property 
+      name="dataKey"
+      display-name-key="Data_Key"
+      description-key="Data_Key_Desc"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="true" />
+
+    <!-- Mapping -->
+    <property 
+      name="valueField"
+      display-name-key="Value_Field"
+      description-key="Value_Field_Desc"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <property 
+      name="labelField"
+      display-name-key="Label_Field"
+      description-key="Label_Field_Desc"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <!-- Filtering -->
+    <property 
+      name="filterField"
+      display-name-key="Filter_Field"
+      description-key="Filter_Field_Desc"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <property 
+      name="filterValue"
+      display-name-key="Filter_Value"
+      description-key="Filter_Value_Desc"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <!-- Default -->
+    <property 
+      name="defaultValue"
+      display-name-key="Default_Value"
+      description-key="Default_Value_Desc"
+      of-type="SingleLine.Text"
+      usage="input" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+    </resources>
+
+     <feature-usage>
+    <uses-feature
+      name="WebAPI"
+      required="true" />
+  </feature-usage>
+
+
+  </control>
+</manifest>

@@ -1,0 +1,84 @@
+.card {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    font-family: Segoe UI, Arial, sans-serif;
+}
+
+/* HEADER */
+
+.top-section {
+    margin-bottom: 20px;
+}
+
+.policy-header-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(180px, 1fr));
+    gap: 8px 16px;
+    padding: 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+.policy-header-label {
+    font-weight: 600;
+    color: #323130;
+    font-size: 13px;
+}
+
+.policy-header-value {
+    color: #000;
+    font-size: 13px;
+}
+
+/* GRID */
+
+.grid-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.grid-container {
+    display: grid;
+    width: 100%;
+    border: 1px solid #d9d9d9;
+}
+
+.grid-header {
+    padding: 10px;
+    background: #f3f2f1;
+    font-weight: 600;
+    border-right: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.grid-cell {
+    padding: 10px;
+    border-right: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+    word-break: break-word;
+    background: #fff;
+}
+
+.index {
+    text-align: center;
+    font-weight: 600;
+}
+
+.grid-header:last-child,
+.grid-cell:last-child {
+    border-right: none;
+}
+
+.footer-title {
+    font-weight: 600;
+    background: #faf9f8;
+    text-align: center;
+}
+
+.footer-value {
+    font-weight: 600;
+    text-align: center;
+    background: #faf9f8;
+}

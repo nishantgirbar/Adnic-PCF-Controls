@@ -1,0 +1,194 @@
+.medical-pcf {
+    width: 100%;
+    font-family: Segoe UI, sans-serif;
+}
+
+/* QUESTIONS */
+.medical-pcf .question-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* ALERT */
+.medical-pcf .medical-alert {
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-left: 3px solid #f76363;
+    color: #605e5c;
+    font-size: 13px;
+}
+
+/* GRID WRAPPER */
+.medical-pcf .grid-wrapper {
+    border: 1px solid #edebe9;
+    border-radius: 6px;
+    padding: 10px;
+    background: #fff;
+}
+
+/* HEADER BAR */
+.medical-pcf .grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;   /* IMPORTANT */
+    padding: 12px 16px;
+    background: #faf9f8;
+    border-bottom: 1px solid #edebe9;
+}
+
+/* GRID */
+.medical-pcf .grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 10px;
+    padding: 8px;
+}
+
+/* HEADER */
+.medical-pcf .row.header {
+    background: #f3f2f1;
+    border-left: 4px solid #6298c2;
+    font-weight: 600;
+}
+
+.medical-pcf .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+}
+
+.medical-pcf .download-template {
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+/* MEMBER BLOCK */
+.medical-pcf .member-block {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* ERROR HIGHLIGHT */
+.medical-pcf .member-block.error {
+    border-left: 3px solid #d13438;
+}
+
+/* BELOW SECTION */
+.medical-pcf .row-details {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    align-items: center;
+}
+
+/* TEXTAREA */
+.medical-pcf .ms-TextField-fieldGroup {
+    width: 100%;
+}
+
+/* DOWNLOAD TEMPLATE */
+.medical-pcf .download-template {
+    color: #0078d4;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: underline;
+    margin-right: 12px;
+    font-weight: 500;
+}
+
+/* FILE SECTION */
+.medical-pcf .file-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+/* INITIAL UPLOAD BUTTON */
+.medical-pcf .upload-btn {
+    width: fit-content;
+}
+
+/* UPLOADED FILES */
+.medical-pcf .uploaded-files {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+/* FILE CARD */
+.medical-pcf .uploaded-file-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid #e1dfdd;
+    border-radius: 6px;
+    background: #faf9f8;
+}
+
+/* LEFT */
+.medical-pcf .uploaded-file-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+/* CHECK ICON */
+.medical-pcf .file-check {
+    color: #107c10;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* FILE NAME */
+.medical-pcf .uploaded-file-name {
+    font-size: 13px;
+    color: #323130;
+    word-break: break-word;
+}
+
+/* ACTION BUTTONS */
+.medical-pcf .uploaded-file-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* VIEW BUTTON */
+.medical-pcf .file-view-btn {
+    border-radius: 4px;
+}
+
+/* DELETE BUTTON */
+.medical-pcf .file-delete-btn {
+    border-radius: 4px;
+}
+
+/* ADD MORE */
+.medical-pcf .add-more-container {
+    margin-top: 4px;
+}
+
+/* ADD MORE BUTTON */
+.medical-pcf .add-more-btn {
+    width: fit-content;
+}
+
+.medical-pcf .upload-error {
+    color: #a4262c;
+    font-size: 12px;
+}
+
+.medical-pcf.readonly {
+    opacity: 0.85;
+}
+
+.medical-pcf.readonly .ms-Button {
+    cursor: not-allowed;
+}

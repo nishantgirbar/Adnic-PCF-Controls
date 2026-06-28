@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <control
+    namespace="EbpControlPcf"
+    constructor="EbpControlPcf"
+    version="2.1.1"
+    display-name-key="Plan Summary Control"
+    description-key="Conditional Plan Summary UI"
+    control-type="standard">
+
+    <!-- Show/Hide Summary -->
+    <property
+      name="showSummary"
+      display-name-key="Show Summary"
+      description-key="Toggle summary visibility"
+      of-type="TwoOptions"
+      usage="bound"
+      required="true" />
+
+    <!-- Member List JSON -->
+    <property
+      name="memberlistjson"
+      display-name-key="Member List Json"
+      description-key="Member List Json"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <property
+      name="categoryPremiums"
+      display-name-key="Category Premiums"
+      description-key="Category Premiums"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="1" />
+    </resources>
+
+  </control>
+</manifest>

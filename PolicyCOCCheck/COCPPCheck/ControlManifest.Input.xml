@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+
+  <control
+    namespace="ADNIC"
+    constructor="PPCOCCheck"
+    version="1.0.0"
+    display-name-key="PPCOCCheck"
+    description-key="PP and COC Validation Control"
+    control-type="standard">
+
+    <property
+    name="validatedMembersJson"
+    display-name-key="Validated Members"
+    of-type="Multiple"
+    usage="bound"
+    required="false" />
+
+    <property
+      name="ppCocResultJson"
+      display-name-key="PP COC Result Json"
+      description-key="PP COC Result Json"
+      of-type="SingleLine.Text"
+      usage="output"
+      required="false" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="css/PPCOCCheckControl.css" order="1" />
+    </resources>
+
+    <feature-usage>
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
+
+  </control>
+
+</manifest>

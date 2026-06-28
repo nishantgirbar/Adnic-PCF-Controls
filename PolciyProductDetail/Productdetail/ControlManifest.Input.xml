@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+
+  <control namespace="B2EControl"
+           constructor="PolicyProductDetail"
+           version="1.0.1"
+           display-name-key="Policy Product"
+           description-key="Policy Product Detail Description"
+           control-type="standard">
+
+     <!-- ================= REQUIRED ================= -->
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="2" />
+    </resources>
+
+    <!-- ================= MAIN FIELD (INPUT + OUTPUT) ================= -->
+    <property name="productDetailsInput"
+              display-name-key="Product Details JSON"
+              description-key="Holds full product details JSON"
+              of-type="Multiple"
+              usage="bound"
+              required="false" />
+
+    <!-- ================= OPTIONAL FEATURES ================= -->
+    <feature-usage>
+      <uses-feature name="Utility" required="false" />
+    </feature-usage>
+
+  </control>
+</manifest>
