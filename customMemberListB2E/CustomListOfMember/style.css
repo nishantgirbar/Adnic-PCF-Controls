@@ -158,9 +158,100 @@
     padding: 0 12px;
     cursor: pointer;
     font-size: 13px;
+    flex: 0 0 auto;
 }
 
 .b2e-members-root .upload-btn:hover {
+    background: #f3f2f1;
+}
+
+.b2e-members-root .upload-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid #edebe9;
+}
+
+.b2e-members-root .remarks-input {
+    min-width: 180px;
+    max-width: 260px;
+    flex: 0 0 260px;
+    min-height: 48px;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #323130;
+    resize: vertical;
+    background: #fff;
+}
+
+.b2e-members-root .attachments-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    flex: 1 1 auto;
+    min-height: 42px;
+}
+
+.b2e-members-root .attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f3f2f1;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.b2e-members-root .attachment-name {
+    font-size: 13px;
+    color: #323130;
+}
+
+.b2e-members-root .attachment-view-btn {
+    background: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 2px;
+    height: 28px;
+    padding: 0 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.b2e-members-root .attachment-view-btn:hover:not(:disabled) {
+    background: #f3f2f1;
+}
+
+.b2e-members-root .attachment-view-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.b2e-members-root .attachment-link {
+    color: #0078d4;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.b2e-members-root .attachment-link:hover {
+    text-decoration: underline;
+}
+
+.b2e-members-root .attachment-delete-btn {
+    background: #ffffff;
+    border: 1px solid #d1d1d1;
+    border-radius: 2px;
+    color: #323130;
+    padding: 0 8px;
+    height: 28px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.b2e-members-root .attachment-delete-btn:hover {
     background: #f3f2f1;
 }
 

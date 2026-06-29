@@ -45,6 +45,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       visaLocation: "",
       category: "",
       maritalStatus: "",
+      remarks: "",
+      attachments: [],
       document: "",
       documentName: ""
     };
@@ -194,12 +196,32 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
       try {
         // 🔥 NORMALIZE RELATION TO UPPERCASE
-        this.members = (raw ? JSON.parse(raw) : []).map((m: any) =>
-          this.normalizeMemberCategoryForSalaryType({
+        this.members = (raw ? JSON.parse(raw) : []).map((m: any) => {
+          const attachments = Array.isArray(m.attachments)
+            ? m.attachments.map((a: any) => ({
+                name: String(a?.name || ""),
+                content: String(a?.content || "")
+              }))
+            : (m.document || m.documentName)
+              ? [{
+                  name: String(m.documentName || ""),
+                  content: String(m.document || "")
+                }]
+              : [];
+
+          return this.normalizeMemberCategoryForSalaryType({
             ...m,
-            relation: m.relation ? m.relation.toUpperCase() : ""
-          })
-        );
+            relation: m.relation ? m.relation.toUpperCase() : "",
+            remarks: String(m.remarks || ""),
+            attachments,
+            document: typeof m.document === "string"
+              ? m.document
+              : attachments[0]?.content || "",
+            documentName: typeof m.documentName === "string"
+              ? m.documentName
+              : attachments[0]?.name || ""
+          });
+        });
       } catch {
         console.warn("Invalid memberData JSON ignored.", raw);
       }
@@ -256,15 +278,31 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           referenceDate
         ) >= 65
       )
-      .map(member => ({
-        ...member,
-        document: typeof member.document === "string"
-          ? member.document
-          : "",
-        documentName: typeof member.documentName === "string"
-          ? member.documentName
-          : ""
-      }));
+      .map(member => {
+        const attachments = Array.isArray(member.attachments)
+          ? member.attachments.map((a: any) => ({
+              name: String(a?.name || ""),
+              content: String(a?.content || "")
+            }))
+          : (member.document || member.documentName)
+            ? [{
+                name: String(member.documentName || ""),
+                content: String(member.document || "")
+              }]
+            : [];
+
+        return {
+          ...member,
+          remarks: String(member.remarks || ""),
+          attachments,
+          document: typeof member.document === "string"
+            ? member.document
+            : attachments[0]?.content || "",
+          documentName: typeof member.documentName === "string"
+            ? member.documentName
+            : attachments[0]?.name || ""
+        };
+      });
 
     const nextAbove65MembersJson = JSON.stringify(above65);
 
@@ -343,6 +381,29 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     return age;
+  }
+
+  private validateRelationAge(member: any): string | null {
+    const relation = (member.relation || "").trim().toUpperCase();
+
+    if (!member.dateOfBirth) {
+      return null;
+    }
+
+    const age = this.getAge(
+      member.dateOfBirth,
+      this.getAgeReferenceDate()
+    );
+
+    if (relation === "EMPLOYEE" && age < 18) {
+      return "Employee must be at least 18 years old.";
+    }
+
+    if (relation === "CHILD" && age > 24) {
+      return "Child cannot be older than 24 years.";
+    }
+
+    return null;
   }
 
   private parseDisplayDate(value: string): string | null {
@@ -613,9 +674,30 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         relationSelect.appendChild(opt);
       });
 
-      relationSelect.onchange = () => {
+      relationSelect.onchange = async () => {
+        const previousRelation = row.relation;
+
         // 🔥 FORCE UPPERCASE
         this.members[idx].relation = relationSelect.value.toUpperCase();
+
+        const validationError = this.validateRelationAge(this.members[idx]);
+
+        if (validationError) {
+          this.members[idx].relation = previousRelation;
+          relationSelect.value = previousRelation;
+
+          await this.context.navigation.openAlertDialog(
+            {
+              text: validationError,
+              confirmButtonLabel: "OK"
+            },
+            {
+              width: 420,
+              height: 180
+            }
+          );
+          return;
+        }
 
         this.updateDerivedOutputJsons();
         this.notifyOutputChanged();
@@ -641,11 +723,13 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       dob.value = displayDate;
 
       const commitDob = async () => {
+        const previousDob = row.dateOfBirth;
 
         if (!dob.value) {
           this.members[idx].dateOfBirth = null;
           this.updateDerivedOutputJsons();
           this.notifyOutputChanged();
+          this.refresh();
           return;
         }
 
@@ -668,8 +752,28 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
         this.members[idx].dateOfBirth = parsedDate;
 
+        const validationError = this.validateRelationAge(this.members[idx]);
+
+        if (validationError) {
+          this.members[idx].dateOfBirth = previousDob;
+          dob.value = displayDate;
+
+          await this.context.navigation.openAlertDialog(
+            {
+              text: validationError,
+              confirmButtonLabel: "OK"
+            },
+            {
+              width: 420,
+              height: 180
+            }
+          );
+          return;
+        }
+
         this.updateDerivedOutputJsons();
         this.notifyOutputChanged();
+        this.refresh();
       };
 
       if (!this.isReadOnly) {
@@ -732,69 +836,241 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
         const fileInput = document.createElement("input");
         fileInput.type = "file";
-        fileInput.style.display = "none";
+        fileInput.multiple = true;
+        fileInput.style.position = "absolute";
+        fileInput.style.left = "-9999px";
+        fileInput.style.width = "0";
+        fileInput.style.height = "0";
+        fileInput.style.opacity = "0";
+        fileInput.style.pointerEvents = "none";
 
         const btn = document.createElement("button");
+        btn.type = "button";
         btn.className = "upload-btn";
-        btn.innerText = "Upload";
+        btn.innerText = "Upload files";
 
+        const attachmentsContainer = document.createElement("div");
+        attachmentsContainer.className = "attachments-list";
 
-        const attachmentLink = document.createElement("a");
-        attachmentLink.className = "file-name";
-
-        const updateAttachmentLink = (
-          documentContent: unknown,
-          documentName: unknown
-        ): void => {
-          const content = typeof documentContent === "string"
-            ? documentContent
-            : "";
-          const fileName = typeof documentName === "string"
-            ? documentName
-            : "";
-
-          attachmentLink.innerText = fileName || (content ? "Attached file" : "");
-
-          if (content) {
-            attachmentLink.href = content;
-            attachmentLink.download = fileName || "attachment";
-            attachmentLink.target = "_blank";
-          } else {
-            attachmentLink.removeAttribute("href");
-            attachmentLink.removeAttribute("download");
-            attachmentLink.removeAttribute("target");
-          }
+        const remarksField = document.createElement("textarea");
+        remarksField.className = "remarks-input";
+        remarksField.placeholder = "Enter remarks";
+        remarksField.disabled = this.isReadOnly;
+        remarksField.value = String(row.remarks || "");
+        remarksField.onchange = () => {
+          row.remarks = remarksField.value;
+          this.updateDerivedOutputJsons();
+          this.notifyOutputChanged();
         };
 
-        updateAttachmentLink(row.document, row.documentName);
+        const renderAttachments = (): void => {
+          attachmentsContainer.innerHTML = "";
+          const attachments = Array.isArray(row.attachments)
+            ? row.attachments
+            : [];
+
+          attachments.forEach((attachment: any, attachmentIndex: number) => {
+            const item = document.createElement("div");
+            item.className = "attachment-item";
+
+            const fileName = document.createElement("span");
+            fileName.className = "attachment-name";
+            fileName.innerText = attachment.name || `File ${attachmentIndex + 1}`;
+
+            const viewBtn = document.createElement("button");
+            viewBtn.type = "button";
+            viewBtn.className = "attachment-view-btn";
+            viewBtn.innerText = "View";
+            viewBtn.disabled = !attachment.content;
+            viewBtn.onclick = () => {
+              if (!attachment.content) return;
+              const content = String(attachment.content || "");
+
+              const openUrl = (url: string) => {
+                try {
+                  window.open(url, "_blank");
+                } catch (e) {
+                  const w = window.open();
+                  if (w) {
+                    w.document.write(`<html><body><iframe src="${url}" style="width:100%;height:100%;border:none"></iframe></body></html>`);
+                    w.document.close();
+                  }
+                }
+              };
+
+              // If content is a data URL, extract base64 and mime, then open via Blob
+              if (content.startsWith("data:")) {
+                try {
+                  const parts = content.split(",");
+                  const meta = parts[0];
+                  const b64 = parts.slice(1).join(",");
+                  const isBase64 = meta.endsWith(";base64") || meta.includes(";base64;");
+                  const mime = (meta.split(":")[1] || "application/octet-stream").split(";")[0] || "application/octet-stream";
+                  if (isBase64) {
+                    const byteChars = atob(b64);
+                    const byteNumbers = new Array(byteChars.length);
+                    for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: mime });
+                    const url = URL.createObjectURL(blob);
+                    openUrl(url);
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
+                    return;
+                  }
+                } catch (e) {
+                  // fallthrough to try opening raw
+                }
+                // as a fallback open the data URL directly
+                openUrl(content);
+                return;
+              }
+
+              // For raw base64 strings: decode using atob and open as Blob (guess mime from extension)
+              const name = String(attachment.name || "");
+              const ext = (name.split(".").pop() || "").toLowerCase();
+              const mimeMap: any = { pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", txt: "text/plain" };
+              const mime = mimeMap[ext] || "application/octet-stream";
+
+              try {
+                // strip whitespace/newlines
+                const sanitized = content.replace(/\s+/g, "");
+                const byteChars = atob(sanitized);
+                const byteNumbers = new Array(byteChars.length);
+                for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: mime });
+                const url = URL.createObjectURL(blob);
+                openUrl(url);
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+                return;
+              } catch (e) {
+                // final fallback: try data URL
+                const dataUrl = `data:${mime};base64,${content}`;
+                openUrl(dataUrl);
+                return;
+              }
+            };
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "attachment-delete-btn";
+            deleteBtn.innerText = "Delete";
+            deleteBtn.onclick = () => {
+              row.attachments = row.attachments || [];
+              row.attachments.splice(attachmentIndex, 1);
+              if (row.attachments.length > 0) {
+                row.document = row.attachments[0].content;
+                row.documentName = row.attachments[0].name;
+              } else {
+                row.document = "";
+                row.documentName = "";
+              }
+              this.updateDerivedOutputJsons();
+              this.notifyOutputChanged();
+              renderAttachments();
+            };
+
+            item.appendChild(fileName);
+            item.appendChild(viewBtn);
+            item.appendChild(deleteBtn);
+            attachmentsContainer.appendChild(item);
+          });
+        };
+
+        const addAttachments = async (): Promise<void> => {
+          const files = Array.from(fileInput.files || []);
+          if (!files.length) return;
+
+          // Validate files: must be PDF and <= 2MB
+          const MAX_BYTES = 2 * 1024 * 1024; // 2MB
+          const invalids: string[] = [];
+          files.forEach(f => {
+            const name = f.name || "(unnamed)";
+            if (f.size > MAX_BYTES) invalids.push(`${name} — file too large`);
+            const isPdfMime = (f.type || "").toLowerCase() === "application/pdf";
+            const isPdfExt = name.toLowerCase().endsWith(".pdf");
+            if (!(isPdfMime || isPdfExt)) invalids.push(`${name} — not a PDF`);
+          });
+
+          if (invalids.length) {
+            await this.context.navigation.openAlertDialog(
+              {
+                text: `The following files are invalid:\n${invalids.join("\n")}`,
+                confirmButtonLabel: "OK"
+              },
+              { width: 480, height: 240 }
+            );
+            return;
+          }
+
+          // Check duplicate names across all members
+          const existingNames = new Set<string>();
+          this.members.forEach(member => {
+            if (Array.isArray(member.attachments)) {
+              member.attachments.forEach((attachment: any) => {
+                const name = String(attachment?.name || "").trim();
+                if (name) existingNames.add(name.toLowerCase());
+              });
+            }
+            const documentName = String(member.documentName || "").trim();
+            if (documentName) existingNames.add(documentName.toLowerCase());
+          });
+
+          const duplicateFile = files.find(file => existingNames.has(file.name.trim().toLowerCase()));
+          if (duplicateFile) {
+            await this.context.navigation.openAlertDialog(
+              {
+                text: `The file name '${duplicateFile.name}' has already been uploaded. Please choose a different file.`,
+                confirmButtonLabel: "OK"
+              },
+              { width: 420, height: 180 }
+            );
+            return;
+          }
+
+          const loadedAttachments = await Promise.all(files.map(file => new Promise<any>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              resolve({
+                name: file.name,
+                content: typeof reader.result === "string" ? reader.result : ""
+              });
+            };
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          })));
+
+          row.attachments = row.attachments || [];
+          row.attachments.push(...loadedAttachments);
+          if (!row.document && loadedAttachments.length) {
+            row.document = loadedAttachments[0].content;
+            row.documentName = loadedAttachments[0].name;
+          }
+
+          renderAttachments();
+          this.updateDerivedOutputJsons();
+          this.notifyOutputChanged();
+          this.refresh();
+
+          setTimeout(() => {
+            fileInput.value = "";
+          }, 0);
+        };
 
         btn.onclick = () => {
-
           if (this.isReadOnly) return;
-
+          fileInput.value = "";
           fileInput.click();
         };
 
-        fileInput.onchange = () => {
-          const file = fileInput.files?.[0];
-          if (!file) return;
+        fileInput.onchange = () => { void addAttachments(); };
 
-          const reader = new FileReader();
-          reader.onload = () => {
-            this.members[idx].document = reader.result;
-            this.members[idx].documentName = file.name;
-            updateAttachmentLink(reader.result, file.name);
-            this.updateDerivedOutputJsons();
-
-            this.notifyOutputChanged();
-          };
-          reader.readAsDataURL(file);
-        };
-
+        uploadRow.appendChild(remarksField);
         uploadRow.appendChild(btn);
         uploadRow.appendChild(fileInput);
-        uploadRow.appendChild(attachmentLink);
+        uploadRow.appendChild(attachmentsContainer);
 
+        renderAttachments();
         grid.appendChild(uploadRow);
       }
     });

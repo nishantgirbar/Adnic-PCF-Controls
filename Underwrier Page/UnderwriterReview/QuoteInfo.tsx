@@ -121,6 +121,26 @@ export const QuoteInfo = ({
                 <div className="info-card">
 
                     <div className="info-label">
+                        Priority
+                    </div>
+
+                    <div
+                        className={
+                            priority === "High"
+                                ? "priority-high"
+                                : "priority-low"
+                        }
+                    >
+                        {priority}
+                    </div>
+
+                </div>
+
+
+{/* 
+                <div className="info-card">
+
+                                       <div className="info-label">
                         Total Loading
                     </div>
 
@@ -143,32 +163,6 @@ export const QuoteInfo = ({
 
                 </div>
 
-                {/* ================================= */}
-                {/* PRIORITY */}
-                {/* ================================= */}
-
-                <div className="info-card">
-
-                    <div className="info-label">
-                        Priority
-                    </div>
-
-                    <div
-                        className={
-                            priority === "High"
-                                ? "priority-high"
-                                : "priority-low"
-                        }
-                    >
-                        {priority}
-                    </div>
-
-                </div>
-
-                {/* ================================= */}
-                {/* TOTAL MEMBERS */}
-                {/* ================================= */}
-
                 <div className="info-card">
 
                     <div className="info-label">
@@ -184,7 +178,7 @@ export const QuoteInfo = ({
 
                     </div>
 
-                </div>
+                </div> */}
 
             </div>
 

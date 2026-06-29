@@ -4,7 +4,7 @@
   <control
     namespace="UWDetails"
     constructor="QuoteDetailsPCF"
-    version="1.5.0"
+    version="1.5.2"
     display-name-key="UW detail"
     description-key="UW Detail desc"
     control-type="standard">

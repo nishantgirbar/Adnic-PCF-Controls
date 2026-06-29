@@ -375,10 +375,6 @@ private async loadData(): Promise<void> {
 
             plans.push({
                 category: "EBP",
-                network:
-                    ebpBenefitsSource?.productSelection?.networkProviderName || EBP_FALLBACK_CONFIG.networkProvider,
-                networkType:
-                    ebpBenefitsSource?.productSelection?.networkTypeName || EBP_FALLBACK_CONFIG.networkType,
                 benefits: fallbackBenefits,
                 totalMembers: ebpMembers.length,
                 memberBreakdown: this.getMemberBreakdown(ebpMembers, policyStartDate),
@@ -705,6 +701,7 @@ private async loadData(): Promise<void> {
 
                         <div>
 
+                            ${this.isEbpCategory(plan.category) ? "" : `
                             ${this.planRow(
                                 "Network Provider",
                                 plan.network
@@ -714,6 +711,7 @@ private async loadData(): Promise<void> {
                                 "Network Type",
                                 plan.networkType
                             )}
+                            `}
 
                             ${plan.benefits
                                 .map((b: any) =>
