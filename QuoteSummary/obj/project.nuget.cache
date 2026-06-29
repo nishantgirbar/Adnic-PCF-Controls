@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JIkSkMeUlhA=",
+  "dgSpecHash": "G+CVxh9AZi4=",
   "success": true,
-  "projectFilePath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Quote Summary PCF\\QuoteSummary\\pcf control.pcfproj",
+  "projectFilePath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\QuoteSummary\\pcf control.pcfproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nishant\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.0\\microsoft.netframework.referenceassemblies.1.0.0.nupkg.sha512",
     "C:\\Users\\Nishant\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net462\\1.0.0\\microsoft.netframework.referenceassemblies.net462.1.0.0.nupkg.sha512",

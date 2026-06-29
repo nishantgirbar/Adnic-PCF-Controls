@@ -468,11 +468,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Quote Summary PCF\\QuoteSummary\\pcf control.pcfproj",
+      "projectUniqueName": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\QuoteSummary\\pcf control.pcfproj",
       "projectName": "pcf control",
-      "projectPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Quote Summary PCF\\QuoteSummary\\pcf control.pcfproj",
+      "projectPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\QuoteSummary\\pcf control.pcfproj",
       "packagesPath": "C:\\Users\\Nishant\\.nuget\\packages\\",
-      "outputPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Quote Summary PCF\\QuoteSummary\\obj\\",
+      "outputPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\QuoteSummary\\obj\\",
       "projectStyle": "PackageReference",
       "UsingMicrosoftNETSdk": false,
       "fallbackFolders": [

@@ -1,2 +1,4 @@
 C:\Nishant Own Files\SutherLand\ADNIC\Quote Summary PCF\QuoteSummary\obj\Debug\pcf control.pcfproj.AssemblyReference.cache
 C:\Nishant Own Files\SutherLand\ADNIC\Quote Summary PCF\QuoteSummary\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
+C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\QuoteSummary\obj\Debug\pcf control.pcfproj.AssemblyReference.cache
+C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\QuoteSummary\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache

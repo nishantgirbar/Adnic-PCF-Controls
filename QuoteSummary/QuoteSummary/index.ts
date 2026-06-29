@@ -1,5 +1,40 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
+const EBP_FALLBACK_CONFIG = {
+    networkProvider: "Ecare",
+    networkType: "General Network",
+    benefits: [
+        {
+            name: "Plan Type",
+            value: "Basic EBP Plan"
+        },
+        {
+            name: "Network Provider",
+            value: "Ecare"
+        },
+        {
+            name: "Consultation",
+            value: "20% Coinsurance"
+        },
+        {
+            name: "Co-pay on Lab/Diagnostic",
+            value: "20% Co-pay for All OP Services"
+        },
+        {
+            name: "Pharmacy Co-Pay",
+            value: "30% Co-pay for Medication"
+        },
+        {
+            name: "Pharmacy Limit",
+            value: "Maximum __DIRHAM__ 2,500"
+        },
+        {
+            name: "Co-Pay on all IP Services",
+            value: "20% Co-pay for IP Services"
+        }
+    ]
+};
+
 export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
     private container!: HTMLDivElement;
@@ -217,6 +252,8 @@ private async loadData(): Promise<void> {
             ? api.members
             : [];
 
+        const policyStartDate = api.policyStartDate;
+
         const categories =
             api.productSelectionResponse?.categories ||
             [];
@@ -273,7 +310,8 @@ private async loadData(): Promise<void> {
 
                 memberBreakdown:
                     this.getMemberBreakdown(
-                        categoryMembers
+                        categoryMembers,
+                        policyStartDate
                     ),
 
                 totalPremium:
@@ -293,9 +331,25 @@ private async loadData(): Promise<void> {
                 this.isEbpCategory(m.category)
         );
 
-        if (ebpPremium || ebpMembers.length) {
+        const hasEbpCategory =
+            categories.some((cat: any) =>
+                this.isEbpCategory(cat.categoryCode)
+            ) ||
+            categoryPremiums.some((p: any) =>
+                this.isEbpCategory(p.categoryName)
+            ) ||
+            members.some((m: any) =>
+                this.isEbpCategory(m.category)
+            );
+
+        if (ebpPremium || ebpMembers.length || hasEbpCategory) {
 
             const ebpBenefitsSource =
+                categories.find((cat: any) =>
+                    this.isEbpCategory(cat.categoryCode) &&
+                    Array.isArray(cat.benefits) &&
+                    cat.benefits.length
+                ) ||
                 categories.find((cat: any) =>
                     Array.isArray(cat.benefits) &&
                     cat.benefits.length
@@ -314,38 +368,20 @@ private async loadData(): Promise<void> {
                         value: String(b.benefitValue || "-")
                     }));
 
+            const fallbackBenefits = EBP_FALLBACK_CONFIG.benefits.map((benefit: any) => ({
+                ...benefit,
+                value: benefit.value.replace("__DIRHAM__", this.getDirhamSymbol())
+            }));
+
             plans.push({
                 category: "EBP",
                 network:
-                    ebpBenefitsSource?.productSelection?.networkProviderName || "NAS",
+                    ebpBenefitsSource?.productSelection?.networkProviderName || EBP_FALLBACK_CONFIG.networkProvider,
                 networkType:
-                    ebpBenefitsSource?.productSelection?.networkTypeName || "General Network",
-                benefits: ebpBenefits.length
-                    ? ebpBenefits
-                    : [
-                        {
-                            name: "Network Provider",
-                            value: "NAS"
-                        },
-                        {
-                            name: "Network Type",
-                            value: "General Network"
-                        },
-                        {
-                            name: "Annual Limit",
-                            value: "250,000"
-                        },
-                        {
-                            name: "Territorial of Cover - Elective",
-                            value: "GCC + ISC"
-                        },
-                        {
-                            name: "Territorial of Cover - Emergency",
-                            value: "GCC + ISC"
-                        }
-                    ],
+                    ebpBenefitsSource?.productSelection?.networkTypeName || EBP_FALLBACK_CONFIG.networkType,
+                benefits: fallbackBenefits,
                 totalMembers: ebpMembers.length,
-                memberBreakdown: this.getMemberBreakdown(ebpMembers),
+                memberBreakdown: this.getMemberBreakdown(ebpMembers, policyStartDate),
                 totalPremium: this.formatCurrency(
                     Number(ebpPremium?.currentPremium || 0)
                 )
@@ -421,7 +457,8 @@ private async loadData(): Promise<void> {
     }
 
     private getMemberBreakdown(
-        members: any[]
+        members: any[],
+        policyStartDate?: string
     ): string[] {
 
         if (!members?.length) {
@@ -437,7 +474,8 @@ private async loadData(): Promise<void> {
 
             const age =
                 this.calculateAge(
-                    m.dateOfBirth
+                    m.dateOfBirth,
+                    policyStartDate
                 );
 
             const start =
@@ -505,14 +543,27 @@ private async loadData(): Promise<void> {
     }
 
     private calculateAge(
-        dateOfBirth: string
+        dateOfBirth: string,
+        policyStartDate?: string
     ): number {
 
         const dob =
             new Date(dateOfBirth);
 
+        if (isNaN(dob.getTime())) {
+            return 0;
+        }
+
+        const referenceDate = policyStartDate
+            ? new Date(policyStartDate)
+            : new Date();
+
+        if (isNaN(referenceDate.getTime())) {
+            return 0;
+        }
+
         const diff =
-            Date.now() - dob.getTime();
+            referenceDate.getTime() - dob.getTime();
 
         const ageDate =
             new Date(diff);
