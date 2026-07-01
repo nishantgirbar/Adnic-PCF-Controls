@@ -50,11 +50,18 @@ export class ProductOutputService {
                 const plan =
                     selectedValues["Plan"]?.[cat.name];
 
+                const categoryStats =
+                    stats && stats[cat.name]
+                        ? stats[cat.name]
+                        : stats;
+
                 const validation =
                     EbpRuleService.validatePlan(
                         providerVal,
                         plan,
-                        stats
+                        categoryStats,
+                        selectedValues["Plan"] || {},
+                        cat.name
                     );
 
                 if (validation) {

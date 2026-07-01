@@ -22,8 +22,11 @@ interface Member {
     marital: string;
     comments?: string;
     files?: {
+        id?: string;
+        annotationId?: string;
         name: string;
-        content: string;
+        mimeType?: string;
+        size?: number;
     }[];
     error?: string;
     uploadError?: string;
@@ -42,6 +45,7 @@ const MedicalControlUI = ({
     onChange,
     isDisabled,
     existingData
+    pcfContext
 }: any) => {
 
     const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
@@ -180,8 +184,11 @@ const MedicalControlUI = ({
                 comments: m.comments || "",
                 files:
                     (m.files || []).map((f: any) => ({
+                        id: f.id || f.annotationId || "",
+                        annotationId: f.annotationId || f.id || "",
                         name: f.fileName || f.name || "",
-                        content: f.fileContent || f.content || ""
+                        mimeType: f.mimeType || "",
+                        size: f.size || 0
                     })),
                 error: "",
                 uploadError: ""
@@ -271,8 +278,11 @@ const MedicalControlUI = ({
                         files:
                             (m.files || []).map(f => ({
 
+                                id: f.id || f.annotationId || "",
+                                annotationId: f.annotationId || f.id || "",
                                 fileName: f.name,
-                                fileContent: f.content
+                                mimeType: f.mimeType || "",
+                                size: f.size || 0
 
                             }))
 
@@ -470,108 +480,186 @@ const MedicalControlUI = ({
         setMembers(updatedMembers);
     };
 
+
+        const fileToBase64 = (file: File): Promise<string> => {
+
+        return new Promise((resolve, reject) => {
+
+            const reader = new FileReader();
+
+            reader.onload = () => {
+
+                const result =
+                    reader.result?.toString() || "";
+
+                const base64 =
+                    result.indexOf(",") >= 0
+                        ? result.split(",")[1]
+                        : result;
+
+                resolve(base64);
+            };
+
+            reader.onerror = reject;
+
+            reader.readAsDataURL(file);
+        });
+    };
+
+    const getFileDataUrl = async (file: any): Promise<string> => {
+
+        const id =
+            file.annotationId || file.id;
+
+        if (!id) {
+            return "";
+        }
+
+        const result =
+            await pcfContext.webAPI.retrieveRecord(
+                "annotation",
+                id,
+                "?$select=documentbody,filename,mimetype"
+            );
+
+        return `data:${result.mimetype || "application/pdf"};base64,${result.documentbody}`;
+    };
+
     // =====================================
     // HANDLE UPLOAD
     // =====================================
 
-    const handleUpload = (
-        id: number,
-        file: File
-    ) => {
+    const handleUpload = async (
+    id: number,
+    file: File
+        ) => {
 
-        if (isDisabled) return;
+            if (isDisabled) return;
 
-        const currentMember =
-            members.find(m => m.id === id);
+            const currentMember =
+                members.find(m => m.id === id);
 
-        if (!currentMember || !hasMemberDetail(currentMember)) {
+            if (!currentMember || !hasMemberDetail(currentMember)) {
 
-            setMembers(prev =>
-                prev.map(m =>
-                    m.id === id
-                        ? {
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError:
+                                    "Enter valid member details before uploading"
+                            }
+                            : m
+                    )
+                );
+
+                return;
+            }
+
+            if (
+                file.type !== "application/pdf" &&
+                !file.name.toLowerCase().endsWith(".pdf")
+            ) {
+
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError: "Only PDF files are allowed"
+                            }
+                            : m
+                    )
+                );
+
+                return;
+            }
+
+            if (file.size > MAX_FILE_SIZE_BYTES) {
+
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError: "Maximum file size is 5 MB"
+                            }
+                            : m
+                    )
+                );
+
+                return;
+            }
+
+            try {
+
+                const base64 =
+                    await fileToBase64(file);
+
+                const annotation = {
+                    subject:
+                        `Temporary Medical Report - Serial ${currentMember.serialNo}`,
+                    filename:
+                        file.name,
+                    mimetype:
+                        file.type || "application/pdf",
+                    documentbody:
+                        base64,
+                    notetext:
+                        "Temporary medical declaration file uploaded from PCF."
+                };
+
+                const created =
+                    await pcfContext.webAPI.createRecord(
+                        "annotation",
+                        annotation
+                    );
+
+                const annotationId =
+                    created.id.replace(/[{}]/g, "");
+
+                const updatedMembers =
+                    members.map(m => {
+
+                        if (m.id !== id) {
+                            return m;
+                        }
+
+                        return {
                             ...m,
-                            uploadError:
-                                "Enter valid member details before uploading"
-                        }
-                        : m
-                )
-            );
+                            files: [
+                                ...(m.files || []),
+                                {
+                                    id: annotationId,
+                                    annotationId,
+                                    name: file.name,
+                                    mimeType: file.type || "application/pdf",
+                                    size: file.size
+                                }
+                            ],
+                            uploadError: ""
+                        };
+                    });
 
-            return;
-        }
+                setMembers(updatedMembers);
 
-        if (
-            file.type !== "application/pdf" &&
-            !file.name.toLowerCase().endsWith(".pdf")
-        ) {
+            } catch (e) {
 
-            setMembers(prev =>
-                prev.map(m =>
-                    m.id === id
-                        ? {
-                            ...m,
-                            uploadError:
-                                "Only PDF files are allowed"
-                        }
-                        : m
-                )
-            );
+                console.error("Upload failed", e);
 
-            return;
-        }
-
-        if (file.size > MAX_FILE_SIZE_BYTES) {
-
-            setMembers(prev =>
-                prev.map(m =>
-                    m.id === id
-                        ? {
-                            ...m,
-                            uploadError:
-                                "Maximum file size is 5 MB"
-                        }
-                        : m
-                )
-            );
-
-            return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = () => {
-
-            const base64 =
-                reader.result?.toString() || "";
-
-            const updatedMembers =
-                members.map(m => {
-
-                    if (m.id !== id) {
-                        return m;
-                    }
-
-                    const updatedFiles = [
-                        ...(m.files || []),
-                        {
-                            name: file.name,
-                            content: base64
-                        }
-                    ];
-
-                    return {
-                        ...m,
-                        files: updatedFiles,
-                        uploadError: ""
-                    };
-                });
-
-            setMembers(updatedMembers);
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError: "File upload failed."
+                            }
+                            : m
+                    )
+                );
+            }
         };
 
-        reader.readAsDataURL(file);
-    };
 
     // =====================================
     // REMOVE FILE
@@ -611,21 +699,26 @@ const MedicalControlUI = ({
     // VIEW FILE
     // =====================================
 
-    const viewFile = (file: any) => {
+const viewFile = async (file: any) => {
 
-        const win = window.open();
+    const url =
+        await getFileDataUrl(file);
 
-        if (win) {
+    if (!url) return;
 
-            win.document.write(`
-                <iframe
-                    src="${file.content}"
-                    frameborder="0"
-                    style="width:100%;height:100%;">
-                </iframe>
-            `);
-        }
-    };
+    const win = window.open();
+
+    if (win) {
+
+        win.document.write(`
+            <iframe
+                src="${url}"
+                frameborder="0"
+                style="width:100%;height:100%;">
+            </iframe>
+        `);
+    }
+};
 
     // =====================================
     // SERIAL NUMBER CHANGE

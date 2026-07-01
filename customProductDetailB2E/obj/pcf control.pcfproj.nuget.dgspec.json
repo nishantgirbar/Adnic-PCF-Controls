@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Nishant Own Files\\SutherLand\\ADNIC\\PCF Controls\\customProductDetailB2E\\pcf control.pcfproj": {}
+    "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\customProductDetailB2E\\pcf control.pcfproj": {}
   },
   "projects": {
-    "C:\\Nishant Own Files\\SutherLand\\ADNIC\\PCF Controls\\customProductDetailB2E\\pcf control.pcfproj": {
+    "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\customProductDetailB2E\\pcf control.pcfproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\PCF Controls\\customProductDetailB2E\\pcf control.pcfproj",
+        "projectUniqueName": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\customProductDetailB2E\\pcf control.pcfproj",
         "projectName": "pcf control",
-        "projectPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\PCF Controls\\customProductDetailB2E\\pcf control.pcfproj",
+        "projectPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\customProductDetailB2E\\pcf control.pcfproj",
         "packagesPath": "C:\\Users\\Nishant\\.nuget\\packages\\",
-        "outputPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\PCF Controls\\customProductDetailB2E\\obj\\",
+        "outputPath": "C:\\Nishant Own Files\\SutherLand\\ADNIC\\Adnic PCF Controls\\customProductDetailB2E\\obj\\",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "fallbackFolders": [

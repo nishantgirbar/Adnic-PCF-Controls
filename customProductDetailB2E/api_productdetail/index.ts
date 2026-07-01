@@ -220,15 +220,16 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
 
         if (this.productType === "EBP") {
 
-            const stats =
-                    MemberStatistics.calculate(
-                        this.context.parameters.adnic_memberlistjson?.raw || ""
-                    );
-                const provider =
+const provider =
                     this.selectedValues["Network Provider"]?.["ALL"];
 
                 for (const cat of this.categories) {
 
+                    const stats =
+                        MemberStatistics.calculate(
+                            this.context.parameters.adnic_memberlistjson?.raw || "",
+                            cat.name
+                        );
 
                     const plan =
                         this.selectedValues["Plan"]?.[cat.name];
@@ -237,7 +238,9 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
                         EbpRuleService.validatePlan(
                             provider,
                             plan,
-                            stats
+                            stats,
+                            this.selectedValues["Plan"] || {},
+                            cat.name
                         );
 
                     if (validation) {

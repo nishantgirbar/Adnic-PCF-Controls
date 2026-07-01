@@ -1,7 +1,78 @@
 export class MemberStatistics {
 
-    public static calculate(
+    private static normalizeCategory(
+        value: string | null | undefined
+    ): string {
+
+        return String(value || "")
+            .trim()
+            .toUpperCase()
+            .replace(/^(CATEGORY|CAT)[\s-]*/i, "")
+            .replace(/[^A-Z0-9]/g, "");
+    }
+
+    private static getMemberCategory(
+        member: any
+    ): string {
+
+        const candidateFields = [
+            member?.category,
+            member?.categoryCode,
+            member?.categoryName,
+            member?.category_code,
+            member?.category_name,
+            member?.Category,
+            member?.CategoryCode,
+            member?.CategoryName
+        ];
+
+        for (const candidate of candidateFields) {
+            if (typeof candidate === "string" && candidate.trim()) {
+                return this.normalizeCategory(candidate);
+            }
+        }
+
+        return "";
+    }
+
+    private static getMembers(
         memberJson: string
+    ): any[] {
+
+        if (!memberJson) {
+            return [];
+        }
+
+        try {
+            const parsed = JSON.parse(memberJson);
+
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+
+            if (parsed && typeof parsed === "object") {
+                const candidateCollections = [
+                    parsed.members,
+                    parsed.items,
+                    parsed.value,
+                    parsed.data,
+                    parsed.memberList
+                ];
+
+                for (const collection of candidateCollections) {
+                    if (Array.isArray(collection)) {
+                        return collection;
+                    }
+                }
+            }
+        } catch { }
+
+        return [];
+    }
+
+    public static calculate(
+        memberJson: string,
+        categoryCode?: string
     ) {
 
         const result = {
@@ -11,41 +82,51 @@ export class MemberStatistics {
             dependent: 0
         };
 
-        if (!memberJson) {
-            return result;
-        }
+        const targetCategory =
+            this.normalizeCategory(categoryCode);
 
-        try {
+        const members =
+            this.getMembers(memberJson);
 
-            const members =
-                JSON.parse(memberJson);
+        members.forEach((m: any) => {
 
-            members.forEach((m: any) => {
+            const memberCategory =
+                this.getMemberCategory(m);
 
-                const isDependent =
-                    m.relation &&
-                    m.relation.toLowerCase() !== "employee";
+            const matchesCategory =
+                !targetCategory ||
+                memberCategory === targetCategory;
 
-                if (isDependent) {
-                    result.dependent++;
-                    return;
-                }
+            if (!matchesCategory) {
+                return;
+            }
 
-                const salaryType =
-                    (m.salaryType || "")
-                        .toUpperCase();
+            const relation =
+                String(m.relation || "")
+                    .toUpperCase();
 
-                if (salaryType.indexOf("4000") > -1)
-                    result.salary4000++;
+            const isDependent =
+                relation !== "" &&
+                relation !== "EMPLOYEE";
 
-                if (salaryType.indexOf("16000") > -1)
-                    result.salary16000++;
+            if (isDependent) {
+                result.dependent++;
+                return;
+            }
 
-                if (salaryType.indexOf("20000") > -1)
-                    result.salary20000++;
-            });
+            const salaryType =
+                (m.salaryType || "")
+                    .toUpperCase();
 
-        } catch { }
+            if (salaryType.indexOf("4000") > -1)
+                result.salary4000++;
+
+            if (salaryType.indexOf("16000") > -1)
+                result.salary16000++;
+
+            if (salaryType.indexOf("20000") > -1)
+                result.salary20000++;
+        });
 
         return result;
     }

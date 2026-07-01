@@ -34,6 +34,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private enableUpload: boolean = false;
   private productType: string = "";
   private isReadOnly: boolean = false;
+  private addBtn!: HTMLButtonElement;
+  private deleteBtn!: HTMLButtonElement;
 
   private createEmptyMember(): any {
 
@@ -95,6 +97,54 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     const wrapper = document.createElement("div");
     wrapper.className = "b2e-members-root";
 
+    const style = document.createElement("style");
+    style.innerText = `
+      .attachments-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .attachment-item {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 6px 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: #fbfbfb;
+      }
+      .attachment-name {
+        font-size: 12px;
+        font-weight: 600;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 180px;
+      }
+      .attachment-view-btn,
+      .attachment-download-btn,
+      .attachment-delete-btn {
+        padding: 4px 10px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .attachment-view-btn { color: #1558d6; }
+      .attachment-download-btn { color: #117a31; }
+      .attachment-delete-btn { color: #c93a3a; }
+      .attachment-view-btn:disabled,
+      .attachment-download-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    `;
+    wrapper.appendChild(style);
+
     const actionBar = document.createElement("div");
     actionBar.className = "action-bar";
 
@@ -102,13 +152,14 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     addBtn.innerText = "Add Row";
     addBtn.className = "btn primary";
     addBtn.disabled = this.isReadOnly;
+    this.addBtn = addBtn;
 
     addBtn.onclick = () => this.addNewMember();
 
     const deleteBtn = document.createElement("button");
     deleteBtn.innerText = "Delete Selected";
     deleteBtn.className = "btn subtle";
-
+    this.deleteBtn = deleteBtn;
     deleteBtn.onclick = async () => {
 
       if (this.isReadOnly) return;
@@ -189,6 +240,14 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       context.mode.isControlDisabled
     );
 
+    if (this.addBtn) {
+      this.addBtn.style.display = this.enableUpload ? "none" : "";
+    }
+
+    if (this.deleteBtn) {
+      this.deleteBtn.style.display = this.enableUpload ? "none" : "";
+    }
+
     const raw = context.parameters.memberData.raw;
 
     if (raw !== this.lastRaw) {
@@ -199,14 +258,18 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         this.members = (raw ? JSON.parse(raw) : []).map((m: any) => {
           const attachments = Array.isArray(m.attachments)
             ? m.attachments.map((a: any) => ({
-                name: String(a?.name || ""),
-                content: String(a?.content || "")
-              }))
+              name: String(a?.name || ""),
+              mimeType: String(a?.mimeType || "application/pdf"),
+              size: Number(a?.size || 0),
+              annotationId: String(a?.annotationId || a?.id || "")
+            }))
             : (m.document || m.documentName)
               ? [{
-                  name: String(m.documentName || ""),
-                  content: String(m.document || "")
-                }]
+                name: String(m.documentName || ""),
+                mimeType: "application/pdf",
+                size: 0,
+                annotationId: ""
+              }]
               : [];
 
           return this.normalizeMemberCategoryForSalaryType({
@@ -214,12 +277,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
             relation: m.relation ? m.relation.toUpperCase() : "",
             remarks: String(m.remarks || ""),
             attachments,
-            document: typeof m.document === "string"
-              ? m.document
-              : attachments[0]?.content || "",
-            documentName: typeof m.documentName === "string"
-              ? m.documentName
-              : attachments[0]?.name || ""
+            document: "",
+            documentName: attachments[0]?.name || String(m.documentName || "")
           });
         });
       } catch {
@@ -227,6 +286,16 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       }
 
       //this.currentPage = 1;
+
+      if (this.members === null || this.members.length == 0) {
+        if (this.addBtn) {
+          this.addBtn.style.display = this.enableUpload ? "none" : "";
+        }
+
+        if (this.deleteBtn) {
+          this.deleteBtn.style.display = this.enableUpload ? "none" : "";
+        }
+      }
 
     }
 
@@ -281,23 +350,25 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       .map(member => {
         const attachments = Array.isArray(member.attachments)
           ? member.attachments.map((a: any) => ({
-              name: String(a?.name || ""),
-              content: String(a?.content || "")
-            }))
+            name: String(a?.name || ""),
+            mimeType: String(a?.mimeType || "application/pdf"),
+            size: Number(a?.size || 0),
+            annotationId: String(a?.annotationId || a?.id || "")
+          }))
           : (member.document || member.documentName)
             ? [{
-                name: String(member.documentName || ""),
-                content: String(member.document || "")
-              }]
+              name: String(member.documentName || ""),
+              mimeType: "application/pdf",
+              size: 0,
+              annotationId: ""
+            }]
             : [];
 
         return {
           ...member,
           remarks: String(member.remarks || ""),
           attachments,
-          document: typeof member.document === "string"
-            ? member.document
-            : attachments[0]?.content || "",
+          document: "",
           documentName: typeof member.documentName === "string"
             ? member.documentName
             : attachments[0]?.name || ""
@@ -337,6 +408,106 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     this.uniqueCategoriesJson = nextUniqueCategoriesJson;
     return true;
+  }
+
+  private getCurrentRecordContext(): { entityId: string; entityTypeName: string; entitySetName: string } {
+    const pageContext = (this.context as any).page;
+    const xrmPageContext = (window as any)?.Xrm?.Utility?.getPageContext?.();
+
+    const entityId = String(
+      pageContext?.entityId ||
+      xrmPageContext?.input?.entityId ||
+      ""
+    ).replace(/[{}]/g, "");
+
+    const entityTypeName = String(
+      pageContext?.entityTypeName ||
+      xrmPageContext?.input?.entityTypeName ||
+      ""
+    ).toLowerCase();
+
+    const entitySetName = entityTypeName ? `${entityTypeName}s` : "";
+
+    return {
+      entityId,
+      entityTypeName,
+      entitySetName
+    };
+  }
+
+  private async convertFileToBase64(file: File): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          resolve(reader.result);
+        } else {
+          reject(new Error("Unable to convert file to base64"));
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private async uploadFileToAnnotation(file: File): Promise<string> {
+    const { entityId, entityTypeName, entitySetName } = this.getCurrentRecordContext();
+
+    if (!entityId || !entityTypeName || !entitySetName) {
+      throw new Error("Cannot upload attachment: current CRM record context is missing.");
+    }
+
+    const dataUrl = await this.convertFileToBase64(file);
+    const base64 = dataUrl.split(",").slice(1).join(",");
+
+    const body: any = {
+      subject: file.name,
+      filename: file.name,
+      mimetype: file.type || "application/pdf",
+      documentbody: base64,
+      notetext: "Uploaded from Member List control"
+    };
+
+    body[`objectid_${entityTypeName}@odata.bind`] = `/${entitySetName}(${entityId})`;
+
+    const annotationId = await this.context.webAPI.createRecord("annotation", body);
+
+    return String(annotationId || "");
+  }
+
+  private async retrieveAnnotationContent(annotationId: string): Promise<{ fileName: string; mimeType: string; size: number; base64: string } | null> {
+    try {
+      const annotation = await this.context.webAPI.retrieveRecord(
+        "annotation",
+        annotationId,
+        "?$select=documentbody,mimetype,filename,filesize"
+      );
+
+      return {
+        fileName: annotation.filename || "",
+        mimeType: annotation.mimetype || "application/pdf",
+        size: Number(annotation.filesize || 0),
+        base64: annotation.documentbody || ""
+      };
+    } catch (error) {
+      console.error("Failed to retrieve annotation content", error);
+      return null;
+    }
+  }
+
+  private async retrieveAnnotationBlob(annotationId: string): Promise<Blob | null> {
+    const annotation = await this.retrieveAnnotationContent(annotationId);
+    if (!annotation?.base64) {
+      return null;
+    }
+
+    const byteChars = atob(annotation.base64);
+    const byteNumbers = new Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) {
+      byteNumbers[i] = byteChars.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: annotation.mimeType });
   }
 
   private getAgeReferenceDate(): Date {
@@ -474,7 +645,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
   private getDistinctCategoryOptionsFromMemberData(fieldName: string): string[] {
 
-    this.category=[];
+    this.category = [];
     const seen = new Set<string>();
 
     this.members.forEach(member => {
@@ -881,11 +1052,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
             viewBtn.type = "button";
             viewBtn.className = "attachment-view-btn";
             viewBtn.innerText = "View";
-            viewBtn.disabled = !attachment.content;
-            viewBtn.onclick = () => {
-              if (!attachment.content) return;
-              const content = String(attachment.content || "");
-
+            viewBtn.disabled = !attachment.annotationId && !attachment.content;
+            viewBtn.onclick = async () => {
               const openUrl = (url: string) => {
                 try {
                   window.open(url, "_blank");
@@ -898,57 +1066,119 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
                 }
               };
 
-              // If content is a data URL, extract base64 and mime, then open via Blob
-              if (content.startsWith("data:")) {
-                try {
-                  const parts = content.split(",");
-                  const meta = parts[0];
-                  const b64 = parts.slice(1).join(",");
-                  const isBase64 = meta.endsWith(";base64") || meta.includes(";base64;");
-                  const mime = (meta.split(":")[1] || "application/octet-stream").split(";")[0] || "application/octet-stream";
-                  if (isBase64) {
-                    const byteChars = atob(b64);
-                    const byteNumbers = new Array(byteChars.length);
-                    for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
-                    const byteArray = new Uint8Array(byteNumbers);
-                    const blob = new Blob([byteArray], { type: mime });
-                    const url = URL.createObjectURL(blob);
-                    openUrl(url);
-                    setTimeout(() => URL.revokeObjectURL(url), 10000);
-                    return;
-                  }
-                } catch (e) {
-                  // fallthrough to try opening raw
+              const viewAnnotation = async () => {
+                if (!attachment.annotationId) {
+                  return;
                 }
-                // as a fallback open the data URL directly
-                openUrl(content);
-                return;
-              }
 
-              // For raw base64 strings: decode using atob and open as Blob (guess mime from extension)
-              const name = String(attachment.name || "");
-              const ext = (name.split(".").pop() || "").toLowerCase();
-              const mimeMap: any = { pdf: "application/pdf", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", txt: "text/plain" };
-              const mime = mimeMap[ext] || "application/octet-stream";
+                const blob = await this.retrieveAnnotationBlob(attachment.annotationId);
+                if (!blob) {
+                  return;
+                }
 
-              try {
-                // strip whitespace/newlines
+                const url = URL.createObjectURL(blob);
+                openUrl(url);
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+              };
+
+              const viewLocalContent = async () => {
+                const content = String(attachment.content || "");
+                if (!content) {
+                  await viewAnnotation();
+                  return;
+                }
+
+                if (content.startsWith("data:")) {
+                  try {
+                    const parts = content.split(",");
+                    const meta = parts[0];
+                    const b64 = parts.slice(1).join(",");
+                    const isBase64 = meta.endsWith(";base64") || meta.includes(";base64;");
+                    const mimeType = (meta.split(":")[1] || "application/octet-stream").split(";")[0] || "application/octet-stream";
+                    if (isBase64) {
+                      const byteChars = atob(b64);
+                      const byteNumbers = new Array(byteChars.length);
+                      for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                      const byteArray = new Uint8Array(byteNumbers);
+                      const blob = new Blob([byteArray], { type: mimeType });
+                      const url = URL.createObjectURL(blob);
+                      openUrl(url);
+                      setTimeout(() => URL.revokeObjectURL(url), 10000);
+                      return;
+                    }
+                  } catch (e) {
+                    // fallthrough to try opening raw
+                  }
+                  openUrl(content);
+                  return;
+                }
+
+                try {
+                  const sanitized = content.replace(/\s+/g, "");
+                  const byteChars = atob(sanitized);
+                  const byteNumbers = new Array(byteChars.length);
+                  for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                  const byteArray = new Uint8Array(byteNumbers);
+                  const blob = new Blob([byteArray], { type: attachment.mimeType || "application/pdf" });
+                  const url = URL.createObjectURL(blob);
+                  openUrl(url);
+                  setTimeout(() => URL.revokeObjectURL(url), 10000);
+                  return;
+                } catch (e) {
+                  await viewAnnotation();
+                  return;
+                }
+              };
+
+              await viewLocalContent();
+            };
+
+            const downloadBtn = document.createElement("button");
+            downloadBtn.type = "button";
+            downloadBtn.className = "attachment-download-btn";
+            downloadBtn.innerText = "Download";
+            downloadBtn.disabled = !attachment.annotationId && !attachment.content;
+            downloadBtn.onclick = async () => {
+              const downloadBlob = async (): Promise<Blob | null> => {
+                if (attachment.annotationId) {
+                  return await this.retrieveAnnotationBlob(attachment.annotationId);
+                }
+
+                const content = String(attachment.content || "");
+                if (!content) {
+                  return null;
+                }
+
+                if (content.startsWith("data:")) {
+                  const parts = content.split(",");
+                  const b64 = parts.slice(1).join(",");
+                  const mimeType = (parts[0].split(":")[1] || "application/octet-stream").split(";")[0] || "application/octet-stream";
+                  const byteChars = atob(b64);
+                  const byteNumbers = new Array(byteChars.length);
+                  for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+                  return new Blob([new Uint8Array(byteNumbers)], { type: mimeType });
+                }
+
                 const sanitized = content.replace(/\s+/g, "");
                 const byteChars = atob(sanitized);
                 const byteNumbers = new Array(byteChars.length);
                 for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: mime });
-                const url = URL.createObjectURL(blob);
-                openUrl(url);
-                setTimeout(() => URL.revokeObjectURL(url), 10000);
-                return;
-              } catch (e) {
-                // final fallback: try data URL
-                const dataUrl = `data:${mime};base64,${content}`;
-                openUrl(dataUrl);
+                return new Blob([new Uint8Array(byteNumbers)], { type: attachment.mimeType || "application/pdf" });
+              };
+
+              const blob = await downloadBlob();
+              if (!blob) {
                 return;
               }
+
+              const url = URL.createObjectURL(blob);
+              const anchor = document.createElement("a");
+              anchor.href = url;
+              anchor.download = attachment.name || "download.pdf";
+              document.body.appendChild(anchor);
+              anchor.click();
+              document.body.removeChild(anchor);
+              setTimeout(() => URL.revokeObjectURL(url), 10000);
             };
 
             const deleteBtn = document.createElement("button");
@@ -959,7 +1189,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               row.attachments = row.attachments || [];
               row.attachments.splice(attachmentIndex, 1);
               if (row.attachments.length > 0) {
-                row.document = row.attachments[0].content;
+                row.document = "";
                 row.documentName = row.attachments[0].name;
               } else {
                 row.document = "";
@@ -972,6 +1202,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
             item.appendChild(fileName);
             item.appendChild(viewBtn);
+            item.appendChild(downloadBtn);
             item.appendChild(deleteBtn);
             attachmentsContainer.appendChild(item);
           });
@@ -1028,23 +1259,20 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
             return;
           }
 
-          const loadedAttachments = await Promise.all(files.map(file => new Promise<any>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-              resolve({
-                name: file.name,
-                content: typeof reader.result === "string" ? reader.result : ""
-              });
+          const uploadedAttachments = await Promise.all(files.map(async file => {
+            const annotationId = await this.uploadFileToAnnotation(file);
+            return {
+              name: file.name,
+              mimeType: file.type || "application/pdf",
+              size: file.size,
+              annotationId
             };
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
-          })));
+          }));
 
           row.attachments = row.attachments || [];
-          row.attachments.push(...loadedAttachments);
-          if (!row.document && loadedAttachments.length) {
-            row.document = loadedAttachments[0].content;
-            row.documentName = loadedAttachments[0].name;
+          row.attachments.push(...uploadedAttachments);
+          if (!row.documentName && uploadedAttachments.length) {
+            row.documentName = uploadedAttachments[0].name;
           }
 
           renderAttachments();
@@ -1052,9 +1280,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           this.notifyOutputChanged();
           this.refresh();
 
-          setTimeout(() => {
-            fileInput.value = "";
-          }, 0);
+          fileInput.value = "";
         };
 
         btn.onclick = () => {

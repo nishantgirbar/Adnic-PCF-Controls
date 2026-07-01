@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cmd\\.exe /c \"cd /d c:\\\\\\\\Nishant Own Files\\\\\\\\SutherLand\\\\\\\\ADNIC\\\\\\\\Adnic PCF Controls\\\\\\\\customProductDetailB2E && npm run build\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -21,6 +21,41 @@ constructor(
     private notifyOutputChanged: () => void
 ) {}
 
+    private refreshPlanValidationMessages(): void {
+
+        if (this.productType !== "EBP") {
+            this.validationMessages = {};
+            return;
+        }
+
+        const provider =
+            this.selectedValues["Network Provider"]?.["ALL"] || "";
+
+        const selectedPlans =
+            this.selectedValues["Plan"] || {};
+
+        this.categories.forEach((cat: any) => {
+
+            const plan =
+                selectedPlans[cat.name] || "";
+
+            const stats =
+                MemberStatistics.calculate(
+                    this.context.parameters.adnic_memberlistjson?.raw || "",
+                    cat.name
+                );
+
+            this.validationMessages[cat.name] =
+                EbpRuleService.validatePlan(
+                    provider,
+                    plan,
+                    stats,
+                    selectedPlans,
+                    cat.name
+                ) || "";
+        });
+    }
+
     public render(
         container:HTMLDivElement
     )
@@ -29,6 +64,8 @@ constructor(
             "GridRenderer render", this.categories, this.premiumValues);
         
         const isEBP = this.productType === "EBP";
+
+        this.refreshPlanValidationMessages();
 
         container.innerHTML = "";
 
@@ -362,7 +399,8 @@ constructor(
 
                         const stats =
                                 MemberStatistics.calculate(
-                                    this.context.parameters.adnic_memberlistjson?.raw || ""
+                                    this.context.parameters.adnic_memberlistjson?.raw || "",
+                                    cat.name
                                 );
 
                         switch (row.name) {
@@ -431,6 +469,8 @@ constructor(
                             this.selectedValues["Plan"][cat.name] =
                                 value;
                         }
+
+                        this.refreshPlanValidationMessages();
                     }
 
                     if (
@@ -442,14 +482,17 @@ constructor(
 
                         const stats =
                             MemberStatistics.calculate(
-                                this.context.parameters.adnic_memberlistjson?.raw || ""
+                                this.context.parameters.adnic_memberlistjson?.raw || "",
+                                cat.name
                             );
 
                         this.validationMessages[cat.name] =
                             EbpRuleService.validatePlan(
                                 provider,
                                 value,
-                                stats
+                                stats,
+                                this.selectedValues["Plan"] || {},
+                                cat.name
                             ) || "";
                     }
 
@@ -466,9 +509,6 @@ constructor(
                                     this.selectedValues[row.name] = {};
                                 }
 
-                                this.selectedValues[row.name][cat.name] = val;
-                                // ================= EBP VALIDATION =================
-                               
                                 if (
                                     this.productType === "EBP" &&
                                     row.name === "Plan"
@@ -479,14 +519,24 @@ constructor(
 
                                     const stats =
                                         MemberStatistics.calculate(
-                                            this.context.parameters.adnic_memberlistjson?.raw || ""
+                                            this.context.parameters.adnic_memberlistjson?.raw || "",
+                                            cat.name
                                         );
+
+                                    const nextPlanSelections = {
+                                        ...(this.selectedValues["Plan"] || {})
+                                    };
+
+                                    nextPlanSelections[cat.name] = val;
+                                    this.selectedValues[row.name][cat.name] = val;
 
                                     const validation =
                                         EbpRuleService.validatePlan(
                                             provider,
                                             val,
-                                            stats
+                                            stats,
+                                            nextPlanSelections,
+                                            cat.name
                                         );
 
                                     if (!this.validationMessages) {
@@ -495,6 +545,19 @@ constructor(
 
                                     this.validationMessages[cat.name] =
                                         validation || "";
+
+                                    const wrapper =
+                                        this.container.querySelector(".grid-wrapper") as HTMLDivElement;
+
+                                    if (wrapper) {
+                                        this.render(wrapper);
+                                    }
+
+                                    this.notifyOutputChanged();
+                                    return;
+                                }
+                                else {
+                                    this.selectedValues[row.name][cat.name] = val;
                                 }
 
                                 // Ruby validation

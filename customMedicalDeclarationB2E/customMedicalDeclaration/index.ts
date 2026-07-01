@@ -84,7 +84,7 @@ export class MedicalControl
 
                     existingData:
                         existingData,
-
+                    pcfContext: context,
                       isDisabled:
                                 context.mode.isControlDisabled ||
                                 context.parameters.medicalJson.security?.editable === false,
