@@ -348,7 +348,7 @@ export const MedicalMemberPanel = ({
 
                         AED {
 
-                            totalPremium
+                            loadingAmount
                                 .toLocaleString(
                                     undefined,
                                     {

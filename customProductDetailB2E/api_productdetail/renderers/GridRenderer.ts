@@ -319,6 +319,10 @@ constructor(
 
                         if (validationMessage) {
 
+                            cell.classList.add(
+                                "validation-cell"
+                            );
+
                             const errorDiv =
                                 document.createElement("div");
 
@@ -632,6 +636,10 @@ constructor(
                             this.validationMessages?.[cat.name] || "";
 
                         if (validationMessage) {
+
+                            cell.classList.add(
+                                "validation-cell"
+                            );
 
                             const errorDiv =
                                 document.createElement("div");

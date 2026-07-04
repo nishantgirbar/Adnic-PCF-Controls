@@ -1,6 +1,6 @@
 export class MemberStatistics {
 
-    private static normalizeCategory(
+    public static normalizeCategory(
         value: string | null | undefined
     ): string {
 
@@ -9,6 +9,27 @@ export class MemberStatistics {
             .toUpperCase()
             .replace(/^(CATEGORY|CAT)[\s-]*/i, "")
             .replace(/[^A-Z0-9]/g, "");
+    }
+
+    public static getUniqueCategories(
+        memberJson: string
+    ): string[] {
+
+        const categories: string[] = [];
+        const members = this.getMembers(memberJson);
+
+        members.forEach((member: any) => {
+            const category = this.getMemberCategory(member);
+            if (!category) {
+                return;
+            }
+
+            if (categories.indexOf(category) === -1) {
+                categories.push(category);
+            }
+        });
+
+        return categories;
     }
 
     private static getMemberCategory(
@@ -79,6 +100,7 @@ export class MemberStatistics {
             salary4000: 0,
             salary16000: 0,
             salary20000: 0,
+            salaryAbove20000: 0,
             dependent: 0
         };
 
@@ -115,17 +137,52 @@ export class MemberStatistics {
             }
 
             const salaryType =
-                (m.salaryType || "")
+                String(m.salaryType || "")
                     .toUpperCase();
 
-            if (salaryType.indexOf("4000") > -1)
+            const isAbove20000 =
+                salaryType.indexOf("20000") > -1 &&
+                /(ABOVE|OVER|MORE\s*THAN|GREATER\s*THAN|>=|>)/.test(salaryType);
+
+            if (isAbove20000) {
+                result.salaryAbove20000++;
+                return;
+            }
+
+            if (salaryType.indexOf("4000") > -1) {
                 result.salary4000++;
+                return;
+            }
 
-            if (salaryType.indexOf("16000") > -1)
+            if (salaryType.indexOf("16000") > -1) {
                 result.salary16000++;
+                return;
+            }
 
-            if (salaryType.indexOf("20000") > -1)
+            if (salaryType.indexOf("20000") > -1) {
                 result.salary20000++;
+                return;
+            }
+
+            const salaryValue = Number(
+                m.salary ??
+                m.salaryAmount ??
+                m.monthlySalary
+            );
+
+            if (!Number.isFinite(salaryValue)) {
+                return;
+            }
+
+            if (salaryValue < 4000) {
+                result.salary4000++;
+            } else if (salaryValue < 16000) {
+                result.salary16000++;
+            } else if (salaryValue < 20000) {
+                result.salary20000++;
+            } else {
+                result.salaryAbove20000++;
+            }
         });
 
         return result;

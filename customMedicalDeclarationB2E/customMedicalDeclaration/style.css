@@ -160,14 +160,60 @@
     gap: 8px;
 }
 
-/* VIEW BUTTON */
-.medical-pcf .file-view-btn {
+/* ATTACHMENT ACTION BUTTONS */
+.medical-pcf .file-view-btn,
+.medical-pcf .file-download-btn,
+.medical-pcf .file-delete-btn {
+    appearance: none;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 80px;
+    width: auto;
+    height: 32px;
+    padding: 0 16px;
+    border: 1px solid #8a8886;
     border-radius: 4px;
+    background: #ffffff;
+    color: #323130;
+    cursor: pointer;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    white-space: nowrap;
 }
 
-/* DELETE BUTTON */
-.medical-pcf .file-delete-btn {
-    border-radius: 4px;
+.medical-pcf .file-view-btn:hover:not(:disabled),
+.medical-pcf .file-download-btn:hover:not(:disabled),
+.medical-pcf .file-delete-btn:hover:not(:disabled) {
+    border-color: #323130;
+    background: #f3f2f1;
+}
+
+.medical-pcf .file-view-btn:disabled,
+.medical-pcf .file-download-btn:disabled,
+.medical-pcf .file-delete-btn:disabled {
+    border-color: #f3f2f1;
+    background: #f3f2f1;
+    color: #a19f9d;
+    cursor: default;
+}
+
+.medical-pcf .file-action-icon {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    color: currentColor;
+    flex: 0 0 16px;
+}
+
+.medical-pcf .file-action-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 /* ADD MORE */
@@ -183,6 +229,29 @@
 .medical-pcf .upload-error {
     color: #a4262c;
     font-size: 12px;
+}
+
+.medical-pcf .upload-processing-indicator {
+    color: #323130;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+}
+
+.medical-pcf .upload-processing-indicator::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    border: 2px solid #0078d4;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: medical-upload-spin 0.8s linear infinite;
+}
+
+@keyframes medical-upload-spin {
+    to { transform: rotate(360deg); }
 }
 
 .medical-pcf.readonly {

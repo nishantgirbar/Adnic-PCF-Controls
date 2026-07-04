@@ -20,6 +20,22 @@ import {
 
 import "./css/PolicyGrid.css";
 
+const statusTranslations: Record<string, string> = {
+  QUOTE_IN_PROGRESS: "Quote In Progress",
+  QUOTE_COMPLETED: "Quote Completed",
+  QUOTE_GENERATED: "Quote Generated",
+  QUOTE_EXPIRED: "Expired",
+  CUS_APPROVED: "Customer Approved",
+  PENDING: "Pending",
+  SAVED: "Saved",
+  SUBMITTED: "Submitted",
+  UW_REVIEW_IN_PROGRESS: "UW Review In Progress",
+  UW_APPROVED: "Quote Generated",
+  UW_REJECTED: "UW Rejected",
+  POLICY_ISSUED: "Policy Issued",
+  DRAFT: "Draft"
+};
+
 export const PolicyGrid = ({
   data,
   pageSize,
@@ -37,8 +53,6 @@ export const PolicyGrid = ({
   const [loadingRow, setLoadingRow] = React.useState<{ [key: number]: boolean }>({});
   const [search, setSearch] = React.useState("");
   const [lastSearch, setLastSearch] = React.useState("");
-  const [sortField, setSortField] = React.useState<string>("createdAt");
-  const [sortDescending, setSortDescending] = React.useState<boolean>(true);
 
   // 🔥 GLOBAL LOADER
 
@@ -103,12 +117,9 @@ export const PolicyGrid = ({
 
     if (!status) return "";
 
-    if (status === "CUS_APPROVED") {
+    const normalizedStatus = status.trim().toUpperCase();
 
-      return "Customer Approved";
-    }
-
-    return status
+    return statusTranslations[normalizedStatus] || status
       .replace(/_/g, " ")
       .toLowerCase()
       .replace(/\b\w/g, c => c.toUpperCase());
@@ -206,8 +217,10 @@ const getStatusStyle = (status: string): React.CSSProperties => {
 
       context.navigation.openForm({
         entityName: "adnic_quote",
-        entityId: id
+        entityId: id,
+        formId: ((item.status || "").toString().includes("QUOTE_IN_PROGRESS")) ? "b80c4b15-3f4f-f111-bec6-7ced8dac4d08" : "9a954027-cc2c-f111-8342-6045bd150384"
       });
+      
 
     } catch (e) {
 
@@ -532,16 +545,7 @@ const openQuoteViewDialog = async (item: any) => {
 
   const items: any[] = [];
 
-  const sortedData = [...localData].sort((a, b) => {
-    const aValue = String(a[sortField] ?? "").toLowerCase();
-    const bValue = String(b[sortField] ?? "").toLowerCase();
-
-    if (aValue < bValue) return sortDescending ? 1 : -1;
-    if (aValue > bValue) return sortDescending ? -1 : 1;
-    return 0;
-  });
-
-  sortedData.forEach((q: any) => {
+  localData.forEach((q: any) => {
     const id = q.id;
 
     items.push({
@@ -601,14 +605,7 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Quote No",
       fieldName: "quoteNumber",
       minWidth: 110,
-      isSorted: sortField === "quoteNumber",
-      isSortedDescending: sortField === "quoteNumber" ? sortDescending : undefined,
       isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "quoteNumber" ? !sortDescending : false;
-        setSortField("quoteNumber");
-        setSortDescending(descending);
-      },
       onRender: (item: any) => {
         const isAvailable = item.isAvailableInCRM;
 
@@ -637,14 +634,7 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Customer Name",
       fieldName: "companyName",
       minWidth: 110,
-      isSorted: sortField === "companyName",
-      isSortedDescending: sortField === "companyName" ? sortDescending : undefined,
-      isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "companyName" ? !sortDescending : false;
-        setSortField("companyName");
-        setSortDescending(descending);
-      }
+      isResizable: true
     },
     
     {
@@ -652,41 +642,20 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Email",
       fieldName: "email",
       minWidth: 130,
-      isSorted: sortField === "email",
-      isSortedDescending: sortField === "email" ? sortDescending : undefined,
-      isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "email" ? !sortDescending : false;
-        setSortField("email");
-        setSortDescending(descending);
-      }
+      isResizable: true
     },
     {
       key: "phoneNumber",
       name: "Phone Number",
       fieldName: "contactNumber",
       minWidth: 90,
-      isSorted: sortField === "contactNumber",
-      isSortedDescending: sortField === "contactNumber" ? sortDescending : undefined,
-      isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "contactNumber" ? !sortDescending : false;
-        setSortField("contactNumber");
-        setSortDescending(descending);
-      }
+      isResizable: true
     },
     {
       key: "quotestatus",
       name: "Quote Status",
       minWidth: 140,
-      isSorted: sortField === "status",
-      isSortedDescending: sortField === "status" ? sortDescending : undefined,
       isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "status" ? !sortDescending : false;
-        setSortField("status");
-        setSortDescending(descending);
-      },
 
       onRender: (item: any) =>
 
@@ -705,27 +674,13 @@ const openQuoteViewDialog = async (item: any) => {
       name: "LOB",
       fieldName: "sourceOfBusiness",
       minWidth: 60,
-      isSorted: sortField === "sourceOfBusiness",
-      isSortedDescending: sortField === "sourceOfBusiness" ? sortDescending : undefined,
-      isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "sourceOfBusiness" ? !sortDescending : false;
-        setSortField("sourceOfBusiness");
-        setSortDescending(descending);
-      }
+      isResizable: true
     },
     {
       key: "updatedDate",
       name: "Last Update",
       minWidth: 70,
-      isSorted: sortField === "updatedAt",
-      isSortedDescending: sortField === "updatedAt" ? sortDescending : undefined,
       isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "updatedAt" ? !sortDescending : false;
-        setSortField("updatedAt");
-        setSortDescending(descending);
-      },
 
       onRender: (item: any) => {
 
@@ -749,14 +704,7 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Created By",
       fieldName: "createdBy",
       minWidth: 70,
-      isSorted: sortField === "createdBy",
-      isSortedDescending: sortField === "createdBy" ? sortDescending : undefined,
-      isResizable: true,
-      onColumnClick: () => {
-        const descending = sortField === "createdBy" ? !sortDescending : false;
-        setSortField("createdBy");
-        setSortDescending(descending);
-      }
+      isResizable: true
     },
     {
         key: "action",
@@ -873,6 +821,18 @@ const openQuoteViewDialog = async (item: any) => {
       }
   ];
 
+  const triggerSearch = async (query: string) => {
+    const trimmed = (query || "").trim();
+    if (trimmed === lastSearch) {
+      return;
+    }
+
+    setLastSearch(trimmed);
+    setIsLoading(true);
+    await onSearch(trimmed);
+    setIsLoading(false);
+  };
+
   return (
 
     <Stack style={{ height: "100%" }}>
@@ -880,28 +840,13 @@ const openQuoteViewDialog = async (item: any) => {
       {/* 🔥 SEARCH */}
 
       <Stack className="pcf-search-container" horizontal tokens={{ childrenGap: 8 }}>
-
         <SearchBox
           className="pcf-search-box"
           placeholder="Search by Quote No, Customer Name, Email, Status or LOB"
           value={search}
-          onChange={(_, value) => {
-            const text = value || "";
-            setSearch(text);
-            if (text.trim() === "" && lastSearch !== "") {
-              setLastSearch("");
-              setIsLoading(true);
-              onSearch("");
-            }
-          }}
+          onChange={(_, value) => setSearch(value || "")}
           onSearch={() => {
-            const query = (search || "").trim();
-            if (query === lastSearch) {
-              return;
-            }
-            setLastSearch(query);
-            setIsLoading(true);
-            onSearch(query);
+            triggerSearch(search);
           }}
         />
 
@@ -909,27 +854,12 @@ const openQuoteViewDialog = async (item: any) => {
           text="Search"
           disabled={!search.trim() || search.trim() === lastSearch}
           onClick={() => {
-            const query = (search || "").trim();
-            if (query === lastSearch) {
-              return;
-            }
-            setLastSearch(query);
-            setIsLoading(true);
-            onSearch(query);
+            triggerSearch(search);
           }}
-        />
-
-        <DefaultButton
-          text="Clear"
-          disabled={!search && !lastSearch}
-          onClick={() => {
-            setSearch("");
-            if (lastSearch === "") {
-              return;
+          styles={{
+            root: {
+              minWidth: 90
             }
-            setLastSearch("");
-            setIsLoading(true);
-            onSearch("");
           }}
         />
       </Stack>

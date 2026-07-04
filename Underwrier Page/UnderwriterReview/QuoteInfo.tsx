@@ -40,17 +40,7 @@ export const QuoteInfo = ({
     // =====================================
         const totalLoading =
 
-              Number(
-
-                pricingResponse?.previousTotalPremium ??
-
-                data?.previousTotalPremium ??
-
-                0
-
-            )==0?0:
-
-           (Number(
+           Number(
 
                 pricingResponse?.currentTotalPremium ??
 
@@ -58,17 +48,8 @@ export const QuoteInfo = ({
 
                 0
 
-            ) -  
-             Number(
-
-                pricingResponse?.previousTotalPremium ??
-
-                data?.previousTotalPremium ??
-
-                0
-
-            ))
-          ;
+            )
+        ;
 
     // =====================================
     // PRIORITY
@@ -120,7 +101,7 @@ export const QuoteInfo = ({
 
                 <div className="info-card">
 
-                    <div className="info-label">
+                    {/* <div className="info-label">
                         Priority
                     </div>
 
@@ -132,7 +113,7 @@ export const QuoteInfo = ({
                         }
                     >
                         {priority}
-                    </div>
+                    </div> */}
 
                 </div>
 

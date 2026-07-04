@@ -25,6 +25,312 @@ public static validatePlan(
     currentCategory?: string
 ): string {
 
+    const providerName = this.normalize(provider);
+    const planName = this.normalize(plan);
+
+    if (planName && selectedPlans && currentCategory) {
+        const categoryNames = Object.keys(selectedPlans);
+        const currentCategoryIndex =
+            categoryNames.indexOf(currentCategory);
+        const earlierCategories =
+            currentCategoryIndex > 0
+                ? categoryNames.slice(0, currentCategoryIndex)
+                : [];
+        const duplicateCategory = earlierCategories
+            .map((category: string) => ({
+                category,
+                selectedPlan: selectedPlans[category]
+            }))
+            .find((entry: { category: string; selectedPlan: string }) =>
+                this.normalize(entry.selectedPlan) === planName
+            );
+
+        if (duplicateCategory) {
+            return `Same plan selected. Category ${duplicateCategory.category} already selected '${plan}'. Please select a different EBP plan for Category ${currentCategory}.`;
+        }
+    }
+
+    if (!planName) {
+        return "";
+    }
+
+    const salary4000 = Number(stats?.salary4000 || 0);
+    const salary16000 = Number(stats?.salary16000 || 0);
+    const salary20000 = Number(stats?.salary20000 || 0);
+    const salaryAbove20000 = Number(
+        stats?.salaryAbove20000 ||
+        stats?.above20000 ||
+        0
+    );
+    const dependents = Number(stats?.dependent || 0);
+    const totalEmployees =
+        salary4000 +
+        salary16000 +
+        salary20000 +
+        salaryAbove20000;
+    const totalMembers = totalEmployees + dependents;
+    const above4000 = salary16000 + salary20000 + salaryAbove20000;
+    const above4000PctOfGroup =
+        totalMembers === 0
+            ? 0
+            : (above4000 / totalMembers) * 100;
+    const allEmployeesBelow4000 =
+        totalEmployees > 0 &&
+        above4000 === 0;
+
+    const BASIC_MIN_EMPLOYEES = 5;
+    const BASIC_MAX_EMPLOYEES = 150;
+    const ENHANCED_DEPENDENT_PERCENT = 10;
+    const ENHANCED_HIGH_SALARY_PERCENT = 30;
+    const SUPERIOR_DEPENDENT_PERCENT = 20;
+    const FMC_ENHANCED_MIN_EMPLOYEES = 5;
+    const ECARE_ENHANCED_MIN_EMPLOYEES = 20;
+    const SUPERIOR_3_4_MIN_EMPLOYEES = 10;
+    const SUPERIOR_5_6_MIN_EMPLOYEES = 50;
+    const SUPERIOR_5_6_MAX_MEMBERS = 150;
+
+    const exceedsDependentRatio = (maximumPercent: number): boolean =>
+        totalEmployees === 0
+            ? dependents > 0
+            : (dependents / totalEmployees) * 100 > maximumPercent;
+
+    const enhancedPlans = [
+        "BASICHSB",
+        "BASICPLUS",
+        "ENHANCED1",
+        "ENHANCED2",
+        "SUPERIOR1",
+        "SUPERIOR2"
+    ];
+    const ecareEnhancedPlans = enhancedPlans.filter(
+        (name: string) => name !== "BASICHSB"
+    );
+    const superior34Plans = ["SUPERIOR3", "SUPERIOR4"];
+    const superior56Plans = ["SUPERIOR5", "SUPERIOR6"];
+
+    const validateEnhancedPlan = (
+        minimumEmployees: number,
+        includeCurrentTotal: boolean
+    ): string => {
+
+        if (totalEmployees < minimumEmployees) {
+            return includeCurrentTotal
+                ? `Selected plan '${plan}' requires at least ${minimumEmployees} employees in total. Current total: ${totalEmployees}.`
+                : `Selected plan '${plan}' requires at least ${minimumEmployees} employees.`;
+        }
+
+        if (salaryAbove20000 > 0) {
+            return `Selected plan '${plan}' requires all employees to earn less than AED 20,000.`;
+        }
+
+        if (exceedsDependentRatio(ENHANCED_DEPENDENT_PERCENT)) {
+            return `Selected plan '${plan}' requires dependents not to exceed ${ENHANCED_DEPENDENT_PERCENT}% of total employee count.`;
+        }
+
+        if (above4000PctOfGroup > ENHANCED_HIGH_SALARY_PERCENT) {
+            return `Selected plan '${plan}' requires employees earning more than AED 4,000 to not exceed ${ENHANCED_HIGH_SALARY_PERCENT}% of total group size.`;
+        }
+
+        return "";
+    };
+
+    const validateSuperiorPlan = (
+        minimumEmployees: number,
+        maximumMembers?: number
+    ): string => {
+
+        if (totalEmployees < minimumEmployees) {
+            return `Selected plan '${plan}' requires at least ${minimumEmployees} employees. Current total: ${totalEmployees}.`;
+        }
+
+        if (
+            maximumMembers !== undefined &&
+            totalMembers > maximumMembers
+        ) {
+            return `Selected plan '${plan}' allows a maximum of ${maximumMembers} members. Current total: ${totalMembers}.`;
+        }
+
+        if (salary20000 > 0 || salaryAbove20000 > 0) {
+            return `Selected plan '${plan}' requires all employees to earn less than AED 16,000.`;
+        }
+
+        if (exceedsDependentRatio(SUPERIOR_DEPENDENT_PERCENT)) {
+            return `Selected plan '${plan}' requires dependents not to exceed ${SUPERIOR_DEPENDENT_PERCENT}% of total employee count.`;
+        }
+
+        return "";
+    };
+
+    if (providerName === "ECARE") {
+        if (allEmployeesBelow4000 && planName !== "BASIC") {
+            return `All employees earn less than AED 4,000. Only Ecare Basic is allowed for this salary composition. Selected plan '${plan}' is not permitted.`;
+        }
+
+        if (planName === "BASIC") {
+            if (dependents > 0) {
+                return "Ecare Basic allows only employees. Dependents are not permitted.";
+            }
+
+            if (
+                totalEmployees < BASIC_MIN_EMPLOYEES ||
+                totalEmployees > BASIC_MAX_EMPLOYEES
+            ) {
+                return `Basic plan requires ${BASIC_MIN_EMPLOYEES}-${BASIC_MAX_EMPLOYEES} employees in total. Current total: ${totalEmployees}.`;
+            }
+
+            if (!allEmployeesBelow4000) {
+                return "Basic plan requires all employees to earn less than AED 4,000.";
+            }
+
+            return "";
+        }
+
+        if (ecareEnhancedPlans.indexOf(planName) > -1) {
+            return validateEnhancedPlan(
+                ECARE_ENHANCED_MIN_EMPLOYEES,
+                true
+            );
+        }
+
+        const eligiblePlans: string[] = [];
+        const basicEligible =
+            allEmployeesBelow4000 &&
+            dependents === 0 &&
+            totalEmployees >= BASIC_MIN_EMPLOYEES &&
+            totalEmployees <= BASIC_MAX_EMPLOYEES;
+        const enhancedEligible =
+            !allEmployeesBelow4000 &&
+            totalEmployees >= ECARE_ENHANCED_MIN_EMPLOYEES &&
+            salaryAbove20000 === 0 &&
+            !exceedsDependentRatio(ENHANCED_DEPENDENT_PERCENT) &&
+            above4000PctOfGroup <= ENHANCED_HIGH_SALARY_PERCENT;
+
+        if (basicEligible) {
+            eligiblePlans.push("Basic");
+        }
+
+        if (enhancedEligible) {
+            eligiblePlans.push(
+                "Basic Plus",
+                "Enhanced 1",
+                "Enhanced 2",
+                "Superior 1",
+                "Superior 2"
+            );
+        }
+
+        return `Selected plan '${plan}' is not supported. Valid plans based on group composition: ${eligiblePlans.join(", ") || "None"}.`;
+    }
+
+    if (providerName === "FMC") {
+        if (allEmployeesBelow4000 && planName !== "BASICLSB") {
+            return `All employees earn less than AED 4,000. Only FMC Basic LSB is allowed for this salary composition. Selected plan '${plan}' is not permitted.`;
+        }
+
+        if (planName === "BASICLSB") {
+            if (dependents > 0) {
+                return "FMC Basic LSB allows only employees. Dependents are not permitted.";
+            }
+
+            if (
+                totalEmployees < BASIC_MIN_EMPLOYEES ||
+                totalEmployees > BASIC_MAX_EMPLOYEES
+            ) {
+                return `FMC Basic LSB requires ${BASIC_MIN_EMPLOYEES}-${BASIC_MAX_EMPLOYEES} employees in total. Current total: ${totalEmployees}.`;
+            }
+
+            if (!allEmployeesBelow4000) {
+                return "FMC Basic LSB requires all employees to earn less than AED 4,000.";
+            }
+
+            return "";
+        }
+
+        if (enhancedPlans.indexOf(planName) > -1) {
+            return validateEnhancedPlan(
+                FMC_ENHANCED_MIN_EMPLOYEES,
+                false
+            );
+        }
+
+        if (superior34Plans.indexOf(planName) > -1) {
+            return validateSuperiorPlan(SUPERIOR_3_4_MIN_EMPLOYEES);
+        }
+
+        if (superior56Plans.indexOf(planName) > -1) {
+            return validateSuperiorPlan(
+                SUPERIOR_5_6_MIN_EMPLOYEES,
+                SUPERIOR_5_6_MAX_MEMBERS
+            );
+        }
+
+        const eligiblePlans: string[] = [];
+        const basicEligible =
+            allEmployeesBelow4000 &&
+            dependents === 0 &&
+            totalEmployees >= BASIC_MIN_EMPLOYEES &&
+            totalEmployees <= BASIC_MAX_EMPLOYEES;
+        const enhancedEligible =
+            !allEmployeesBelow4000 &&
+            totalEmployees >= FMC_ENHANCED_MIN_EMPLOYEES &&
+            salaryAbove20000 === 0 &&
+            !exceedsDependentRatio(ENHANCED_DEPENDENT_PERCENT) &&
+            above4000PctOfGroup <= ENHANCED_HIGH_SALARY_PERCENT;
+        const superior34Eligible =
+            !allEmployeesBelow4000 &&
+            totalEmployees >= SUPERIOR_3_4_MIN_EMPLOYEES &&
+            salary20000 === 0 &&
+            salaryAbove20000 === 0 &&
+            !exceedsDependentRatio(SUPERIOR_DEPENDENT_PERCENT);
+        const superior56Eligible =
+            !allEmployeesBelow4000 &&
+            totalEmployees >= SUPERIOR_5_6_MIN_EMPLOYEES &&
+            totalMembers <= SUPERIOR_5_6_MAX_MEMBERS &&
+            salary20000 === 0 &&
+            salaryAbove20000 === 0 &&
+            !exceedsDependentRatio(SUPERIOR_DEPENDENT_PERCENT);
+
+        if (basicEligible) {
+            eligiblePlans.push("Basic LSB");
+        }
+
+        if (enhancedEligible) {
+            eligiblePlans.push(
+                "Basic HSB",
+                "Basic Plus",
+                "Enhanced 1",
+                "Enhanced 2",
+                "Superior 1",
+                "Superior 2"
+            );
+        }
+
+        if (superior34Eligible) {
+            eligiblePlans.push("Superior 3", "Superior 4");
+        }
+
+        if (superior56Eligible) {
+            eligiblePlans.push("Superior 5", "Superior 6");
+        }
+
+        if (!eligiblePlans.length) {
+            return "No FMC plans are eligible for the current group composition. Please review employee count, salary distribution, and dependent ratio.";
+        }
+
+        return `Selected plan '${plan}' is not supported. Valid plans based on group composition: ${eligiblePlans.join(", ")}.`;
+    }
+
+    return "";
+}
+
+private static validatePlanLegacy(
+    provider: string,
+    plan: string,
+    stats: any,
+    selectedPlans?: Record<string, string>,
+    currentCategory?: string
+): string {
+
     const providerName =
         this.normalize(provider);
 
@@ -131,54 +437,57 @@ public static validatePlan(
 
         if (planName === "BASIC") {
 
-            this.logValidation("Checking ECARE Basic comparisons", {
+            this.logValidation("Checking FMC Basic LSB comparisons", {
                 dependents,
                 totalEmployees,
                 salary16000,
                 salary20000
             });
 
-            if (dependents > 0) {
-                this.logValidation("ECARE Basic failed: dependents not allowed", { dependents });
-                return "ECARE Basic allows only employees. Dependents are not permitted.";
+            
+             if (dependents > 0) {
+                this.logValidation(`${providerName} ${planName} failed: dependents not allowed`, { dependents });
+                return `${providerName} ${planName} allows only employees. Dependents are not permitted.`;
             }
 
-            if (
+
+             if (
                 totalEmployees < 5 ||
                 totalEmployees > 150
             ) {
-                this.logValidation("ECARE Basic failed: employee count range", {
+                this.logValidation(`${providerName} ${planName} failed: employee count range`, {
                     totalEmployees,
                     min: 5,
                     max: 150
                 });
-                return `ECARE Basic requires 5-150 employees. Current employees: ${totalEmployees}`;
+                return `${providerName} ${planName} requires 5-150 employees. Current employees: ${totalEmployees}`;
             }
 
-            if (
+
+           if (
                 salary16000 > 0 ||
                 salary20000 > 0
             ) {
-                this.logValidation("ECARE Basic failed: salary band check", {
+                this.logValidation("FMC Basic LSB failed: salary band check", {
                     salary16000,
                     salary20000
                 });
-                return "ECARE Basic is applicable only when all employees earn less than AED 4,000.";
-            }
+                return `${providerName} ${planName} is applicable only when all employees earn less than AED 4,000`;
+            }     
 
-            this.logValidation("ECARE Basic passed", { totalEmployees });
+            this.logValidation("FMC Basic LSB passed", { totalEmployees });
             return "";
         }
 
         if (
-            planName === "BASIC PLUS" ||
-            planName === "ENHANCED 1" ||
-            planName === "ENHANCED 2" ||
-            planName === "SUPERIOR 1" ||
-            planName === "SUPERIOR 2"
+            planName === "BASICPLUS" ||
+            planName === "ENHANCED1" ||
+            planName === "ENHANCED2" ||
+            planName === "SUPERIOR1" ||
+            planName === "SUPERIOR2"
         ) {
 
-            this.logValidation("Checking ECARE standard plan comparisons", {
+             this.logValidation("Checking FMC standard plan comparisons", {
                 totalMembers,
                 above4000Pct,
                 dependents,
@@ -189,26 +498,27 @@ public static validatePlan(
                 totalMembers < 20 ||
                 totalMembers > 150
             ) {
-                this.logValidation("ECARE standard plan failed: member count range", {
+                this.logValidation(`${providerName} ${planName} failed: member count range`, {
                     totalMembers,
                     min: 20,
                     max: 150
                 });
-                return `ECARE ${plan} requires 20-150 members. Current members: ${totalMembers}`;
+                return `${providerName} ${planName} requires 5-150 members. Current members: ${totalMembers}`;
             }
 
-            if (above4000Pct > 30) {
-                this.logValidation("ECARE standard plan failed: above AED 4,000 percentage", {
-                    above4000Pct
+            if ( salary20000 > 0 ) {
+                this.logValidation(`${providerName} ${planName} failed: salary band check`, {
+                    salary16000,
+                    salary20000
                 });
-                return "ECARE plans require employees earning more than AED 4,000 not to exceed 30% of the total Group Size.";
+                return `${providerName} ${planName} is applicable only when all employees earn less than AED 4,000.`;
             }
 
-            const dependentLimit =
+             const dependentLimit =
                 Math.floor(totalEmployees * 0.10);
 
             if (dependents > dependentLimit) {
-                this.logValidation("ECARE standard plan failed: dependent limit", {
+                this.logValidation(`${providerName} ${planName} failed: dependent limit`, {
                     dependents,
                     dependentLimit,
                     totalEmployees
@@ -216,7 +526,15 @@ public static validatePlan(
                 return `Dependents cannot exceed 10% of employee count. Employees: ${totalEmployees}, Dependents: ${dependents}`;
             }
 
-            this.logValidation("ECARE standard plan passed", { totalMembers, above4000Pct });
+            if (above4000Pct > 30) {
+                this.logValidation(`${providerName} ${planName} failed: above AED 4,000 percentage`, {
+                    above4000Pct
+                });
+                return `${providerName} ${planName} requires employees earning more than AED 4,000 not to exceed 30% of the total Group Size.`;
+            }
+           
+
+            this.logValidation(`${providerName} ${planName} passed`, { totalMembers, above4000Pct });
             return "";
         }
     }
@@ -229,7 +547,7 @@ public static validatePlan(
 
         this.logValidation("Checking FMC rules", { planName });
 
-        if (planName === "BASIC LSB") {
+        if (planName === "BASICLSB") {
 
             this.logValidation("Checking FMC Basic LSB comparisons", {
                 dependents,
@@ -238,12 +556,14 @@ public static validatePlan(
                 salary20000
             });
 
-            if (dependents > 0) {
+            
+             if (dependents > 0) {
                 this.logValidation("FMC Basic LSB failed: dependents not allowed", { dependents });
                 return "FMC Basic LSB allows only employees. Dependents are not permitted.";
             }
 
-            if (
+
+             if (
                 totalEmployees < 5 ||
                 totalEmployees > 150
             ) {
@@ -255,7 +575,8 @@ public static validatePlan(
                 return `FMC Basic LSB requires 5-150 employees. Current employees: ${totalEmployees}`;
             }
 
-            if (
+
+           if (
                 salary16000 > 0 ||
                 salary20000 > 0
             ) {
@@ -266,17 +587,23 @@ public static validatePlan(
                 return "FMC Basic LSB is applicable only when all employees earn less than AED 4,000.";
             }
 
+           
+
+           
+
+           
+
             this.logValidation("FMC Basic LSB passed", { totalEmployees });
             return "";
         }
 
         if (
-            planName === "BASIC HSB" ||
-            planName === "BASIC PLUS" ||
-            planName === "ENHANCED 1" ||
-            planName === "ENHANCED 2" ||
-            planName === "SUPERIOR 1" ||
-            planName === "SUPERIOR 2"
+            planName === "BASICHSB" ||
+            planName === "BASICPLUS" ||
+            planName === "ENHANCED1" ||
+            planName === "ENHANCED2" ||
+            planName === "SUPERIOR1" ||
+            planName === "SUPERIOR2"
         ) {
 
             this.logValidation("Checking FMC standard plan comparisons", {
@@ -295,7 +622,27 @@ public static validatePlan(
                     min: 5,
                     max: 150
                 });
-                return `FMC ${plan} requires 5-150 members. Current members: ${totalMembers}`;
+                return `${providerName} ${planName} requires 5-150 members. Current members: ${totalMembers}`;
+            }
+
+            if ( salary20000 > 0 ) {
+                this.logValidation(`${providerName} ${planName} failed: salary band check`, {
+                    salary16000,
+                    salary20000
+                });
+                return `${providerName} ${planName} is applicable only when all employees earn less than AED 4,000.`;
+            }
+
+             const dependentLimit =
+                Math.floor(totalEmployees * 0.10);
+
+            if (dependents > dependentLimit) {
+                this.logValidation(`${providerName} ${planName} failed: dependent limit`, {
+                    dependents,
+                    dependentLimit,
+                    totalEmployees
+                });
+                return `Dependents cannot exceed 10% of employee count. Employees: ${totalEmployees}, Dependents: ${dependents}`;
             }
 
             if (above4000Pct > 30) {
@@ -304,26 +651,15 @@ public static validatePlan(
                 });
                 return `FMC ${plan} requires employees earning more than AED 4,000 not to exceed 30% of the total Group Size.`;
             }
-
-            const dependentLimit =
-                Math.floor(totalEmployees * 0.10);
-
-            if (dependents > dependentLimit) {
-                this.logValidation("FMC standard plan failed: dependent limit", {
-                    dependents,
-                    dependentLimit,
-                    totalEmployees
-                });
-                return `Dependents cannot exceed 10% of employee count. Employees: ${totalEmployees}, Dependents: ${dependents}`;
-            }
+           
 
             this.logValidation("FMC standard plan passed", { totalMembers, above4000Pct });
             return "";
         }
 
         if (
-            planName === "SUPERIOR 3" ||
-            planName === "SUPERIOR 4"
+            planName === "SUPERIOR3" ||
+            planName === "SUPERIOR4"
         ) {
 
             this.logValidation("Checking FMC superior 3/4 comparisons", {
@@ -345,7 +681,7 @@ public static validatePlan(
                 return `FMC ${plan} requires 10-150 members. Current members: ${totalMembers}`;
             }
 
-            if (salary20000 > 0) {
+            if ((salary20000) > 0) {
                 this.logValidation("FMC superior 3/4 failed: salary 20k check", { salary20000 });
                 return `FMC ${plan} requires all employees to earn less than AED 16,000.`;
             }
@@ -367,8 +703,8 @@ public static validatePlan(
         }
 
         if (
-            planName === "SUPERIOR 5" ||
-            planName === "SUPERIOR 6"
+            planName === "SUPERIOR5" ||
+            planName === "SUPERIOR6"
         ) {
 
             this.logValidation("Checking FMC superior 5/6 comparisons", {
@@ -387,6 +723,11 @@ public static validatePlan(
                     max: 150
                 });
                 return `FMC ${plan} requires 50-150 members. Current members: ${totalMembers}`;
+            }
+
+            if ((salary20000) > 0) {
+                this.logValidation("FMC superior 3/4 failed: salary 20k check", { salary20000 });
+                return `FMC ${plan} requires all employees to earn less than AED 16,000.`;
             }
 
             const dependentLimit =

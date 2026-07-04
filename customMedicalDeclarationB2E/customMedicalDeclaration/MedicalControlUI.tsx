@@ -44,11 +44,23 @@ const MedicalControlUI = ({
     apiUrl,
     onChange,
     isDisabled,
-    existingData
+    existingData,
     pcfContext
 }: any) => {
 
     const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+    const MAX_FILES_PER_MEMBER = 5;
+
+    const isAllowedFile = (file: File): boolean => {
+        const fileName = file.name.toLowerCase();
+
+        return (
+            fileName.endsWith(".pdf") ||
+            fileName.endsWith(".jpg") ||
+            fileName.endsWith(".jpeg") ||
+            fileName.endsWith(".png")
+        );
+    };
 
     const createBlankMember = (): Member => ({
 
@@ -198,6 +210,8 @@ const MedicalControlUI = ({
     const [questions, setQuestions] = React.useState<Question[]>([]);
 
     const [members, setMembers] = React.useState<Member[]>([]);
+
+    const [uploadingCounts, setUploadingCounts] = React.useState<Record<number, number>>({});
 
     const fileRefs = React.useRef<
         Record<number, HTMLInputElement | null>
@@ -556,17 +570,33 @@ const MedicalControlUI = ({
                 return;
             }
 
-            if (
-                file.type !== "application/pdf" &&
-                !file.name.toLowerCase().endsWith(".pdf")
-            ) {
+            const currentFileCount = currentMember?.files?.length || 0;
+
+            if (currentFileCount >= MAX_FILES_PER_MEMBER) {
 
                 setMembers(prev =>
                     prev.map(m =>
                         m.id === id
                             ? {
                                 ...m,
-                                uploadError: "Only PDF files are allowed"
+                                uploadError: `You can upload up to ${MAX_FILES_PER_MEMBER} files per member.`
+                            }
+                            : m
+                    )
+                );
+
+                return;
+            }
+
+            if (!isAllowedFile(file)) {
+
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError:
+                                    "Only PDF, JPG/JPEG, and PNG files are allowed"
                             }
                             : m
                     )
@@ -590,6 +620,11 @@ const MedicalControlUI = ({
 
                 return;
             }
+
+            setUploadingCounts(prev => ({
+                ...prev,
+                [id]: (prev[id] || 0) + 1
+            }));
 
             try {
 
@@ -618,8 +653,8 @@ const MedicalControlUI = ({
                 const annotationId =
                     created.id.replace(/[{}]/g, "");
 
-                const updatedMembers =
-                    members.map(m => {
+                setMembers(prev =>
+                    prev.map(m => {
 
                         if (m.id !== id) {
                             return m;
@@ -639,9 +674,8 @@ const MedicalControlUI = ({
                             ],
                             uploadError: ""
                         };
-                    });
-
-                setMembers(updatedMembers);
+                    })
+                );
 
             } catch (e) {
 
@@ -657,6 +691,11 @@ const MedicalControlUI = ({
                             : m
                     )
                 );
+            } finally {
+                setUploadingCounts(prev => ({
+                    ...prev,
+                    [id]: Math.max(0, (prev[id] || 1) - 1)
+                }));
             }
         };
 
@@ -664,36 +703,56 @@ const MedicalControlUI = ({
     // =====================================
     // REMOVE FILE
     // =====================================
+const removeFile = async (
+    memberId: number,
+    fileIndex: number
+) => {
 
-    const removeFile = (
-        memberId: number,
-        fileIndex: number
-    ) => {
+    if (isDisabled) return;
 
-        if (isDisabled) return;
+    const member =
+        members.find(m => m.id === memberId);
 
-        const updatedMembers =
-            members.map(m => {
+    const file =
+        member?.files?.[fileIndex];
 
-                if (m.id !== memberId) {
-                    return m;
-                }
+    try {
 
-                return {
-                    ...m,
-                    files:
-                        (m.files || []).filter(
-                            (_, i) => i !== fileIndex
-                        )
-                };
-            });
+        const annotationId =
+            file?.annotationId || file?.id;
 
-        setMembers(updatedMembers);
-        emitOutput(
-            questions,
-            updatedMembers
-        );
-    };
+        if (annotationId) {
+
+            await pcfContext.webAPI.deleteRecord(
+                "annotation",
+                annotationId
+            );
+        }
+
+    } catch (e) {
+
+        console.error("Delete annotation failed", e);
+    }
+
+    const updatedMembers =
+        members.map(m => {
+
+            if (m.id !== memberId) {
+                return m;
+            }
+
+            return {
+                ...m,
+                files:
+                    (m.files || []).filter(
+                        (_, i) => i !== fileIndex
+                    )
+            };
+        });
+
+    setMembers(updatedMembers);
+};
+
 
     // =====================================
     // VIEW FILE
@@ -720,6 +779,25 @@ const viewFile = async (file: any) => {
     }
 };
 
+const downloadFile = async (file: any) => {
+
+    const url =
+        await getFileDataUrl(file);
+
+    if (!url) return;
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+    link.download = file.name || "medical-report.pdf";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+};
     // =====================================
     // SERIAL NUMBER CHANGE
     // =====================================
@@ -1049,10 +1127,11 @@ const viewFile = async (file: any) => {
 
                                         <input
                                             type="file"
-                                            accept=".pdf,application/pdf"
+                                            accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
                                             disabled={
                                                 isDisabled ||
-                                                !hasMemberDetail(m)
+                                                !hasMemberDetail(m) ||
+                                                (uploadingCounts[m.id] || 0) > 0
                                             }
                                             multiple
                                             style={{
@@ -1067,14 +1146,39 @@ const viewFile = async (file: any) => {
                                                     Array.from(
                                                         e.target.files || []
                                                     );
+                                                const currentFiles =
+                                                    m.files || [];
+                                                const remainingSlots =
+                                                    MAX_FILES_PER_MEMBER - currentFiles.length;
 
-                                                files.forEach(file => {
-                                                    handleUpload(m.id, file);
-                                                });
+                                                if (files.length > remainingSlots) {
+                                                    setMembers(prev =>
+                                                        prev.map(member =>
+                                                            member.id === m.id
+                                                                ? {
+                                                                    ...member,
+                                                                    uploadError: `You can upload up to ${MAX_FILES_PER_MEMBER} files per member.`
+                                                                }
+                                                                : member
+                                                        )
+                                                    );
+                                                }
+
+                                                files
+                                                    .slice(0, remainingSlots)
+                                                    .forEach(file => {
+                                                        handleUpload(m.id, file);
+                                                    });
 
                                                 e.target.value = "";
                                             }}
                                         />
+
+                                        {(uploadingCounts[m.id] || 0) > 0 && (
+                                            <span className="upload-processing-indicator">
+                                                Processing...
+                                            </span>
+                                        )}
 
                                         {(m.files || []).length === 0 && (
 
@@ -1085,7 +1189,8 @@ const viewFile = async (file: any) => {
                                                 text="Upload File"
                                                 disabled={
                                                     isDisabled ||
-                                                    !hasMemberDetail(m)
+                                                    !hasMemberDetail(m) ||
+                                                    (uploadingCounts[m.id] || 0) > 0
                                                 }
                                                 className="upload-btn"
                                                 onClick={() =>
@@ -1119,21 +1224,35 @@ const viewFile = async (file: any) => {
 
                                                         <div className="uploaded-file-actions">
 
-                                                            <DefaultButton
-                                                                text="View"
-                                                                iconProps={{
-                                                                    iconName: "View"
-                                                                }}
+                                                            <button
+                                                                type="button"
                                                                 className="file-view-btn"
                                                                 onClick={() => viewFile(f)}
-                                                            />
+                                                            >
+                                                                <span className="file-action-icon" aria-hidden="true">
+                                                                    <svg viewBox="0 0 16 16" focusable="false">
+                                                                        <path d="M8 3c3.3 0 5.8 2.8 6.7 4.1a1.5 1.5 0 0 1 0 1.8C13.8 10.2 11.3 13 8 13s-5.8-2.8-6.7-4.1a1.5 1.5 0 0 1 0-1.8C2.2 5.8 4.7 3 8 3Zm0 1C5.2 4 3 6.5 2.1 7.7a.5.5 0 0 0 0 .6C3 9.5 5.2 12 8 12s5-2.5 5.9-3.7a.5.5 0 0 0 0-.6C13 6.5 10.8 4 8 4Zm0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm0 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" />
+                                                                    </svg>
+                                                                </span>
+                                                                <span>View</span>
+                                                            </button>
 
-                                                            <DefaultButton
-                                                                text="Delete"
+                                                            <button
+                                                                type="button"
+                                                                className="file-view-btn file-download-btn"
+                                                                onClick={() => downloadFile(f)}
+                                                            >
+                                                                <span className="file-action-icon" aria-hidden="true">
+                                                                    <svg viewBox="0 0 16 16" focusable="false">
+                                                                        <path d="M7.5 1a.5.5 0 0 1 1 0v8.3l2.15-2.15a.5.5 0 0 1 .7.7l-3 3a.5.5 0 0 1-.7 0l-3-3a.5.5 0 1 1 .7-.7L7.5 9.3V1ZM2 12.5a.5.5 0 0 1 .5.5v1h11v-1a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V13a.5.5 0 0 1 .5-.5Z" />
+                                                                    </svg>
+                                                                </span>
+                                                                <span>Download</span>
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
                                                                 disabled={isDisabled}
-                                                                iconProps={{
-                                                                    iconName: "Delete"
-                                                                }}
                                                                 className="file-delete-btn"
                                                                 onClick={() =>
                                                                     removeFile(
@@ -1141,7 +1260,14 @@ const viewFile = async (file: any) => {
                                                                         index
                                                                     )
                                                                 }
-                                                            />
+                                                            >
+                                                                <span className="file-action-icon" aria-hidden="true">
+                                                                    <svg viewBox="0 0 16 16" focusable="false">
+                                                                        <path d="M6 2h4l.5 1H14a.5.5 0 0 1 0 1h-.54l-.75 10.08A1 1 0 0 1 11.71 15H4.29a1 1 0 0 1-1-.92L2.54 4H2a.5.5 0 0 1 0-1h3.5L6 2Zm-2.46 2 .75 10h7.42l.75-10H3.54ZM6 6a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0v-5A.5.5 0 0 1 6 6Zm4 0a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0v-5A.5.5 0 0 1 10 6Z" />
+                                                                    </svg>
+                                                                </span>
+                                                                <span>Delete</span>
+                                                            </button>
 
                                                         </div>
 
@@ -1154,7 +1280,8 @@ const viewFile = async (file: any) => {
                                                         text="Add More Files"
                                                         disabled={
                                                             isDisabled ||
-                                                            !hasMemberDetail(m)
+                                                            !hasMemberDetail(m) ||
+                                                            (uploadingCounts[m.id] || 0) > 0
                                                         }
                                                         iconProps={{
                                                             iconName: "Upload"

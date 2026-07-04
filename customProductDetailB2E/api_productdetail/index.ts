@@ -116,9 +116,11 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
             return;
         }
 
-        if (!codes.length) return;
-
         const isEBP = this.productType === "EBP";
+        const memberCategories =
+            isEBP && memberListRaw
+                ? MemberStatistics.getUniqueCategories(memberListRaw)
+                : [];
 
         ApiService.load(apiUrl, this.productType).then((data) => {
 
@@ -141,10 +143,32 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
             const allCategories =
                 data.categories || [];
 
+            const categorySelection =
+                isEBP && memberCategories.length
+                    ? memberCategories
+                    : codes.map((code: string) =>
+                        String(code || "").trim()
+                    ).filter((code: string) => code);
+
+            const normalizedMemberCategories =
+                categorySelection === memberCategories
+                    ? new Set(categorySelection.map((name: string) =>
+                        MemberStatistics.normalizeCategory(name)
+                    ))
+                    : null;
+
             this.categories =
-                allCategories.filter((c: any) =>
-                    codes.indexOf(c.name) !== -1
-                );
+                allCategories.filter((c: any) => {
+                    if (normalizedMemberCategories) {
+                        return normalizedMemberCategories.has(
+                            MemberStatistics.normalizeCategory(c.name)
+                        );
+                    }
+
+                    return categorySelection.indexOf(c.name) !== -1;
+                });
+
+            this.pruneSelectedValuesToCurrentCategories(this.categories);
 
             const wrapper =
                 this.container.querySelector(".grid-wrapper") as HTMLDivElement;
@@ -173,6 +197,38 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
     }
 
         // ================= OUTPUT =================
+    private pruneSelectedValuesToCurrentCategories(
+        categories: any[]
+    ): void {
+
+        const validCategoryNames =
+            new Set(categories.map((c: any) => c.name));
+
+        Object.keys(this.selectedValues).forEach((fieldName) => {
+
+            if (fieldName === "Network Provider") {
+                return;
+            }
+
+            const fieldValues =
+                this.selectedValues[fieldName];
+
+            if (!fieldValues || typeof fieldValues !== "object") {
+                return;
+            }
+
+            Object.keys({ ...fieldValues }).forEach((catName) => {
+                if (!validCategoryNames.has(catName)) {
+                    delete fieldValues[catName];
+                }
+            });
+
+            if (!Object.keys(fieldValues).length) {
+                delete this.selectedValues[fieldName];
+            }
+        });
+    }
+
     public getOutputs(): IOutputs {
 
         if (

@@ -137,8 +137,8 @@ export const CoverageTable = ({
         ).toLocaleString(
             "en-US",
             {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }
         );
     };
