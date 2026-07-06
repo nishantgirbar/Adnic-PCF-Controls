@@ -36,6 +36,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private isReadOnly: boolean = false;
   private addBtn!: HTMLButtonElement;
   private deleteBtn!: HTMLButtonElement;
+  private fileInteractionActive: boolean = false;
+  private refreshPending: boolean = false;
 
   private createEmptyMember(): any {
 
@@ -299,16 +301,16 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
       if (this.members === null || this.members.length == 0) {
         if (this.addBtn) {
-          this.addBtn.style.display = this.enableUpload ? "none" : "";
+          this.addBtn.style.display = "none";
         }
 
         if (this.deleteBtn) {
-          this.deleteBtn.style.display = this.enableUpload ? "none" : "";
+          this.deleteBtn.style.display = "none";
         }
       }
 
     }
-
+    console.log("updateView: members", this.members);
     if (this.updateDerivedOutputJsons()) {
       this.notifyOutputChanged();
     }
@@ -815,6 +817,11 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
   private refresh(): void {
 
+    if (this.fileInteractionActive) {
+      this.refreshPending = true;
+      return;
+    }
+
     const addBtn = this.container.querySelector(".btn.primary") as HTMLButtonElement;
     if (addBtn) addBtn.disabled = this.isReadOnly;
 
@@ -823,6 +830,16 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     this.renderGrid(this.gridRef);
     this.renderPagination(this.paginationRef);
+  }
+
+  private completeFileInteraction(): void {
+
+    this.fileInteractionActive = false;
+
+    if (this.refreshPending) {
+      this.refreshPending = false;
+      this.refresh();
+    }
   }
 
   private renderGrid(container: HTMLDivElement): void {
@@ -1245,7 +1262,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         btn.innerText = "Upload File";
         btn.disabled = this.isReadOnly;
 
-        let filePickerActive = false;
+        let fileSelectionHandled = false;
 
         const attachmentsContainer = document.createElement("div");
         attachmentsContainer.className = "uploaded-files";
@@ -1262,7 +1279,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           // Opening the native picker blurs this field. Notifying PCF at that
           // moment rebuilds the grid and detaches the file input before its
           // change event can receive the selected file.
-          if (!filePickerActive) {
+          if (!this.fileInteractionActive) {
             this.notifyOutputChanged();
           }
         };
@@ -1415,8 +1432,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           const files = Array.from(fileInput.files || []);
           if (!files.length) return;
 
-          // Validate files: allowed extensions for 65+ are Pdf, Png, Jpeg, Jpg and size <= 2MB
-          const MAX_BYTES = 2 * 1024 * 1024; // 2MB
+          // Validate files: allowed extensions for 65+ are Pdf, Png, Jpeg, Jpg and size <= 5MB
+          const MAX_BYTES = 5 * 1024 * 1024; // 5MB
           const invalids: string[] = [];
           const existingAttachments = Array.isArray(row.attachments) ? row.attachments.length : 0;
           const selectedCount = files.length;
@@ -1434,7 +1451,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
           files.forEach(f => {
             const name = f.name || "(unnamed)";
-            if (f.size > MAX_BYTES) invalids.push(`${name} — file too large (max 2 MB)`);
+            if (f.size > MAX_BYTES) invalids.push(`${name} — file too large (max 5 MB)`);
             const lowerName = name.toLowerCase();
             const extAllowed = lowerName.endsWith(".pdf") || lowerName.endsWith(".png") || lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg");
             if (!extAllowed) invalids.push(`${name} — only PDF, JPG/JPEG, and PNG files are allowed`);
@@ -1482,31 +1499,41 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           btn.parentElement?.insertBefore(processingIndicator, btn.nextSibling);
           btn.disabled = true;
 
-          const uploadedAttachments = await Promise.all(files.map(async file => {
-            const annotationId = await this.uploadFileToAnnotation(file);
-            return {
-              name: file.name,
-              mimeType: file.type || "application/pdf",
-              size: file.size,
-              annotationId
-            };
-          }));
+          try {
+            const uploadedAttachments = await Promise.all(files.map(async file => {
+              const annotationId = await this.uploadFileToAnnotation(file);
+              return {
+                name: file.name,
+                mimeType: file.type || "application/pdf",
+                size: file.size,
+                annotationId
+              };
+            }));
 
-          processingIndicator.remove();
-          btn.disabled = false;
+            row.attachments = row.attachments || [];
+            row.attachments.push(...uploadedAttachments);
+            if (!row.documentName && uploadedAttachments.length) {
+              row.documentName = uploadedAttachments[0].name;
+            }
 
-          row.attachments = row.attachments || [];
-          row.attachments.push(...uploadedAttachments);
-          if (!row.documentName && uploadedAttachments.length) {
-            row.documentName = uploadedAttachments[0].name;
+            renderAttachments();
+            this.updateDerivedOutputJsons();
+            this.notifyOutputChanged();
+            this.refresh();
+          } catch (error) {
+            console.error("Member attachment upload failed.", error);
+            await this.context.navigation.openAlertDialog(
+              {
+                text: "The file could not be uploaded. Please try again.",
+                confirmButtonLabel: "OK"
+              },
+              { width: 420, height: 180 }
+            );
+          } finally {
+            processingIndicator.remove();
+            btn.disabled = this.isReadOnly;
+            fileInput.value = "";
           }
-
-          renderAttachments();
-          this.updateDerivedOutputJsons();
-          this.notifyOutputChanged();
-          this.refresh();
-
-          fileInput.value = "";
         };
 
         const openFilePicker = (): void => {
@@ -1515,16 +1542,17 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           // Keep the latest remarks in the row before opening the native picker.
           // The upload flow will notify the framework after a file is selected.
           row.remarks = remarksField.value;
-          filePickerActive = true;
+          this.fileInteractionActive = true;
+          fileSelectionHandled = false;
           fileInput.value = "";
 
           // Some browsers do not emit the file-input cancel event. Window focus
           // is a fallback that commits remarks after a cancelled picker.
           window.addEventListener("focus", () => {
             window.setTimeout(() => {
-              if (!filePickerActive) return;
+              if (!this.fileInteractionActive || fileSelectionHandled) return;
 
-              filePickerActive = false;
+              this.completeFileInteraction();
               this.updateDerivedOutputJsons();
               this.notifyOutputChanged();
             }, 300);
@@ -1533,32 +1561,36 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           fileInput.click();
         };
 
-        // Open the picker before focus leaves the remarks field. Otherwise its
-        // change handler can cause updateView() to rebuild the grid and swallow
-        // the first button click.
+        // Lock grid refreshes before the remarks field loses focus. The actual
+        // file picker must open from the normal click event for reliable browser
+        // and Power Apps iframe behavior.
         btn.onpointerdown = event => {
           if (!event.isPrimary || event.button !== 0) return;
+          this.fileInteractionActive = true;
+          row.remarks = remarksField.value;
+        };
+
+        btn.onclick = event => {
           event.preventDefault();
           openFilePicker();
         };
 
-        // Keyboard-generated clicks have detail 0; pointer clicks are already
-        // handled above so the picker is not opened twice.
-        btn.onclick = event => {
-          if (event.detail === 0) {
-            openFilePicker();
-          }
-        };
-
         fileInput.onchange = () => {
-          filePickerActive = false;
-          void addAttachments();
+          fileSelectionHandled = true;
+          void (async () => {
+            try {
+              await addAttachments();
+            } finally {
+              this.completeFileInteraction();
+            }
+          })();
         };
 
         fileInput.addEventListener("cancel", () => {
-          if (!filePickerActive) return;
+          if (!this.fileInteractionActive) return;
 
-          filePickerActive = false;
+          fileSelectionHandled = true;
+          this.completeFileInteraction();
           this.updateDerivedOutputJsons();
           this.notifyOutputChanged();
         });

@@ -3,6 +3,13 @@
     font-family: Segoe UI, sans-serif;
 }
 
+.medical-pcf .questions-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80px;
+}
+
 /* QUESTIONS */
 .medical-pcf .question-row {
     display: flex;

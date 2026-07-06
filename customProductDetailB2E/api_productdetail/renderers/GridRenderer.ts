@@ -21,6 +21,40 @@ constructor(
     private notifyOutputChanged: () => void
 ) {}
 
+    private clearSelectionNotifications(categoryName?: string): void {
+
+        if (categoryName) {
+            delete this.validationMessages[categoryName];
+        }
+        else {
+            this.validationMessages = {};
+        }
+
+        try {
+
+            const xrm =
+                (window as any).Xrm;
+
+            const logicalName =
+                this.context.parameters.adnic_productdetails
+                    ?.attributes?.LogicalName ||
+                "adnic_productdetails";
+
+            const attribute =
+                xrm?.Page?.getAttribute?.(logicalName);
+
+            attribute?.controls?.forEach((control: any) => {
+                control.clearNotification?.();
+            });
+        }
+        catch (error) {
+            console.warn(
+                "Unable to clear product detail CRM notifications",
+                error
+            );
+        }
+    }
+
     private refreshPlanValidationMessages(): void {
 
         if (this.productType !== "EBP") {
@@ -275,6 +309,8 @@ constructor(
                         true,
                         (val:string)=>{
 
+                            this.clearSelectionNotifications();
+
                             this.selectedValues[row.name] = {
                                 ALL: val
                             };
@@ -508,6 +544,10 @@ constructor(
                             row.name === "Network Type" ||
                             row.name === "Plan",
                             (val:string)=>{
+
+                                if (row.name === "Plan") {
+                                    this.clearSelectionNotifications(cat.name);
+                                }
 
                                 if (!this.selectedValues[row.name]) {
                                     this.selectedValues[row.name] = {};

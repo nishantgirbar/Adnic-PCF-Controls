@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <manifest>
-  <control namespace="EbpControlPcf" constructor="EbpControlPcf" version="2.1.1" display-name-key="Plan Summary Control" description-key="Conditional Plan Summary UI" control-type="standard" api-version="1.3.18">
+  <control namespace="EbpControlPcf" constructor="EbpControlPcf" version="2.1.3" display-name-key="Plan Summary Control" description-key="Conditional Plan Summary UI" control-type="standard" api-version="1.3.18">
     <property name="showSummary" display-name-key="Show Summary" description-key="Toggle summary visibility" of-type="TwoOptions" usage="bound" required="true"/>
     <property name="memberlistjson" display-name-key="Member List Json" description-key="Member List Json" of-type="Multiple" usage="bound" required="false"/>
     <property name="categoryPremiums" display-name-key="Category Premiums" description-key="Category Premiums" of-type="Multiple" usage="bound" required="false"/>

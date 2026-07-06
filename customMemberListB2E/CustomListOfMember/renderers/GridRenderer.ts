@@ -21,6 +21,16 @@ constructor(
     private notifyOutputChanged: () => void
 ) {}
 
+    private clearSelectionNotification(categoryName?: string): void {
+
+        if (categoryName) {
+            delete this.validationMessages[categoryName];
+            return;
+        }
+
+        this.validationMessages = {};
+    }
+
     public render(
         container:HTMLDivElement
     )
@@ -238,6 +248,8 @@ constructor(
                         true,
                         (val:string)=>{
 
+                            this.clearSelectionNotification();
+
                             this.selectedValues[row.name] = {
                                 ALL: val
                             };
@@ -442,6 +454,10 @@ constructor(
                             row.name === "Network Type" ||
                             row.name === "Plan",
                             (val:string)=>{
+
+                                if (row.name === "Plan") {
+                                    this.clearSelectionNotification(cat.name);
+                                }
 
                                 if (!this.selectedValues[row.name]) {
                                     this.selectedValues[row.name] = {};

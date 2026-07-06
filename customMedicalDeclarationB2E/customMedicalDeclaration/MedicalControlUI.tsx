@@ -5,7 +5,9 @@ import {
     Toggle,
     PrimaryButton,
     DefaultButton,
-    TextField
+    TextField,
+    Spinner,
+    SpinnerSize
 } from "@fluentui/react";
 
 import "./style.css";
@@ -39,6 +41,8 @@ interface Question {
     answer: boolean;
     category: string;
 }
+
+const EXCLUDED_QUESTION = "restrict purchase orders";
 
 const MedicalControlUI = ({
     apiUrl,
@@ -211,6 +215,8 @@ const MedicalControlUI = ({
 
     const [members, setMembers] = React.useState<Member[]>([]);
 
+    const [isLoadingQuestions, setIsLoadingQuestions] = React.useState(true);
+
     const [uploadingCounts, setUploadingCounts] = React.useState<Record<number, number>>({});
 
     const fileRefs = React.useRef<
@@ -369,50 +375,67 @@ const MedicalControlUI = ({
 
     const loadQuestions = async () => {
 
-        const productCode =
-            getProductCode();
+        setIsLoadingQuestions(true);
 
-        // API URL FROM ENV VARIABLE
-        const medicalApiUrl =
-            getEnvironmentVariable(
-                "adnic_medicalquestionsapi"
-            ) || apiUrl;
+        try {
+            const productCode =
+                getProductCode();
 
-        const res = await fetch(
-            medicalApiUrl + "?product=" + productCode
-        );
+            // API URL FROM ENV VARIABLE
+            const medicalApiUrl =
+                getEnvironmentVariable(
+                    "adnic_medicalquestionsapi"
+                ) || apiUrl;
 
-        const data = await res.json();
+            const res = await fetch(
+                medicalApiUrl + "?product=" + productCode
+            );
 
-        const mapped: Question[] =
-            (data.medicalQuestions || [])
+            if (!res.ok) {
+                throw new Error(`Question API returned ${res.status}`);
+            }
 
-                .map((q: any) => ({
+            const data = await res.json();
 
-                    id: q.id,
-                    question: q.question,
-                    displayOrder: q.displayOrder,
-                    answer: getExistingQuestionAnswer(q),
-                    category: q.category || ""
-                }));
+            const mapped: Question[] =
+                (data.medicalQuestions || [])
 
-        setQuestions(mapped);
+                    .filter((q: any) =>
+                        q.question?.toString().trim().toLowerCase() !==
+                        EXCLUDED_QUESTION
+                    )
 
-        const existingMembers =
-            buildExistingMembers();
+                    .map((q: any) => ({
 
-        const hasExistingYes =
-            mapped.some(q => q.answer);
+                        id: q.id,
+                        question: q.question,
+                        displayOrder: q.displayOrder,
+                        answer: getExistingQuestionAnswer(q),
+                        category: q.category || ""
+                    }));
 
-        if (existingMembers.length > 0) {
+            setQuestions(mapped);
 
-            setMembers(existingMembers);
+            const existingMembers =
+                buildExistingMembers();
 
-        } else if (hasExistingYes) {
+            const hasExistingYes =
+                mapped.some(q => q.answer);
 
-            setMembers([
-                createBlankMember()
-            ]);
+            if (existingMembers.length > 0) {
+
+                setMembers(existingMembers);
+
+            } else if (hasExistingYes) {
+
+                setMembers([
+                    createBlankMember()
+                ]);
+            }
+        } catch (error) {
+            console.error("Failed to load medical questions", error);
+        } finally {
+            setIsLoadingQuestions(false);
         }
     };
 
@@ -946,7 +969,16 @@ const downloadFile = async (file: any) => {
 
                 {/* QUESTIONS */}
 
-                {questions
+                {isLoadingQuestions && (
+                    <div className="questions-loading" role="status">
+                        <Spinner
+                            size={SpinnerSize.medium}
+                            label="Loading medical questions..."
+                        />
+                    </div>
+                )}
+
+                {!isLoadingQuestions && questions
                     .sort((a, b) =>
                         a.displayOrder - b.displayOrder
                     )

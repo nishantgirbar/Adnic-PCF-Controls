@@ -52,8 +52,7 @@ export class EbpControlPcf implements ComponentFramework.StandardControl<IInputs
 
                     this.lsbMemberCount = members.filter(
                         (m: any) =>
-                          ( (String(m.salaryType).toUpperCase() === "LSB") || (String(m.visaLocation).toUpperCase() === "LSB") 
-                         || ( String(m.relation).toUpperCase() !== "EMPLOYEE" && (String(m.salaryType) === "" || String(m.salaryType).toUpperCase() === "ENHANCED") ))
+                          ((String(m.salaryType).toUpperCase() === "LSB") || (String(m.visaLocation).toUpperCase() === "LSB"))
                     ).length;
                 }
 
