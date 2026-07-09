@@ -72,8 +72,6 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
 
     this.renderHeader(header, parsed);
     this.renderGrid(wrapper, categories);
-
-    this.notifyOutputChanged();
   }
 
   // ================= HEADER =================

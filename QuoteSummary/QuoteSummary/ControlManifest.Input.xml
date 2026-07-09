@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="QuoteSummaryPCF"
            constructor="QuoteSummaryPCF"
-           version="1.5.1"
+           version="1.7.7"
            display-name-key="Quote Summary"
            description-key="Quote Summary from API"
            control-type="standard">
@@ -25,7 +25,25 @@
       usage="bound"
       required="true" />
 
-    <!-- ✅ API URL INPUT -->
+    <!-- Product Type -->
+    <property
+      name="adnic_name"
+      display-name-key="Product Type"
+      description-key="Product Type (EBP, SME, or DIFC)"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="false" />
+
+    <!-- Product Details JSON -->
+    <property
+      name="adnic_productdetails"
+      display-name-key="Product Details"
+      description-key="Product Details JSON"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <!-- API URL INPUT -->
     <property 
       name="apiUrl"
       display-name-key="API URL"

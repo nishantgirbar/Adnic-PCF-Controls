@@ -2,6 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-wrap: wrap;
     padding: 10px 16px 12px 16px;
     gap: 8px;
     background: #f4f6f8;
@@ -9,8 +10,49 @@
 }
 
 .pcf-search-box {
-    width: 320px;
+    flex: 1 1 280px;
+    max-width: 420px;
     min-width: 240px;
+}
+
+.pcf-status-filter {
+    flex: 0 1 220px;
+    min-width: 190px;
+}
+
+.pcf-crm-grid {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.pcf-crm-grid .ms-DetailsList {
+    min-width: 980px;
+}
+
+.pcf-crm-grid .ms-DetailsHeader-cellName,
+.pcf-crm-grid .ms-DetailsRow-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.pcf-crm-grid .ms-DetailsRow-cell {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 640px) {
+    .pcf-search-container {
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .pcf-search-box,
+    .pcf-status-filter {
+        flex-basis: 100%;
+        max-width: none;
+        min-width: 0;
+    }
 }
 
 /* 🔥 Hide OOB Dynamics Search */

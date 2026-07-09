@@ -704,10 +704,108 @@ constructor(
         this.renderPremiumFooter(container, this.premiumValues);
     }
 
+        private renderTobLinks(
+            container: HTMLDivElement
+        ): void {
+
+            const existing =
+                container.querySelector(".tob-footer");
+
+            if (existing) {
+                existing.remove();
+            }
+
+            if (this.productType !== "EBP") {
+                return;
+            }
+
+            const provider =
+                this.selectedValues["Network Provider"]?.["ALL"] || "";
+
+            if (!provider) {
+                return;
+            }
+
+            const footer =
+                document.createElement("div");
+
+            footer.className =
+                "tob-footer";
+
+            footer.style.gridTemplateColumns =
+                "40px 220px repeat("
+                + this.categories.length
+                + ", 1fr)";
+
+            const empty1 =
+                document.createElement("div");
+
+            const label =
+                document.createElement("div");
+
+            label.className =
+                "tob-label";
+
+            label.innerText =
+                "";
+
+            footer.appendChild(empty1);
+            footer.appendChild(label);
+
+            this.categories.forEach((cat: any) => {
+
+                const plan =
+                    this.selectedValues["Plan"]?.[cat.name] || "";
+
+                const cell =
+                    document.createElement("div");
+
+                cell.className =
+                    "tob-cell";
+
+                if (plan) {
+
+                    const selectedPlan =
+                        document.createElement("div");
+
+                    const link =
+                        document.createElement("a");
+
+                    link.className =
+                        "tob-link";
+
+                    link.href =
+                        EbpRuleService.getTobUrl(provider, plan);
+
+                    link.target =
+                        "_blank";
+
+                    link.rel =
+                        "noopener noreferrer";
+
+                    link.innerText =
+                        "TOB";
+
+                    selectedPlan.className =
+                        "tob-selected-plan";
+
+                    selectedPlan.innerText =
+                        plan + " : ";
+
+                    cell.appendChild(selectedPlan);
+                    cell.appendChild(link);
+                }
+
+                footer.appendChild(cell);
+            });
+
+            container.appendChild(footer);
+        }
+
         private renderPremiumFooter(
             container: HTMLDivElement,
             premiumValues: string | null
-        ): void {
+        ): boolean {
 
             console.log(
                 "GridRenderer renderPremiumFooter",
@@ -717,7 +815,7 @@ constructor(
             const premiumRaw =premiumValues;
 
             if (!premiumRaw) {
-                return;
+                return false;
             }
 
             let premiums: any[] = [];
@@ -728,7 +826,11 @@ constructor(
 
             } catch {
 
-                return;
+                return false;
+            }
+
+            if (!premiums.length) {
+                return false;
             }
 
             console.log(
@@ -794,9 +896,11 @@ constructor(
                             "Members "
                             + (premium.memberCount || 0);
                     }
+
+                    this.renderPremiumTobLink(cell, cat.name);
                 });
 
-                return;
+                return true;
             }
 
             // ================= CREATE FOOTER =================
@@ -858,12 +962,83 @@ constructor(
                         + "<div class='premium-members'>Members "
                         + (premium.memberCount || 0)
                         + "</div>";
+
+                    this.renderPremiumTobLink(cell, cat.name);
                 }
 
                 footer.appendChild(cell);
             });
 
             container.appendChild(footer);
+
+            return true;
+        }
+
+        private renderPremiumTobLink(
+            cell: HTMLDivElement,
+            categoryName: string
+        ): void {
+
+            const existing =
+                cell.querySelector(".premium-tob");
+
+            if (existing) {
+                existing.remove();
+            }
+
+            if (this.productType !== "EBP") {
+                return;
+            }
+
+            const provider =
+                this.selectedValues["Network Provider"]?.["ALL"] || "";
+
+            const plan =
+                this.selectedValues["Plan"]?.[categoryName] || "";
+
+            const url =
+                EbpRuleService.getTobUrl(provider, plan);
+
+            if (!provider || !plan || !url) {
+                return;
+            }
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "premium-tob";
+
+            const selectedPlan =
+                document.createElement("span");
+
+            selectedPlan.className =
+                "tob-selected-plan";
+
+            selectedPlan.innerText =
+                plan + " : ";
+
+            const link =
+                document.createElement("a");
+
+            link.className =
+                "tob-link";
+
+            link.href =
+                url;
+
+            link.target =
+                "_blank";
+
+            link.rel =
+                "noopener noreferrer";
+
+            link.innerText =
+                "TOB";
+
+            wrapper.appendChild(selectedPlan);
+            wrapper.appendChild(link);
+            cell.appendChild(wrapper);
         }
 
     private getOptions(row: any) {

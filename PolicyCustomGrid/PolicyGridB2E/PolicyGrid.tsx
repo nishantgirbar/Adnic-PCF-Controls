@@ -3,6 +3,7 @@ import * as React from "react";
 import {
   DetailsList,
   DetailsListLayoutMode,
+  ConstrainMode,
   SelectionMode,
   DefaultButton,
   PrimaryButton,
@@ -52,7 +53,8 @@ export const PolicyGrid = ({
   const [localData, setLocalData] = React.useState<any[]>([]);
   const [loadingRow, setLoadingRow] = React.useState<{ [key: number]: boolean }>({});
   const [search, setSearch] = React.useState("");
-  const [lastSearch, setLastSearch] = React.useState("");
+  const [quoteStatus, setQuoteStatus] = React.useState("");
+  const [lastSearchKey, setLastSearchKey] = React.useState("");
 
   // 🔥 GLOBAL LOADER
 
@@ -215,7 +217,7 @@ const getStatusStyle = (status: string): React.CSSProperties => {
         return alert("Quote not found");
       }
 
-      context.navigation.openForm({
+      (window.top as any).Xrm.Navigation.openForm({
         entityName: "adnic_quote",
         entityId: id,
         formId: ((item.status || "").toString().includes("QUOTE_IN_PROGRESS")) ? "b80c4b15-3f4f-f111-bec6-7ced8dac4d08" : "9a954027-cc2c-f111-8342-6045bd150384"
@@ -317,7 +319,7 @@ const getStatusStyle = (status: string): React.CSSProperties => {
           }
         );
 
-      context.navigation.openForm({
+      (window.top as any).Xrm.Navigation.openForm({
         entityName: "adnic_quote",
         entityId: id
       });
@@ -391,7 +393,7 @@ const openQuoteViewDialog = async (item: any) => {
 
   const navigateToPolicy = (item: any) => {
 
-    context.navigation.openForm(
+    (window.top as any).Xrm.Navigation.openForm(
       {
         entityName: "adnic_policy"
       },
@@ -573,6 +575,14 @@ const openQuoteViewDialog = async (item: any) => {
     { key: 50, text: "50" }
   ];
 
+  const quoteStatusOptions: IDropdownOption[] = [
+    { key: "", text: "All Quote Statuses" },
+    ...Object.keys(statusTranslations).map(status => ({
+      key: status,
+      text: statusTranslations[status]
+    }))
+  ];
+
   // 🔥 COLUMNS
 
   const columns: IColumn[] = [
@@ -581,6 +591,7 @@ const openQuoteViewDialog = async (item: any) => {
       key: "expand",
       name: "",
       minWidth: 40,
+      maxWidth: 40,
 
       onRender: (item: any) =>
 
@@ -605,6 +616,7 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Quote No",
       fieldName: "quoteNumber",
       minWidth: 110,
+      maxWidth: 150,
       isResizable: true,
       onRender: (item: any) => {
         const isAvailable = item.isAvailableInCRM;
@@ -634,6 +646,8 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Customer Name",
       fieldName: "companyName",
       minWidth: 110,
+      maxWidth: 180,
+      isMultiline: true,
       isResizable: true
     },
     
@@ -642,6 +656,8 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Email",
       fieldName: "email",
       minWidth: 130,
+      maxWidth: 220,
+      isMultiline: true,
       isResizable: true
     },
     {
@@ -649,12 +665,14 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Phone Number",
       fieldName: "contactNumber",
       minWidth: 90,
+      maxWidth: 130,
       isResizable: true
     },
     {
       key: "quotestatus",
       name: "Quote Status",
       minWidth: 140,
+      maxWidth: 190,
       isResizable: true,
 
       onRender: (item: any) =>
@@ -674,12 +692,14 @@ const openQuoteViewDialog = async (item: any) => {
       name: "LOB",
       fieldName: "sourceOfBusiness",
       minWidth: 60,
+      maxWidth: 90,
       isResizable: true
     },
     {
       key: "updatedDate",
       name: "Last Update",
       minWidth: 70,
+      maxWidth: 110,
       isResizable: true,
 
       onRender: (item: any) => {
@@ -704,12 +724,15 @@ const openQuoteViewDialog = async (item: any) => {
       name: "Created By",
       fieldName: "createdBy",
       minWidth: 70,
+      maxWidth: 130,
+      isMultiline: true,
       isResizable: true
     },
     {
         key: "action",
         name: "Action",
-        minWidth: 260,
+        minWidth: 150,
+        maxWidth: 220,
 
         onRender: (item: any) => {
 
@@ -821,16 +844,27 @@ const openQuoteViewDialog = async (item: any) => {
       }
   ];
 
-  const triggerSearch = async (query: string) => {
+  const getSearchKey = (query: string, status: string) =>
+    `${(query || "").trim()}|${status || ""}`;
+
+  const triggerSearch = async (query: string, status: string) => {
     const trimmed = (query || "").trim();
-    if (trimmed === lastSearch) {
+    const nextSearchKey = getSearchKey(trimmed, status);
+
+    if (nextSearchKey === lastSearchKey) {
       return;
     }
 
-    setLastSearch(trimmed);
+    setLastSearchKey(nextSearchKey);
     setIsLoading(true);
-    await onSearch(trimmed);
+    await onSearch(trimmed, status);
     setIsLoading(false);
+  };
+
+  const clearSearch = () => {
+    setSearch("");
+    setQuoteStatus("");
+    triggerSearch("", "");
   };
 
   return (
@@ -845,16 +879,25 @@ const openQuoteViewDialog = async (item: any) => {
           placeholder="Search by Quote No, Customer Name, Email, Status or LOB"
           value={search}
           onChange={(_, value) => setSearch(value || "")}
+          onClear={clearSearch}
           onSearch={() => {
-            triggerSearch(search);
+            triggerSearch(search, quoteStatus);
           }}
+        />
+
+        <Dropdown
+          className="pcf-status-filter"
+          placeholder="Quote Status"
+          selectedKey={quoteStatus}
+          options={quoteStatusOptions}
+          onChange={(_, option) => setQuoteStatus(String(option?.key || ""))}
         />
 
         <DefaultButton
           text="Search"
-          disabled={!search.trim() || search.trim() === lastSearch}
+          disabled={getSearchKey(search, quoteStatus) === lastSearchKey}
           onClick={() => {
-            triggerSearch(search);
+            triggerSearch(search, quoteStatus);
           }}
           styles={{
             root: {
@@ -906,6 +949,7 @@ const openQuoteViewDialog = async (item: any) => {
           getKey={(item) => String(item.key)}
           selectionMode={SelectionMode.none}
           layoutMode={DetailsListLayoutMode.justified}
+          constrainMode={ConstrainMode.unconstrained}
           compact={true}
           styles={{
             root: {

@@ -106,7 +106,23 @@ export class ProductOutputService {
                 if (
                     row.name === "Network Provider" ||
                     row.name === "Network Type" ||
-                    row.name === "Plan"
+                    row.name === "Plan" ||
+                    row.name === "Network" ||
+                    row.name === "OP Consultation Copayment Loading"
+                ) {
+                    return;
+                }
+
+                if (
+                    productType === "EBP" &&
+                    (
+                        row.name === "Employee Salary <4000" ||
+                        row.name === "Employee Salary <16000" ||
+                        row.name === "Employee Salary <20000" ||
+                        row.name === "Dependent" ||
+                        row.name === "Annual Limit" ||
+                        row.name === "Territorial Coverage"
+                    )
                 ) {
                     return;
                 }
@@ -139,6 +155,36 @@ export class ProductOutputService {
                         meta?.metadata || {}
                 });
             });
+
+            if (productType === "EBP") {
+
+                benefits.push(
+                    {
+                        code: "ANNUAL_LIMIT",
+                        name: "Annual Limit",
+                        value: EbpRuleService.getAnnualLimit(
+                            providerVal,
+                            networkVal
+                        )
+                    },
+                    {
+                        code: "NETWORK",
+                        name: "Network Type",
+                        value: EbpRuleService.getNetworkType(
+                            providerVal,
+                            networkVal
+                        )
+                    },
+                    {
+                        code: "TERRITORIAL_COMPREHENSIVE",
+                        name: "Territorial Coverage",
+                        value: EbpRuleService.getCoverage(
+                            providerVal,
+                            networkVal
+                        )
+                    }
+                );
+            }
 
             result.push({
 

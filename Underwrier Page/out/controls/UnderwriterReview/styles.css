@@ -372,13 +372,24 @@ body {
 }
 
 .coverage-table {
-    min-width: max-content;
+    min-width: 100%;
+    table-layout: fixed;
 }
 
 .coverage-table thead th:nth-child(n + 3),
 .coverage-table .premium-footer {
     min-width: 180px;
     white-space: nowrap;
+}
+
+.coverage-table tbody td:nth-child(n + 3) {
+    min-width: 180px;
+    max-width: 260px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    line-height: 1.4;
+    vertical-align: top;
 }
 
 /* =========================

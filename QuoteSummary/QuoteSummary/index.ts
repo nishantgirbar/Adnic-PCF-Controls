@@ -1,40 +1,5 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
-const EBP_FALLBACK_CONFIG = {
-    networkProvider: "Ecare",
-    networkType: "General Network",
-    benefits: [
-        {
-            name: "Plan Type",
-            value: "Basic EBP Plan"
-        },
-        {
-            name: "Network Provider",
-            value: "Ecare"
-        },
-        {
-            name: "Consultation",
-            value: "20% Coinsurance"
-        },
-        {
-            name: "Co-pay on Lab/Diagnostic",
-            value: "20% Co-pay for All OP Services"
-        },
-        {
-            name: "Pharmacy Co-Pay",
-            value: "30% Co-pay for Medication"
-        },
-        {
-            name: "Pharmacy Limit",
-            value: "Maximum __DIRHAM__ 2,500"
-        },
-        {
-            name: "Co-Pay on all IP Services",
-            value: "20% Co-pay for IP Services"
-        }
-    ]
-};
-
 export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
     private container!: HTMLDivElement;
@@ -253,10 +218,20 @@ private async loadData(): Promise<void> {
             : [];
 
         const policyStartDate = api.policyStartDate;
+        const productType = this.getProductType(api);
+        const isEbpProduct = productType === "EBP";
+        const productDetails =
+            this.parseProductDetailsJson(
+                this.context.parameters.adnic_productdetails?.raw || ""
+            );
+        const useJsonProductDetails =
+            productType === "EBP" &&
+            productDetails.length > 0;
 
         const categories =
-            api.productSelectionResponse?.categories ||
-            [];
+            useJsonProductDetails
+                ? productDetails
+                : api.productSelectionResponse?.categories || [];
 
         const categoryPremiums = Array.isArray(api.categoryPremiums)
             ? api.categoryPremiums
@@ -264,16 +239,27 @@ private async loadData(): Promise<void> {
 
         const plans: any[] = categories.map((cat: any) => {
 
-            const benefits =
-                Array.isArray(cat.benefits)
-                    ? cat.benefits
-                    : [];
+            const categoryCode =
+                this.getCategoryCode(cat);
 
-            const categoryMembers = members.filter(
+            const benefits =
+                this.getDisplayBenefits(
+                    cat,
+                    productType,
+                    useJsonProductDetails
+                );
+
+            const matchedCategoryMembers = members.filter(
                 (m: any) =>
                     this.normalizeCategory(m.category) ===
-                    this.normalizeCategory(cat.categoryCode)
+                    this.normalizeCategory(categoryCode)
             );
+
+            const categoryMembers =
+                isEbpProduct &&
+                this.isEbpCategory(categoryCode)
+                    ? this.getEbpMembers(members)
+                    : matchedCategoryMembers;
 
             const categoryPremium =
                 categoryPremiums.find(
@@ -286,33 +272,46 @@ private async loadData(): Promise<void> {
                 categoryPremium?.currentPremium || 0
             );
 
+            const showSingleMemberPremium =
+                isEbpProduct ||
+                this.normalizeCategory(
+                    categoryPremium?.categoryName
+                ) === "LSB";
+
             return {
 
-                category: cat.categoryCode,
+                category: categoryCode,
 
                 network:
-                    cat.productSelection?.networkProviderName || "-",
+                    this.getNetworkProvider(cat),
 
                 networkType:
-                    cat.productSelection?.networkTypeName || "-",
+                    this.getNetworkType(cat),
 
-                benefits: benefits.map((b: any) => ({
-                    name: String(
-                        b.benefitName || "-"
-                    ),
-                    value: String(
-                        b.benefitValue || "-"
-                    )
-                })),
+                benefits:
+                    this.mapBenefits(benefits),
+
+                isEbp: isEbpProduct,
 
                 totalMembers:
                     categoryMembers.length,
 
                 memberBreakdown:
-                    this.getMemberBreakdown(
-                        categoryMembers,
-                        policyStartDate
-                    ),
+                    showSingleMemberPremium
+                        ? this.getMemberPremiums(
+                            categoryMembers,
+                            true
+                        )
+                        : this.getMemberBreakdown(
+                            categoryMembers,
+                            policyStartDate,
+                            productType
+                        ),
+
+                memberBreakdownLabel:
+                    showSingleMemberPremium
+                        ? "Member Premium"
+                        : "Member Breakdown",
 
                 totalPremium:
                     this.formatCurrency(
@@ -326,14 +325,11 @@ private async loadData(): Promise<void> {
                 this.isEbpCategory(p.categoryName)
         );
 
-        const ebpMembers = members.filter(
-            (m: any) =>
-                this.isEbpCategory(m.category)
-        );
+        const ebpMembers = this.getEbpMembers(members);
 
         const hasEbpCategory =
             categories.some((cat: any) =>
-                this.isEbpCategory(cat.categoryCode)
+                this.isEbpCategory(this.getCategoryCode(cat))
             ) ||
             categoryPremiums.some((p: any) =>
                 this.isEbpCategory(p.categoryName)
@@ -342,42 +338,33 @@ private async loadData(): Promise<void> {
                 this.isEbpCategory(m.category)
             );
 
-        if (ebpPremium || ebpMembers.length || hasEbpCategory) {
+        const hasMappedEbpPlan = plans.some((plan: any) =>
+            this.isEbpCategory(plan.category)
+        );
 
-            const ebpBenefitsSource =
-                categories.find((cat: any) =>
-                    this.isEbpCategory(cat.categoryCode) &&
-                    Array.isArray(cat.benefits) &&
-                    cat.benefits.length
-                ) ||
-                categories.find((cat: any) =>
-                    Array.isArray(cat.benefits) &&
-                    cat.benefits.length
-                );
+        if (!hasMappedEbpPlan &&
+            (ebpPremium || ebpMembers.length || hasEbpCategory)) {
 
-            const ebpBenefits =
-                (ebpBenefitsSource?.benefits || [])
-                    .filter((b: any) => {
-                        const name = String(b.benefitName || "").toLowerCase();
-                        return name.includes("annual") ||
-                            name.includes("territorial") ||
-                            name.includes("network");
-                    })
-                    .map((b: any) => ({
-                        name: String(b.benefitName || "-"),
-                        value: String(b.benefitValue || "-")
-                    }));
-
-            const fallbackBenefits = EBP_FALLBACK_CONFIG.benefits.map((benefit: any) => ({
-                ...benefit,
-                value: benefit.value.replace("__DIRHAM__", this.getDirhamSymbol())
-            }));
+            const ebpCategorySource =
+                this.getEbpCategorySource(categories);
 
             plans.push({
                 category: "EBP",
-                benefits: fallbackBenefits,
+                network: this.getNetworkProvider(ebpCategorySource),
+                networkType: this.getNetworkType(ebpCategorySource),
+                benefits: this.mapBenefits(
+                    this.getBenefitsArray(ebpCategorySource)
+                ),
+                isEbp: true,
                 totalMembers: ebpMembers.length,
-                memberBreakdown: this.getMemberBreakdown(ebpMembers, policyStartDate),
+                memberBreakdown: this.getMemberPremiums(
+                    ebpMembers,
+                    isEbpProduct ||
+                    this.normalizeCategory(
+                        ebpPremium?.categoryName
+                    ) === "LSB"
+                ),
+                memberBreakdownLabel: "Member Premium",
                 totalPremium: this.formatCurrency(
                     Number(ebpPremium?.currentPremium || 0)
                 )
@@ -438,11 +425,206 @@ private async loadData(): Promise<void> {
             .replace(/^CAT-/, "");
     }
 
+    private getCategoryCode(category: any): string {
+
+        return String(
+            category?.categoryCode ||
+            category?.categoryName ||
+            category?.category ||
+            "-"
+        );
+    }
+
     private isEbpCategory(value: any): boolean {
 
         const category = this.normalizeCategory(value);
 
         return category === "EBP" || category === "LSB";
+    }
+
+    private getEbpMembers(members: any[]): any[] {
+
+        return members.filter((member: any) =>
+            this.isEbpCategory(member.category) ||
+            String(member.salaryType || "").trim().toUpperCase() === "LSB" ||
+            String(member.visaLocation || "").trim().toUpperCase() === "LSB"
+        );
+    }
+
+    private getEbpCategorySource(categories: any[]): any {
+
+        return categories.find((cat: any) =>
+            this.isEbpCategory(this.getCategoryCode(cat))
+        ) ||
+            categories.find((cat: any) =>
+                this.getBenefitsArray(cat).length
+            );
+    }
+
+    private getNetworkProvider(category: any): string {
+
+        return String(
+            category?.productSelection?.networkProviderName ||
+            category?.networkProvider?.name ||
+            category?.networkProviderName ||
+            category?.networkProvider ||
+            "-"
+        );
+    }
+
+    private getNetworkType(category: any): string {
+
+        return String(
+            category?.productSelection?.networkTypeName ||
+            category?.network?.name ||
+            category?.networkTypeName ||
+            category?.networkType ||
+            category?.plan ||
+            "-"
+        );
+    }
+
+    private parseProductDetailsJson(raw: string): any[] {
+
+        if (!raw) {
+            return [];
+        }
+
+        try {
+
+            const parsed =
+                JSON.parse(raw);
+
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+
+            if (Array.isArray(parsed?.categories)) {
+                return parsed.categories;
+            }
+        }
+        catch (error) {
+            console.warn(
+                "Unable to parse product details JSON",
+                error
+            );
+        }
+
+        return [];
+    }
+
+    private getBenefitsArray(category: any): any[] {
+
+        if (Array.isArray(category?.benefits)) {
+            return category.benefits;
+        }
+
+        if (Array.isArray(category?.benefits?.benefits)) {
+            return category.benefits.benefits;
+        }
+
+        return [];
+    }
+
+    private getDisplayBenefits(
+        category: any,
+        productType: string,
+        fromProductDetailsJson: boolean
+    ): any[] {
+
+        const benefits =
+            this.getBenefitsArray(category);
+
+        if (
+            !fromProductDetailsJson ||
+            productType !== "EBP"
+        ) {
+            return benefits;
+        }
+
+        const topLevelBenefits = [
+            {
+                name: "Plan",
+                value:
+                    category?.plan ||
+                    category?.network?.name
+            },
+            {
+                name: "Annual Limit",
+                value:
+                    category?.annualLimit
+            },
+            {
+                name: "Territorial Coverage",
+                value:
+                    category?.territorialCoverage
+            }
+        ].filter((benefit: any) =>
+            benefit.value !== undefined &&
+            benefit.value !== null &&
+            benefit.value !== ""
+        );
+
+        return [
+            ...topLevelBenefits,
+            ...benefits
+        ];
+    }
+
+    private mapBenefits(benefits: any[]): Array<{
+        name: string;
+        value: string;
+    }> {
+
+        return benefits.map((benefit: any) => ({
+            name: String(
+                benefit.benefitName ||
+                benefit.name ||
+                "-"
+            ),
+            value: String(
+                benefit.benefitValue ||
+                benefit.value ||
+                "-"
+            )
+        }));
+    }
+
+    private getProductType(api: any): string {
+
+        const configuredProductType =
+            this.context.parameters.adnic_name?.raw;
+
+        const productType = String(
+            configuredProductType ||
+            api.productType ||
+            api.productCode ||
+            api.productName ||
+            api.productSelectionResponse?.productType ||
+            ""
+        )
+            .trim()
+            .toUpperCase();
+
+        if (productType) {
+            return productType;
+        }
+
+        const hasEbpCategory = [
+            ...(api.productSelectionResponse?.categories || []),
+            ...(api.categoryPremiums || []),
+            ...(api.members || [])
+        ].some((item: any) =>
+            this.isEbpCategory(
+                item.categoryCode ||
+                item.categoryName ||
+                item.category
+            )
+        );
+
+        // The quote-summary endpoint is SME by default; legacy EBP responses
+        // are identified from their EBP/LSB category when no product is sent.
+        return hasEbpCategory ? "EBP" : "SME";
     }
 
     private getPlanDisplayLabel(category: string): string {
@@ -454,10 +636,16 @@ private async loadData(): Promise<void> {
 
     private getMemberBreakdown(
         members: any[],
-        policyStartDate?: string
+        policyStartDate: string | undefined,
+        productType: string
     ): string[] {
 
-        if (!members?.length) {
+        const employeeMembers =
+            (members || []).filter((member: any) =>
+                this.isEmployee(member)
+            );
+
+        if (!employeeMembers.length) {
             return [];
         }
 
@@ -466,7 +654,7 @@ private async loadData(): Promise<void> {
             premium: number;
         }> = {};
 
-        members.forEach((m: any) => {
+        employeeMembers.forEach((m: any) => {
 
             const age =
                 this.calculateAge(
@@ -474,11 +662,8 @@ private async loadData(): Promise<void> {
                     policyStartDate
                 );
 
-            const start =
-                Math.floor(age / 5) * 5;
-
-            const end =
-                start + 4;
+            const ageBand =
+                this.getAgeBand(age, productType);
 
             const gender =
                 m.gender === "M"
@@ -510,7 +695,7 @@ private async loadData(): Promise<void> {
                 );
 
             const key =
-                `Age ${start}-${end} (${gender}) [${emirate}] [${category}] ${maritalStatus}`;
+                `Age ${ageBand} (${gender}) [${emirate}] [${category}] ${maritalStatus}`;
 
             if (!groups[key]) {
 
@@ -536,6 +721,77 @@ private async loadData(): Promise<void> {
                 }
             )}`;
         });
+    }
+
+    private getAgeBand(age: number, productType: string): string {
+
+        if (productType === "SME") {
+            if (age <= 17) return "0-17";
+            if (age <= 24) return "18-24";
+            if (age <= 29) return "25-29";
+            if (age <= 34) return "30-34";
+            if (age <= 39) return "35-39";
+            if (age <= 44) return "40-44";
+            if (age <= 49) return "45-49";
+            if (age <= 54) return "50-54";
+            if (age <= 59) return "55-59";
+            if (age <= 64) return "60-64";
+            return "65+";
+        }
+
+        if (productType === "DIFC") {
+            if (age <= 17) return "0-17";
+            if (age <= 35) return "18-35";
+            if (age <= 45) return "36-45";
+            if (age <= 54) return "46-54";
+            if (age <= 65) return "55-65";
+            return "65+";
+        }
+
+        const start = Math.floor(age / 5) * 5;
+        return `${start}-${start + 4}`;
+    }
+
+    private getMemberPremiums(
+        members: any[],
+        showOnlyOnce: boolean
+    ): string[] {
+
+        const employees = (members || []).filter((member: any) =>
+            this.isEmployee(member)
+        );
+
+        const membersToDisplay = showOnlyOnce
+            ? employees.slice(0, 1)
+            : employees;
+
+        return membersToDisplay.map((member: any) => {
+            const premium = Number(
+                member.premium?.finalPremium ||
+                member.premiumAmount ||
+                member.premium ||
+                0
+            );
+
+            return this.formatCurrency(premium);
+        });
+    }
+
+    private isEmployee(member: any): boolean {
+
+        const relation =
+            member?.relation?.code ||
+            member?.relation?.name ||
+            member?.relation?.display ||
+            member?.relation ||
+            member?.relationship?.code ||
+            member?.relationship ||
+            member?.relationCode ||
+            "";
+
+        return String(relation)
+            .trim()
+            .toUpperCase() === "EMPLOYEE";
     }
 
     private calculateAge(
@@ -694,14 +950,15 @@ private async loadData(): Promise<void> {
                 <div class="section">
 
                     <div class="section-title blue">
-                        Enhanced Plan - ${this.getPlanDisplayLabel(plan.category)}
+                        Enhanced Plan - ${plan.isEbp
+                            ? "EBP"
+                            : this.getPlanDisplayLabel(plan.category)}
                     </div>
 
                     <div class="plan-grid">
 
                         <div>
 
-                            ${this.isEbpCategory(plan.category) ? "" : `
                             ${this.planRow(
                                 "Network Provider",
                                 plan.network
@@ -711,7 +968,6 @@ private async loadData(): Promise<void> {
                                 "Network Type",
                                 plan.networkType
                             )}
-                            `}
 
                             ${plan.benefits
                                 .map((b: any) =>
@@ -734,7 +990,7 @@ private async loadData(): Promise<void> {
                             <div class="plan-row">
 
                             <div class="label">
-                                Member Breakdown
+                                ${plan.memberBreakdownLabel}
                             </div>
 
                             <div class="value red">
@@ -779,7 +1035,9 @@ private async loadData(): Promise<void> {
 
                         ${data.plans.map((plan: any) => `
                             <div>
-                                ${this.getPlanDisplayLabel(plan.category)}
+                                ${plan.isEbp
+                                    ? "EBP"
+                                    : this.getPlanDisplayLabel(plan.category)}
                             </div>
                         `).join("")}
 
@@ -870,9 +1128,9 @@ private async loadData(): Promise<void> {
     ): string {
 
         return `
-            <div class="row ${index % 2 === 0 ? "alt" : ""}">
-                <div class="label">${label}</div>
-                <div class="value">${value || "-"}</div>
+            <div class="quote-detail-row ${index % 2 === 0 ? "alt" : ""}">
+                <div class="quote-detail-label">${label}</div>
+                <div class="quote-detail-value">${value || "-"}</div>
             </div>
         `;
     }

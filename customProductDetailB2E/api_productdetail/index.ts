@@ -21,6 +21,7 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
     private lastCategoryRaw: string | null = null;
     private lastCategoryPremiumRaw: string | null = null;
     private lastMemberListRaw: string | null = null;
+    private lastProductDetailsRaw: string | null = null;
     private dataLoaded = false;
 
     private productType: string = "";
@@ -76,10 +77,35 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
         this.premiumRaw =
              this.context.parameters.categoryPremiums?.raw;
 
+        const productDetailsRaw =
+            context.parameters.adnic_productdetails?.raw || "";
+
         const memberListRaw =
             this.productType === "EBP"
                 ? context.parameters.adnic_memberlistjson?.raw || ""
                 : null;
+
+        if (this.shouldDisplayProductDetailsFromJson()) {
+
+            if (
+                this.lastProductDetailsRaw === productDetailsRaw &&
+                this.lastCategoryPremiumRaw === this.premiumRaw
+            ) {
+                return;
+            }
+
+            this.lastProductDetailsRaw = productDetailsRaw;
+            this.lastCategoryPremiumRaw = this.premiumRaw;
+
+            const wrapper =
+                this.container.querySelector(".grid-wrapper") as HTMLDivElement;
+
+            if (wrapper) {
+                this.renderJsonProductDetails(wrapper, productDetailsRaw);
+            }
+
+            return;
+        }
 
       
         if (!categoryRaw) return;
@@ -187,16 +213,387 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
                             this.productType,
                             this.premiumRaw,
                             this.notifyOutputChanged
-                        );
+                    );
 
                     renderer.render(wrapper);
-
-                this.notifyOutputChanged();
             }
         });
     }
 
         // ================= OUTPUT =================
+    private shouldDisplayProductDetailsFromJson(): boolean {
+
+        return this.productType === "EBP" && this.isReadOnly;
+    }
+
+    private renderJsonProductDetails(
+        wrapper: HTMLDivElement,
+        productDetailsRaw: string
+    ): void {
+
+        wrapper.innerHTML = "";
+
+        const details =
+            this.parseProductDetails(productDetailsRaw);
+
+        if (!details.length) {
+            return;
+        }
+
+        const categoryCodes =
+            details.map((item: any) =>
+                String(item?.categoryCode || "-")
+            );
+
+        const detailMap: Record<string, Record<string, any>> = {};
+
+        const setDetail = (
+            rowName: string,
+            categoryCode: string,
+            value: any
+        ) => {
+
+            if (value === undefined || value === null || value === "") {
+                return;
+            }
+
+            if (!detailMap[rowName]) {
+                detailMap[rowName] = {};
+            }
+
+            detailMap[rowName][categoryCode] = value;
+        };
+
+        details.forEach((item: any) => {
+
+            const categoryCode =
+                String(item?.categoryCode || "-");
+
+            setDetail(
+                "Network Provider",
+                categoryCode,
+                item?.networkProvider?.name ||
+                item?.networkProviderName ||
+                item?.networkProvider
+            );
+
+            setDetail(
+                this.productType === "EBP" ? "Plan" : "Network Type",
+                categoryCode,
+                item?.plan ||
+                item?.network?.name ||
+                item?.networkType ||
+                item?.networkTypeName
+            );
+
+            if (this.productType === "EBP") {
+                setDetail(
+                    "Annual Limit",
+                    categoryCode,
+                    item?.annualLimit
+                );
+                setDetail(
+                    "Network Type",
+                    categoryCode,
+                    item?.networkType
+                );
+                setDetail(
+                    "Territorial Coverage",
+                    categoryCode,
+                    item?.territorialCoverage
+                );
+            }
+
+            const benefits =
+                Array.isArray(item?.benefits)
+                    ? item.benefits
+                    : Array.isArray(item?.benefits?.benefits)
+                        ? item.benefits.benefits
+                        : [];
+
+            benefits.forEach((benefit: any) => {
+
+                const name =
+                    benefit?.name ||
+                    benefit?.benefitName ||
+                    benefit?.code;
+
+                const value =
+                    benefit?.value ||
+                    benefit?.benefitValue;
+
+                setDetail(name, categoryCode, value);
+            });
+        });
+
+        const rows =
+            Object.keys(detailMap);
+
+        const grid =
+            document.createElement("div");
+
+        grid.className =
+            "grid-container readonly-grid";
+
+        grid.style.gridTemplateColumns =
+            "40px 220px repeat("
+            + categoryCodes.length
+            + ", 1fr)";
+
+        ["#", "Details"]
+            .concat(categoryCodes)
+            .forEach((header) => {
+
+                const cell =
+                    document.createElement("div");
+
+                cell.className =
+                    "grid-header";
+
+                cell.innerText =
+                    header === "#" || header === "Details"
+                        ? ""
+                        : "Category " + header;
+
+                grid.appendChild(cell);
+            });
+
+        rows.forEach((rowName, index) => {
+
+            const rowClass =
+                index % 2 === 0
+                    ? "row-even"
+                    : "row-odd";
+
+            grid.appendChild(
+                this.createJsonCell(index + 1, rowClass, "index")
+            );
+
+            grid.appendChild(
+                this.createJsonCell(rowName, rowClass)
+            );
+
+            categoryCodes.forEach((categoryCode) => {
+
+                grid.appendChild(
+                    this.createJsonCell(
+                        detailMap[rowName][categoryCode] ?? "-",
+                        rowClass
+                    )
+                );
+            });
+        });
+
+        wrapper.appendChild(grid);
+        this.renderJsonPremiumFooter(wrapper, categoryCodes, details);
+    }
+
+    private parseProductDetails(productDetailsRaw: string): any[] {
+
+        if (!productDetailsRaw) {
+            return [];
+        }
+
+        try {
+
+            const parsed =
+                JSON.parse(productDetailsRaw);
+
+            if (Array.isArray(parsed)) {
+                return parsed;
+            }
+
+            if (Array.isArray(parsed?.categories)) {
+                return parsed.categories;
+            }
+        }
+        catch (error) {
+            console.warn(
+                "Unable to parse product details JSON",
+                error
+            );
+        }
+
+        return [];
+    }
+
+    private createJsonCell(
+        text: any,
+        rowClass?: string,
+        extraClass?: string
+    ): HTMLDivElement {
+
+        const cell =
+            document.createElement("div");
+
+        cell.className =
+            "grid-cell "
+            + (rowClass || "")
+            + " "
+            + (extraClass || "");
+
+        cell.innerText =
+            String(text);
+
+        return cell;
+    }
+
+    private renderJsonPremiumFooter(
+        wrapper: HTMLDivElement,
+        categoryCodes: string[],
+        details: any[]
+    ): void {
+
+        if (!this.premiumRaw) {
+            return;
+        }
+
+        let premiums: any[] = [];
+
+        try {
+            premiums = JSON.parse(this.premiumRaw);
+        }
+        catch {
+            return;
+        }
+
+        if (!premiums.length) {
+            return;
+        }
+
+        const footer =
+            document.createElement("div");
+
+        footer.className =
+            "premium-footer";
+
+        footer.style.gridTemplateColumns =
+            "40px 220px repeat("
+            + categoryCodes.length
+            + ", 1fr)";
+
+        footer.appendChild(document.createElement("div"));
+        footer.appendChild(document.createElement("div"));
+
+        categoryCodes.forEach((categoryCode) => {
+
+            const premium =
+                premiums.find((p: any) =>
+                    p.categoryName === "CAT-" + categoryCode ||
+                    p.categoryName === categoryCode ||
+                    p.categoryName === ("Category " + categoryCode)
+                );
+
+            const cell =
+                document.createElement("div");
+
+            cell.className =
+                "premium-cell";
+
+            if (premium) {
+
+                cell.innerHTML =
+                    "<div class='premium-title'>Category "
+                    + categoryCode
+                    + " Premiums</div>"
+                    + "<div class='premium-amount'>"
+                    + "<img class='dirham-icon' src='"
+                    + this.symbolUrl
+                    + "' /> "
+                    + Number(
+                        premium.currentPremium || 0
+                    ).toLocaleString()
+                    + "</div>"
+                    + "<div class='premium-members'>Members "
+                    + (premium.memberCount || 0)
+                    + "</div>";
+
+                this.renderJsonPremiumTobLink(
+                    cell,
+                    categoryCode,
+                    details
+                );
+            }
+
+            footer.appendChild(cell);
+        });
+
+        wrapper.appendChild(footer);
+    }
+
+    private renderJsonPremiumTobLink(
+        cell: HTMLDivElement,
+        categoryCode: string,
+        details: any[]
+    ): void {
+
+        if (this.productType !== "EBP") {
+            return;
+        }
+
+        const detail =
+            (details || []).find((item: any) =>
+                String(item?.categoryCode || "-") === categoryCode
+            );
+
+        const provider =
+            detail?.networkProvider?.name ||
+            detail?.networkProviderName ||
+            detail?.networkProvider ||
+            "";
+
+        const plan =
+            detail?.network?.name ||
+            detail?.plan ||
+            detail?.networkType ||
+            detail?.networkTypeName ||
+            "";
+
+        const url =
+            EbpRuleService.getTobUrl(provider, plan);
+
+        if (!provider || !plan || !url) {
+            return;
+        }
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "premium-tob";
+
+        const selectedPlan =
+            document.createElement("span");
+
+        selectedPlan.className =
+            "tob-selected-plan";
+
+        selectedPlan.innerText =
+            plan + " : ";
+
+        const link =
+            document.createElement("a");
+
+        link.className =
+            "tob-link";
+
+        link.href =
+            url;
+
+        link.target =
+            "_blank";
+
+        link.rel =
+            "noopener noreferrer";
+
+        link.innerText =
+            "TOB";
+
+        wrapper.appendChild(selectedPlan);
+        wrapper.appendChild(link);
+        cell.appendChild(wrapper);
+    }
+
     private pruneSelectedValuesToCurrentCategories(
         categories: any[]
     ): void {
@@ -230,6 +627,14 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
     }
 
     public getOutputs(): IOutputs {
+
+        if (this.shouldDisplayProductDetailsFromJson()) {
+
+            return {
+                adnic_productdetails:
+                    this.context.parameters.adnic_productdetails?.raw || ""
+            };
+        }
 
         if (
             !this.apiData ||
@@ -402,6 +807,36 @@ const provider =
                         meta?.metadata || {}
                 });
             });
+
+            if (this.productType === "EBP") {
+
+                benefits.push(
+                    {
+                        code: "ANNUAL_LIMIT",
+                        name: "Annual Limit",
+                        value: EbpRuleService.getAnnualLimit(
+                            providerVal,
+                            networkVal
+                        )
+                    },
+                    {
+                        code: "NETWORK",
+                        name: "Network Type",
+                        value: EbpRuleService.getNetworkType(
+                            providerVal,
+                            networkVal
+                        )
+                    },
+                    {
+                        code: "TERRITORIAL_COMPREHENSIVE",
+                        name: "Territorial Coverage",
+                        value: EbpRuleService.getCoverage(
+                            providerVal,
+                            networkVal
+                        )
+                    }
+                );
+            }
 
             result.push({
 

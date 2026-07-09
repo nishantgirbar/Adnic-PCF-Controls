@@ -238,7 +238,7 @@ export class EbpControlPcf implements ComponentFramework.StandardControl<IInputs
                         ${optionsHtml}
                     </select>
 
-                    <span class="dropdown-arrow">▼</span>
+                    <span class="dropdown-arrow"></span>
                 </div>
             </div>
         `;

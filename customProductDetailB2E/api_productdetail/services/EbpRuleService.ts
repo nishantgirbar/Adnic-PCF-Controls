@@ -855,6 +855,82 @@ public static getNetworkType(
     return "";
 }
 
+public static getTobUrl(
+    provider: string,
+    plan: string
+): string {
+
+    const providerSlug =
+        this.getTobProviderSlug(provider);
+
+    const planSlug =
+        this.getTobPlanSlug(plan);
+
+    if (!providerSlug || !planSlug) {
+        return "";
+    }
+
+    return "https://nexusdev.adnic.ae/sit/sales/tob/"
+        + providerSlug
+        + "/"
+        + providerSlug
+        + "-"
+        + planSlug
+        + ".pdf";
+}
+
+private static getTobProviderSlug(
+    provider: string
+): string {
+
+    const providerName =
+        this.normalize(provider);
+
+    const providerMap: Record<string, string> = {
+        ECARE: "ecare",
+        FMC: "fmc"
+    };
+
+    return providerMap[providerName] || this.toTobSlug(provider);
+}
+
+private static getTobPlanSlug(
+    plan: string
+): string {
+
+    const planName =
+        this.normalize(plan);
+
+    const planMap: Record<string, string> = {
+        BASIC: "basic",
+        BASICPLUS: "basic-plus",
+        BASICLSB: "basic-lsb",
+        BASICHSB: "basic-hsb",
+        ENHANCED1: "enhanced-1",
+        ENHANCED2: "enhanced-2",
+        SUPERIOR1: "superior-1",
+        SUPERIOR2: "superior-2",
+        SUPERIOR3: "superior-3",
+        SUPERIOR4: "superior-4",
+        SUPERIOR5: "superior-5",
+        SUPERIOR6: "superior-6"
+    };
+
+    return planMap[planName] || this.toTobSlug(plan);
+}
+
+private static toTobSlug(
+    value: string
+): string {
+
+    return (value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
  public static getCoverage(
     provider: string,
     plan: string
@@ -902,31 +978,31 @@ public static getNetworkType(
                 "UAE (Excluding Abu Dhabi & Al Ain) for Elective Treatments & whole UAE for Emergency treatments",
 
             "Basic Plus":
-                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments",
+                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments. Cover is extended to Home Country (Excluding USA & Canada) for IP treatments subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
            "Enhanced 1":
-                "UAE (Excluding the Emirate of Abu Dhabi & Al Ain Region). Emergency extension to UAE; Home country (Excluding USA & Canada). Covered for IP subject to UAE R&C selected Network rates and with prior-approval.",
+                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments. Cover is extended to Home Country (Excluding USA & Canada) for IP treatments subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Enhanced 2":
-                "UAE (Excluding the Emirate of Abu Dhabi & Al Ain Region). Emergency extension to UAE; Home country (Excluding USA & Canada). Covered for IP subject to UAE R&C selected Network rates and with prior-approval.",
+                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments. Cover is extended to Home Country (Excluding USA & Canada) for IP treatments subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
            "Superior 1":
-                "UAE (Excluding the Emirate of Abu Dhabi & Al Ain Region). Emergency extension to UAE; Home country (Excluding USA & Canada). Covered for IP subject to UAE R&C selected Network rates and with prior-approval.",
+                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments. Cover is extended to Home Country (Excluding USA & Canada) for IP treatments subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Superior 2":
-                "UAE (Excluding the Emirate of Abu Dhabi & Al Ain Region). Emergency extension to UAE; Home country (Excluding USA & Canada). Covered for IP subject to UAE R&C selected Network rates and with prior-approval.",
+                "UAE (Excluding Abu Dhabi & Al Ain Region) for elective treatments & whole UAE for emergency treatments. Cover is extended to Home Country (Excluding USA & Canada) for IP treatments subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Superior 3":
-                "UAE & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments",
+                "UAE & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments. Elective IP treatment outside UAE is subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Superior 4":
-                "UAE & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments",
+                "UAE & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments. Elective IP treatment outside UAE is subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Superior 5":
-                "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments",
+                "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments. Elective IP treatment outside UAE is subject to prior approval. Emergency medical treatment within all emirates of the UAE",
 
             "Superior 6":
-                "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments"
+                "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments. Elective IP treatment outside UAE is subject to prior approval. Emergency medical treatment within all emirates of the UAE"
         };
 
         return fmcCoverage[plan] || "";

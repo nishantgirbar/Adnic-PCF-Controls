@@ -31,6 +31,9 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private context!: ComponentFramework.Context<IInputs>;
 
   private lastRaw: string | null = null;
+  private lastAbove65Raw: string | null = null;
+  private hasLoadedShowEbpPlan: boolean = false;
+  private showEbpPlanSignature: string = "";
   private enableUpload: boolean = false;
   private productType: string = "";
   private isReadOnly: boolean = false;
@@ -38,6 +41,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private deleteBtn!: HTMLButtonElement;
   private fileInteractionActive: boolean = false;
   private refreshPending: boolean = false;
+  private uploadErrors = new WeakMap<object, string>();
 
   private createEmptyMember(): any {
 
@@ -71,6 +75,117 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     return member;
+  }
+
+  private normalizeAttachmentsFromMember(member: any): any[] {
+
+    if (Array.isArray(member.attachments)) {
+      return member.attachments
+        .map((attachment: any) => ({
+          name: String(attachment?.name || attachment?.filename || ""),
+          mimeType: String(attachment?.mimeType || attachment?.mimetype || "application/pdf"),
+          size: Number(attachment?.size || attachment?.filesize || 0),
+          annotationId: this.normalizeAnnotationId(
+            attachment?.annotationId ||
+            attachment?.id ||
+            attachment?.annotationid
+          ),
+          content: attachment?.content || ""
+        }))
+        .filter((attachment: any) =>
+          attachment.name ||
+          attachment.annotationId ||
+          attachment.content
+        );
+    }
+
+    if (member.document || member.documentName) {
+      return [{
+        name: String(member.documentName || ""),
+        mimeType: "application/pdf",
+        size: 0,
+        annotationId: "",
+        content: member.document || ""
+      }];
+    }
+
+    return [];
+  }
+
+  private getMemberHydrationKey(member: any, fallbackSerialNo: number): string {
+
+    const serialNo = Number(member?.serialNo ?? fallbackSerialNo);
+
+    if (Number.isInteger(serialNo) && serialNo > 0) {
+      return `serial:${serialNo}`;
+    }
+
+    return [
+      "member",
+      String(member?.relation || "").trim().toUpperCase(),
+      String(member?.gender || "").trim().toUpperCase(),
+      String(member?.dateOfBirth || "").trim(),
+      String(member?.salaryType || "").trim().toUpperCase(),
+      String(member?.visaLocation || "").trim().toUpperCase(),
+      String(member?.category || "").trim().toUpperCase(),
+      String(member?.maritalStatus || "").trim().toUpperCase()
+    ].join("|");
+  }
+
+  private hydrateMembersFromAbove65(savedAbove65Raw: string | null | undefined, members: any[]): any[] {
+
+    if (!savedAbove65Raw) {
+      return members;
+    }
+
+    let savedAbove65: any[] = [];
+
+    try {
+      const parsed = JSON.parse(savedAbove65Raw);
+      savedAbove65 = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      console.warn("Invalid listOfMemberAbove65 JSON ignored.", savedAbove65Raw);
+      return members;
+    }
+
+    if (!savedAbove65.length) {
+      return members;
+    }
+
+    const savedByKey = new Map<string, any>();
+
+    savedAbove65.forEach((member, index) => {
+      savedByKey.set(this.getMemberHydrationKey(member, index + 1), member);
+    });
+
+    return members.map((member, index) => {
+      const savedMember = savedByKey.get(this.getMemberHydrationKey(member, index + 1));
+
+      if (!savedMember) {
+        return member;
+      }
+
+      const currentAttachments = this.normalizeAttachmentsFromMember(member);
+      const savedAttachments = this.normalizeAttachmentsFromMember(savedMember);
+      const shouldUseSavedAttachments =
+        savedAttachments.length > 0 &&
+        (
+          currentAttachments.length === 0 ||
+          currentAttachments.every((attachment: any) => !attachment.annotationId && !attachment.content)
+        );
+
+      const attachments = shouldUseSavedAttachments
+        ? savedAttachments
+        : currentAttachments;
+
+      return this.normalizeMemberCategoryForSalaryType({
+        ...member,
+        remarks: String(member.remarks || savedMember.remarks || ""),
+        attachments,
+        document: "",
+        documentName: attachments[0]?.name || String(member.documentName || savedMember.documentName || "")
+      });
+    });
   }
 
   private addNewMember(): void {
@@ -245,6 +360,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     this.enableUpload = context.parameters.enableUpload.raw ?? false;
     this.productType = (context.parameters.adnic_name?.raw || "").toUpperCase();
     this.isReadOnly = context.mode.isControlDisabled;
+
+    if (!this.hasLoadedShowEbpPlan) {
+      this.showEbpPlan = context.parameters.adnic_adnic_showebpplan.raw ?? undefined;
+      this.hasLoadedShowEbpPlan = true;
+    }
+
     console.log(
       "isReadOnly:",
       this.isReadOnly,
@@ -261,38 +382,29 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     const raw = context.parameters.memberData.raw;
+    const above65Raw = context.parameters.listOfMemberAbove65.raw;
 
-    if (raw !== this.lastRaw) {
+    if (raw !== this.lastRaw || above65Raw !== this.lastAbove65Raw) {
       this.lastRaw = raw;
+      this.lastAbove65Raw = above65Raw;
 
       try {
         // 🔥 NORMALIZE RELATION TO UPPERCASE
-        this.members = (raw ? JSON.parse(raw) : []).map((m: any) => {
-          const attachments = Array.isArray(m.attachments)
-            ? m.attachments.map((a: any) => ({
-              name: String(a?.name || ""),
-              mimeType: String(a?.mimeType || "application/pdf"),
-              size: Number(a?.size || 0),
-              annotationId: this.normalizeAnnotationId(a?.annotationId || a?.id || a?.annotationid)
-            }))
-            : (m.document || m.documentName)
-              ? [{
-                name: String(m.documentName || ""),
-                mimeType: "application/pdf",
-                size: 0,
-                annotationId: ""
-              }]
-              : [];
+        const parsedMembers = (raw ? JSON.parse(raw) : []).map((m: any) => {
+          const attachments = this.normalizeAttachmentsFromMember(m);
 
-          return this.normalizeMemberCategoryForSalaryType({
+          return {
             ...m,
             relation: m.relation ? m.relation.toUpperCase() : "",
             remarks: String(m.remarks || ""),
             attachments,
             document: "",
             documentName: attachments[0]?.name || String(m.documentName || "")
-          });
+          };
         });
+
+        this.members = this.hydrateMembersFromAbove65(above65Raw, parsedMembers);
+        this.showEbpPlanSignature = this.getShowEbpPlanSignature();
       } catch {
         console.warn("Invalid memberData JSON ignored.", raw);
       }
@@ -311,34 +423,40 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     }
     console.log("updateView: members", this.members);
-    if (this.updateDerivedOutputJsons()) {
+    if (this.updateDerivedOutputJsons(false)) {
       this.notifyOutputChanged();
     }
 
     this.refresh();
   }
 
-  private updateDerivedOutputJsons(): boolean {
+  private updateDerivedOutputJsons(updateShowEbpPlan = true): boolean {
 
     const above65Changed = this.updateAbove65Members();
     const categoriesChanged = this.updateUniqueCategories();
-    const showEbpPlanChanged = this.updateShowEbpPlan();
+    const showEbpPlanChanged = updateShowEbpPlan
+      ? this.updateShowEbpPlan()
+      : false;
 
     return above65Changed || categoriesChanged || showEbpPlanChanged;
   }
 
   private updateShowEbpPlan(): boolean {
 
+    const nextSignature = this.getShowEbpPlanSignature();
+
+    if (nextSignature === this.showEbpPlanSignature) {
+      return false;
+    }
+
     const nextShowEbpPlan = this.members.some(member => {
       const relation = (member.relation || "").trim().toUpperCase();
 
-      if (!relation) {
-        return false;
-      }
-
-      return relation !== "EMPLOYEE" ||
+      return relation === "EMPLOYEE" &&
         this.isLsbSalaryType(member.salaryType);
     });
+
+    this.showEbpPlanSignature = nextSignature;
 
     if (nextShowEbpPlan === this.showEbpPlan) {
       return false;
@@ -346,6 +464,16 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     this.showEbpPlan = nextShowEbpPlan;
     return true;
+  }
+
+  private getShowEbpPlanSignature(): string {
+
+    return JSON.stringify(
+      this.members.map(member => ({
+        relation: (member.relation || "").trim().toUpperCase(),
+        salaryType: (member.salaryType || "").trim().toUpperCase()
+      }))
+    );
   }
 
   private updateAbove65Members(): boolean {
@@ -361,21 +489,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         ) >= 65
       )
       .map(({ member, serialNo }) => {
-        const attachments = Array.isArray(member.attachments)
-          ? member.attachments.map((a: any) => ({
-            name: String(a?.name || ""),
-            mimeType: String(a?.mimeType || "application/pdf"),
-            size: Number(a?.size || 0),
-            annotationId: this.normalizeAnnotationId(a?.annotationId || a?.id || a?.annotationid)
-          }))
-          : (member.document || member.documentName)
-            ? [{
-              name: String(member.documentName || ""),
-              mimeType: "application/pdf",
-              size: 0,
-              annotationId: ""
-            }]
-            : [];
+        const attachments = this.normalizeAttachmentsFromMember(member);
 
         return {
           ...member,
@@ -424,7 +538,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     return true;
   }
 
-  private getCurrentRecordContext(): { entityId: string; entityTypeName: string; entitySetName: string } {
+  private getCurrentRecordContext(): { entityId: string; entityTypeName: string } {
     const pageContext = (this.context as any).page;
     const modeContext = (this.context as any).mode?.contextInfo;
     const localXrm = (window as any)?.Xrm;
@@ -448,15 +562,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       ""
     ).toLowerCase();
 
-    const entitySetName = entityTypeName ? `${entityTypeName}s` : "";
-
     const xrmPageEntityId = xrmPage?.data?.entity?.getId ? xrmPage.data.entity.getId() : undefined;
     const xrmPageEntityName = xrmPage?.data?.entity?.getEntityName ? xrmPage.data.entity.getEntityName() : undefined;
 
     console.debug("PCF record context debug", {
       entityId,
       entityTypeName,
-      entitySetName,
       pageContext: pageContext ? { entityId: pageContext.entityId, entityTypeName: pageContext.entityTypeName } : undefined,
       modeContext: modeContext ? { entityId: modeContext.entityId, entityTypeName: modeContext.entityTypeName } : undefined,
       xrmPageInput: xrmPageContext?.input ? { entityId: xrmPageContext.input.entityId, entityTypeName: xrmPageContext.input.entityTypeName } : undefined,
@@ -467,9 +578,32 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     return {
       entityId,
-      entityTypeName,
-      entitySetName
+      entityTypeName
     };
+  }
+
+  private async getEntitySetName(entityTypeName: string): Promise<string> {
+
+    if (!entityTypeName) {
+      return "";
+    }
+
+    try {
+      const metadata = await this.context.utils.getEntityMetadata(entityTypeName);
+      const entitySetName = String(
+        metadata?.EntitySetName ||
+        metadata?.entitySetName ||
+        ""
+      );
+
+      if (entitySetName) {
+        return entitySetName;
+      }
+    } catch (error) {
+      console.warn("Unable to resolve entity set name from metadata.", error);
+    }
+
+    return `${entityTypeName}s`;
   }
 
   private async convertFileToBase64(file: File): Promise<string> {
@@ -488,7 +622,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   }
 
   private async uploadFileToAnnotation(file: File): Promise<string> {
-    const { entityId, entityTypeName, entitySetName } = this.getCurrentRecordContext();
+    const { entityId, entityTypeName } = this.getCurrentRecordContext();
+    const entitySetName = await this.getEntitySetName(entityTypeName);
 
     const dataUrl = await this.convertFileToBase64(file);
     const base64 = dataUrl.split(",").slice(1).join(",");
@@ -530,6 +665,22 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     return String(annotationId || "").trim().replace(/[{}]/g, "");
+  }
+
+  private async deleteAttachmentAnnotation(attachment: any): Promise<void> {
+    const annotationId = this.normalizeAnnotationId(
+      attachment?.annotationId || attachment?.id || attachment?.annotationid
+    );
+
+    if (!annotationId) {
+      return;
+    }
+
+    try {
+      await this.context.webAPI.deleteRecord("annotation", annotationId);
+    } catch (error) {
+      console.error("Failed to delete attachment annotation", error);
+    }
   }
 
   private async retrieveAnnotationContent(annotationId: string): Promise<{ fileName: string; mimeType: string; size: number; base64: string } | null> {
@@ -1267,6 +1418,23 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         const attachmentsContainer = document.createElement("div");
         attachmentsContainer.className = "uploaded-files";
 
+        const uploadError = document.createElement("div");
+        uploadError.className = "upload-error";
+        uploadError.setAttribute("role", "alert");
+
+        const setUploadError = (message: string): void => {
+          if (message) {
+            this.uploadErrors.set(row, message);
+          } else {
+            this.uploadErrors.delete(row);
+          }
+
+          uploadError.innerText = message;
+          uploadError.style.display = message ? "" : "none";
+        };
+
+        setUploadError(this.uploadErrors.get(row) || "");
+
         const remarksField = document.createElement("textarea");
         remarksField.className = "remarks-input";
         remarksField.placeholder = "Enter remarks";
@@ -1398,7 +1566,10 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               </span>
               <span>Delete</span>`;
             deleteBtn.disabled = this.isReadOnly;
-            deleteBtn.onclick = () => {
+            deleteBtn.onclick = async () => {
+              deleteBtn.disabled = true;
+              await this.deleteAttachmentAnnotation(attachment);
+
               row.attachments = row.attachments || [];
               row.attachments.splice(attachmentIndex, 1);
               if (row.attachments.length > 0) {
@@ -1432,11 +1603,43 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           const files = Array.from(fileInput.files || []);
           if (!files.length) return;
 
+          setUploadError("");
+
           // Validate files: allowed extensions for 65+ are Pdf, Png, Jpeg, Jpg and size <= 5MB
           const MAX_BYTES = 5 * 1024 * 1024; // 5MB
           const invalids: string[] = [];
           const existingAttachments = Array.isArray(row.attachments) ? row.attachments.length : 0;
           const selectedCount = files.length;
+
+          const normalizeFileName = (name: string): string =>
+            String(name || "").trim().toLocaleLowerCase();
+
+          const existingNames = new Set<string>(
+            (Array.isArray(row.attachments) ? row.attachments : [])
+              .map((attachment: any) => normalizeFileName(attachment?.name))
+              .filter((name: string) => !!name)
+          );
+
+          const existingDocumentName = normalizeFileName(row.documentName);
+          if (existingDocumentName) {
+            existingNames.add(existingDocumentName);
+          }
+
+          const selectedNames = new Set<string>();
+          const duplicateFile = files.find(file => {
+            const normalizedName = normalizeFileName(file.name);
+            const isDuplicate =
+              existingNames.has(normalizedName) ||
+              selectedNames.has(normalizedName);
+
+            selectedNames.add(normalizedName);
+            return isDuplicate;
+          });
+
+          if (duplicateFile) {
+            setUploadError("This file has already been uploaded for this member.");
+            return;
+          }
 
           if (existingAttachments + selectedCount > 5) {
             await this.context.navigation.openAlertDialog(
@@ -1468,31 +1671,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
             return;
           }
 
-          // Check duplicate names across all members
-          const existingNames = new Set<string>();
-          this.members.forEach(member => {
-            if (Array.isArray(member.attachments)) {
-              member.attachments.forEach((attachment: any) => {
-                const name = String(attachment?.name || "").trim();
-                if (name) existingNames.add(name.toLowerCase());
-              });
-            }
-            const documentName = String(member.documentName || "").trim();
-            if (documentName) existingNames.add(documentName.toLowerCase());
-          });
-
-          const duplicateFile = files.find(file => existingNames.has(file.name.trim().toLowerCase()));
-          if (duplicateFile) {
-            await this.context.navigation.openAlertDialog(
-              {
-                text: `The file name '${duplicateFile.name}' has already been uploaded. Please choose a different file.`,
-                confirmButtonLabel: "OK"
-              },
-              { width: 420, height: 180 }
-            );
-            return;
-          }
-
           const processingIndicator = document.createElement("span");
           processingIndicator.className = "upload-processing-indicator";
           processingIndicator.innerText = "Processing...";
@@ -1516,6 +1694,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               row.documentName = uploadedAttachments[0].name;
             }
 
+            setUploadError("");
             renderAttachments();
             this.updateDerivedOutputJsons();
             this.notifyOutputChanged();
@@ -1599,6 +1778,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         uploadRow.appendChild(btn);
         uploadRow.appendChild(fileInput);
         uploadRow.appendChild(attachmentsContainer);
+        uploadRow.appendChild(uploadError);
 
         renderAttachments();
         grid.appendChild(uploadRow);

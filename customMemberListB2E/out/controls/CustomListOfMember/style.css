@@ -334,6 +334,7 @@
 .b2e-members-root .upload-error {
     color: #a4262c;
     font-size: 12px;
+    flex: 0 0 100%;
 }
 
 .b2e-members-root .upload-processing-indicator {

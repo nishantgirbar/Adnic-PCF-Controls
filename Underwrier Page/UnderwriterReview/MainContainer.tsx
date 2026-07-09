@@ -202,11 +202,26 @@ export const MainContainer = ({
         data?.members || [];
 
    
+    const rawCategories =
+        data?.productSelectionResponse?.categories;
+
+    const categoryList = Array.isArray(rawCategories)
+        ? rawCategories
+        : Array.isArray(rawCategories?.categories)
+            ? rawCategories.categories
+            : [];
+
+    const categoryPremiums = Array.isArray(
+        data?.categoryPremiums
+    )
+        ? data.categoryPremiums
+        : [];
+
     const categories =
-             data.productSelectionResponse.categories.map((category:any) => {
+        categoryList.map((category: any) => {
 
         const premiumInfo =
-            data.categoryPremiums.find(
+            categoryPremiums.find(
                 (p:any) => p.categoryName === `CAT-${category.categoryCode}`
             );
 

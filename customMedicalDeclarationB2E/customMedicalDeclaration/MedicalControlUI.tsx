@@ -66,6 +66,9 @@ const MedicalControlUI = ({
         );
     };
 
+    const normalizeFileName = (fileName: string): string =>
+        fileName.trim().toLocaleLowerCase();
+
     const createBlankMember = (): Member => ({
 
         id: Date.now() + Math.floor(Math.random() * 1000),
@@ -222,6 +225,8 @@ const MedicalControlUI = ({
     const fileRefs = React.useRef<
         Record<number, HTMLInputElement | null>
     >({});
+
+    const uploadsInProgressRef = React.useRef<Set<string>>(new Set());
 
     React.useEffect(() => {
         loadQuestions();
@@ -562,6 +567,21 @@ const MedicalControlUI = ({
         return `data:${result.mimetype || "application/pdf"};base64,${result.documentbody}`;
     };
 
+    const normalizeAnnotationId = (value?: any): string => {
+
+        if (value && typeof value === "object") {
+            return normalizeAnnotationId(
+                value.annotationId ||
+                value.id ||
+                value.value
+            );
+        }
+
+        return String(value || "")
+            .trim()
+            .replace(/[{}]/g, "");
+    };
+
     // =====================================
     // HANDLE UPLOAD
     // =====================================
@@ -585,6 +605,36 @@ const MedicalControlUI = ({
                                 ...m,
                                 uploadError:
                                     "Enter valid member details before uploading"
+                            }
+                            : m
+                    )
+                );
+
+                return;
+            }
+
+            const uploadKey =
+                `${id}:${normalizeFileName(file.name)}`;
+
+            const isAlreadyUploaded =
+                (currentMember.files || []).some(
+                    existingFile =>
+                        normalizeFileName(existingFile.name) ===
+                        normalizeFileName(file.name)
+                );
+
+            if (
+                isAlreadyUploaded ||
+                uploadsInProgressRef.current.has(uploadKey)
+            ) {
+
+                setMembers(prev =>
+                    prev.map(m =>
+                        m.id === id
+                            ? {
+                                ...m,
+                                uploadError:
+                                    "This file has already been uploaded for this member."
                             }
                             : m
                     )
@@ -643,6 +693,8 @@ const MedicalControlUI = ({
 
                 return;
             }
+
+            uploadsInProgressRef.current.add(uploadKey);
 
             setUploadingCounts(prev => ({
                 ...prev,
@@ -719,6 +771,7 @@ const MedicalControlUI = ({
                     ...prev,
                     [id]: Math.max(0, (prev[id] || 1) - 1)
                 }));
+                uploadsInProgressRef.current.delete(uploadKey);
             }
         };
 
@@ -742,7 +795,9 @@ const removeFile = async (
     try {
 
         const annotationId =
-            file?.annotationId || file?.id;
+            normalizeAnnotationId(
+                file?.annotationId || file?.id
+            );
 
         if (annotationId) {
 

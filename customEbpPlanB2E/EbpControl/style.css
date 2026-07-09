@@ -90,8 +90,11 @@
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    font-size: 12px;
-    color: #605e5c;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #605e5c;
 }
 
 /* Focus */

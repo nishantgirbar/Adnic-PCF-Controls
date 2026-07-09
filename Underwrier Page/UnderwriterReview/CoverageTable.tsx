@@ -1,4 +1,8 @@
 import * as React from "react";
+import {
+    buildJsonProductDetailMap,
+    isEbpProduct
+} from "./EbpProductDetails";
 
 export const CoverageTable = ({
     categories,
@@ -19,6 +23,7 @@ export const CoverageTable = ({
     // =====================================
 
     const benefitMap: any = {};
+    const isEBP = isEbpProduct(quoteInfo);
 
     // =====================================
     // CATEGORY PREMIUM MAP
@@ -114,6 +119,13 @@ export const CoverageTable = ({
             ][categoryCode] = value;
         });
     });
+
+    const jsonDetailMap =
+        buildJsonProductDetailMap(categories);
+
+    const detailMap = isEBP
+        ? jsonDetailMap
+        : benefitMap;
 
     // =====================================
     // CATEGORY CODES
@@ -292,7 +304,7 @@ export const CoverageTable = ({
                     <tbody>
 
                         {Object.keys(
-                            benefitMap
+                            detailMap
                         ).map(
                             (
                                 name,
@@ -315,9 +327,9 @@ export const CoverageTable = ({
                                             <td key={c}>
 
                                                 {
-                                                    benefitMap[
+                                                    detailMap[
                                                         name
-                                                    ][c] || "-"
+                                                    ][c] ?? "-"
                                                 }
 
                                             </td>

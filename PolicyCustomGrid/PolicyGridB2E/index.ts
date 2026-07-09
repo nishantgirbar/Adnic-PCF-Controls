@@ -23,6 +23,8 @@ export class CustomGridB2E
 
   private searchText: string = "";
 
+  private quoteStatus: string = "";
+
   // 🔥 ENV BASE URL
 
   private apiBaseUrl: string = "";
@@ -145,6 +147,12 @@ export class CustomGridB2E
           `&searchText=${encodeURIComponent(this.searchText.trim())}`;
       }
 
+      if (this.quoteStatus?.trim()) {
+
+        url +=
+          `&status=${encodeURIComponent(this.quoteStatus.trim())}`;
+      }
+
       console.log(
         "API URL:",
         url
@@ -220,10 +228,13 @@ export class CustomGridB2E
   // 🔥 SEARCH
 
   private setSearchText = async (
-    text: string
+    text: string,
+    status?: string
   ) => {
 
     this.searchText = text || "";
+
+    this.quoteStatus = status || "";
 
     this.page = 0;
 
