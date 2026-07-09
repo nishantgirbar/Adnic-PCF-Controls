@@ -1,4 +1,4 @@
-﻿Build started 08-07-2026 22:09:45.
+﻿Build started 09-07-2026 11:48:51.
 Logging verbosity is set to: Detailed.     0>Terminal Logger was not used because the output is being redirected to a file.
        Process = "C:\Program Files\dotnet\dotnet.exe"
        MSBuild executable path = "C:\Program Files\dotnet\sdk\9.0.311\MSBuild.dll"
@@ -15,7 +15,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props(60,5): message : Property reassignment: $(MSBuildProjectExtensionsPath)="C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\" (previous value: "obj\") at C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props (60,5)
        Project "$(MSBuildProjectExtensionsPath)$(MSBuildProjectFile).*.props" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props" at (74,3), due to false condition; ('$(ImportProjectExtensionProps)' == 'true' and exists('$(MSBuildProjectExtensionsPath)')) was evaluated as ('false' == 'true' and exists('C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\')).
        C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props(84,119): message : Property 'MSBuildUserExtensionsPath' with value 'C:\Users\Nishant\AppData\Local\Microsoft\MSBuild' expanded from the environment.
-       Assembly loaded during Evaluation: System.ServiceProcess.ServiceController, Version=9.0.0.13, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\sdk\9.0.311\runtimes\win\lib\net9.0\System.ServiceProcess.ServiceController.dll, MVID: ceb10e34-247c-479b-845b-5995ce0b080b, AssemblyLoadContext: Default)
        Project "$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\Imports\Microsoft.Common.props\ImportBefore\*" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props" at (84,3), due to false condition; ('$(ImportUserLocationsByWildcardBeforeMicrosoftCommonProps)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\Imports\Microsoft.Common.props\ImportBefore')) was evaluated as ('true' == 'true' and exists('C:\Users\Nishant\AppData\Local\Microsoft\MSBuild\Current\Imports\Microsoft.Common.props\ImportBefore')).
        Project "$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Imports\Microsoft.Common.props\ImportBefore\*" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props" at (85,3), due to false condition; ('$(ImportByWildcardBeforeMicrosoftCommonProps)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Imports\Microsoft.Common.props\ImportBefore')) was evaluated as ('true' == 'true' and exists('C:\Program Files\dotnet\sdk\9.0.311\\Current\Imports\Microsoft.Common.props\ImportBefore')).
        Project "$(CustomBeforeMicrosoftCommonProps)" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Current\Microsoft.Common.props" at (92,3), due to false condition; ('$(CustomBeforeMicrosoftCommonProps)' != '' and Exists('$(CustomBeforeMicrosoftCommonProps)')) was evaluated as ('C:\Program Files\dotnet\sdk\9.0.311\\vCurrent\Custom.Before.Microsoft.Common.props' != '' and Exists('C:\Program Files\dotnet\sdk\9.0.311\\vCurrent\Custom.Before.Microsoft.Common.props')).
@@ -28,8 +27,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Project "$(DirectoryPackagesPropsPath)" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\NuGet.props" at (35,3), due to false condition; ('$(ImportDirectoryPackagesProps)' == 'true' and '$(DirectoryPackagesPropsPath)' != '' and Exists('$(DirectoryPackagesPropsPath)')) was evaluated as ('true' == 'true' and '' != '' and Exists('')).
        Project "$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props" was not imported by "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" at (8,3), due to false condition; (Exists('$(PowerAppsTargetsPath)\Microsoft.PowerApps.VisualStudio.Solution.props')) was evaluated as (Exists('C:\Program Files\dotnet\sdk\9.0.311\\Microsoft\VisualStudio\v17.0\PowerApps\Microsoft.PowerApps.VisualStudio.Solution.props')).
        Importing project "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.targets" into project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" at (55,3).
-       Assembly loaded during Evaluation: System.Security.Principal.Windows, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Security.Principal.Windows.dll, MVID: d0f9fadc-5d00-4699-af2c-1c0ecc0dd06a, AssemblyLoadContext: Default)
-       Assembly loaded during Evaluation: System.Security.Claims, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Security.Claims.dll, MVID: 33ebd9f5-1027-42dc-949a-f4c4c8317912, AssemblyLoadContext: Default)
        Importing project "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" into project "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.targets" at (22,3).
        Project "$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" at (18,3), due to false condition; ('$(MicrosoftCommonPropsHasBeenImported)' != 'true' and Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')) was evaluated as ('true' != 'true' and Exists('C:\Program Files\dotnet\sdk\9.0.311\\Current\Microsoft.Common.props')).
        Project "$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.targets\ImportBefore\*" was not imported by "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" at (27,3), due to false condition; ('$(ImportUserLocationsByWildcardBeforeMicrosoftCommonTargets)' == 'true' and exists('$(MSBuildUserExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.targets\ImportBefore')) was evaluated as ('true' == 'true' and exists('C:\Users\Nishant\AppData\Local\Microsoft\MSBuild\Current\Microsoft.Common.targets\ImportBefore')).
@@ -150,11 +147,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "RemoveDuplicates".
        Using "MSBuild" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "MSBuild"
-         Task Parameter:Targets=_IsProjectRestoreSupported
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
-         Task Parameter:Projects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Task Parameter:BuildInParallel=True
          Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:Targets=_IsProjectRestoreSupported
+         Task Parameter:Projects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      0>C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj(4,5): message : Property 'MSBuildExtensionsPath' with value 'C:\Program Files\dotnet\sdk\9.0.311\' expanded from the environment.
@@ -296,18 +293,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "MSBuild".
        Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
        Assembly loaded during TaskRun: NuGet.Build.Tasks, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll, MVID: c545d64d-0cbb-4fc0-971c-b5c1c1e75cf3, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
+       Assembly loaded during TaskRun: System.Reflection.Metadata, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Reflection.Metadata.dll, MVID: 44b07fe3-d70d-4921-b22a-c4c531ef6626, AssemblyLoadContext: Default)
        Assembly loaded during TaskRun: NuGet.Common, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Common.dll, MVID: 0fbb79ae-e358-4591-bc91-e34371a3d05b, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
        Assembly loaded during TaskRun: NuGet.Commands, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Commands.dll, MVID: e743f127-1013-45a0-a669-058903e72acf, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
        Assembly loaded during TaskRun: NuGet.ProjectModel, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.ProjectModel.dll, MVID: 08d0df58-191b-4580-9b46-c281ab5b9b36, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
        Using "WarnForInvalidProjectsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "WarnForInvalidProjectsTask"
+         Task Parameter:AllProjects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Task Parameter:
              ValidProjects=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:AllProjects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
        Done executing task "WarnForInvalidProjectsTask".
        Target output items:
            C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -319,22 +317,22 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
      1>Target "_GetAllRestoreProjectPathItems" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GenerateRestoreGraph" depends on it):
        Using "NuGetMessageTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "NuGetMessageTask"
-         Task Parameter:Importance=High
          Task Parameter:Name=DeterminingProjectsToRestore
+         Task Parameter:Importance=High
          Determining projects to restore...
        Done executing task "NuGetMessageTask".
        Task "MSBuild"
-         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
+         Task Parameter:BuildInParallel=True
+         Task Parameter:SkipNonexistentTargets=True
          Task Parameter:SkipNonexistentProjects=true
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
+         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
          Task Parameter:
              Projects=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:BuildInParallel=True
-         Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      1>Project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1) is building "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1:3) on node 1 (_GenerateRestoreProjectPathWalk target(s)).
@@ -368,12 +366,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:3>Done building target "_GenerateRestoreProjectPathItems" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:3>Target "_GenerateRestoreProjectPathWalk" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (entry point):
        Task "MSBuild"
-         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
-         Task Parameter:SkipNonexistentProjects=true
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
-         Task Parameter:Projects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
          Task Parameter:BuildInParallel=True
          Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:SkipNonexistentProjects=true
+         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
+         Task Parameter:Projects=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      0>C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj(4,5): message : Property 'MSBuildExtensionsPath' with value 'C:\Program Files\dotnet\sdk\9.0.311\' expanded from the environment.
@@ -514,11 +512,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
      2>Done building target "_GenerateRestoreProjectPathItems" in project "pcf control.pcfproj".
      2>Target "_GenerateRestoreProjectPathWalk" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (entry point):
        Task "MSBuild"
-         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
-         Task Parameter:SkipNonexistentProjects=true
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Task Parameter:BuildInParallel=True
          Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:SkipNonexistentProjects=true
+         Task Parameter:Targets=_GenerateRestoreProjectPathWalk
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
        Done executing task "MSBuild".
        Task "MSBuild" skipped, due to false condition; ( '$(RestoreUseSkipNonexistentTargets)' != 'true' ) was evaluated as ( 'true' != 'true' ).
        Added Item(s): _GenerateRestoreProjectPathWalkOutputs=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
@@ -578,9 +576,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
        Done executing task "RemoveDuplicates".
        Task "MSBuild"
-         Task Parameter:Targets=_IsProjectRestoreSupported
+         Task Parameter:BuildInParallel=True
+         Task Parameter:SkipNonexistentTargets=True
          Task Parameter:SkipNonexistentProjects=true
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
+         Task Parameter:Targets=_IsProjectRestoreSupported
          Task Parameter:
              Projects=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
@@ -591,8 +590,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:BuildInParallel=True
-         Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      1>Project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1) is building "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1:4) on node 1 (_IsProjectRestoreSupported target(s)).
@@ -657,8 +655,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        MSBuildSourceTargetName=_IsProjectRestoreSupported
                        OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
          Task Parameter:Targets=_GenerateRestoreGraphProjectEntry
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Task Parameter:
              Projects=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
@@ -669,7 +667,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:BuildInParallel=True
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      1>Project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1) is building "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (2:3) on node 1 (_GenerateRestoreGraphProjectEntry target(s)).
@@ -682,7 +680,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "CheckForDuplicateNuGetItemsTask"
          Task Parameter:ItemName=PackageReference
-         Task Parameter:LogCode=NU1504
          Task Parameter:
              Items=
                  Microsoft.PowerApps.MSBuild.Pcf
@@ -690,6 +687,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:LogCode=NU1504
          Task Parameter:MSBuildProjectFullPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
        Done executing task "CheckForDuplicateNuGetItemsTask".
        Target output items:
@@ -703,10 +701,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _HasPackageReferenceItems=true
        Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreProjectStyleTask"
+         Task Parameter:MSBuildProjectName=pcf control
+         Task Parameter:RestoreProjectStyle=PackageReference
          Task Parameter:HasPackageReferenceItems=True
          Task Parameter:MSBuildProjectDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E
-         Task Parameter:RestoreProjectStyle=PackageReference
-         Task Parameter:MSBuildProjectName=pcf control
          Output Property: RestoreProjectStyle=PackageReference
          Output Property: PackageReferenceCompatibleProjectStyle=True
        Done executing task "GetRestoreProjectStyleTask".
@@ -723,11 +721,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "Message".
        Added Item(s): 
            _RestoreGraphEntry=
-               98f32669-0532-4205-abf2-0552ce2ada45
+               849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                        ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                        Type=RestoreSpec
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
    2:3>Done building target "_GenerateRestoreSpecs" in project "pcf control.pcfproj".
@@ -740,19 +738,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:3>Target "_GetRestoreSettingsPerFramework" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GetRestoreSettingsCurrentProject" depends on it):
        Added Item(s): 
            _RestoreSettingsPerFramework=
-               06dde91c-335c-4539-b46b-0554469575b0
+               b175a2f1-cb97-4a65-ae48-270cf525152d
                        RestoreAdditionalProjectFallbackFolders=
                        RestoreAdditionalProjectFallbackFoldersExcludes=
                        RestoreAdditionalProjectSources=
        Target output items:
-           06dde91c-335c-4539-b46b-0554469575b0
+           b175a2f1-cb97-4a65-ae48-270cf525152d
                RestoreAdditionalProjectSources = 
                RestoreAdditionalProjectFallbackFoldersExcludes = 
                RestoreAdditionalProjectFallbackFolders = 
    2:3>Done building target "_GetRestoreSettingsPerFramework" in project "pcf control.pcfproj".
    2:3>Target "_GetRestoreSettingsCurrentProject" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GetRestoreSettings" depends on it):
        Target output items:
-           06dde91c-335c-4539-b46b-0554469575b0
+           b175a2f1-cb97-4a65-ae48-270cf525152d
                RestoreAdditionalProjectSources = 
                RestoreAdditionalProjectFallbackFoldersExcludes = 
                RestoreAdditionalProjectFallbackFolders = 
@@ -761,14 +759,14 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:3>Target "_GetRestoreSettings" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GenerateDotnetCliToolReferenceSpecs" depends on it):
        Using "GetRestoreSettingsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreSettingsTask"
-         Task Parameter:MSBuildStartupDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:
              RestoreSettingsPerFramework=
-                 06dde91c-335c-4539-b46b-0554469575b0
+                 b175a2f1-cb97-4a65-ae48-270cf525152d
                          RestoreAdditionalProjectFallbackFolders=
                          RestoreAdditionalProjectFallbackFoldersExcludes=
                          RestoreAdditionalProjectSources=
          Task Parameter:RestoreProjectStyle=PackageReference
+         Task Parameter:MSBuildStartupDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
          Assembly loaded during TaskRun (NuGet.Build.Tasks.GetRestoreSettingsTask): NuGet.Configuration, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Configuration.dll, MVID: b0f2e3cc-b478-45a0-a863-e83c6e00406f, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
          Output Property: _OutputSources=https://api.nuget.org/v3/index.json;C:\Program Files %28x86%29\Microsoft SDKs\NuGetPackages\
@@ -789,28 +787,28 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: DotnetCliToolTargetFramework=netcoreapp1.0
        Using "GetRestoreDotnetCliToolsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreDotnetCliToolsTask"
+         Task Parameter:RestorePackagesPath=C:\Users\Nishant\.nuget\packages\
+         Task Parameter:ToolFramework=netcoreapp1.0
+         Task Parameter:RestoreFallbackFolders=C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
+         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
          Task Parameter:
              RestoreSources=
                  https://api.nuget.org/v3/index.json
                  C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
-         Task Parameter:ToolFramework=netcoreapp1.0
-         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-         Task Parameter:RestorePackagesPath=C:\Users\Nishant\.nuget\packages\
          Task Parameter:
              RestoreConfigFilePaths=
                  C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config
                  C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config
                  C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-         Task Parameter:RestoreFallbackFolders=C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
        Done executing task "GetRestoreDotnetCliToolsTask".
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
    2:3>Done building target "_GenerateDotnetCliToolReferenceSpecs" in project "pcf control.pcfproj".
    2:3>Target "_GenerateRestoreGraphProjectEntry" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (entry point):
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
    2:3>Done building target "_GenerateRestoreGraphProjectEntry" in project "pcf control.pcfproj".
@@ -825,7 +823,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "CheckForDuplicateNuGetItemsTask"
          Task Parameter:ItemName=PackageReference
-         Task Parameter:LogCode=NU1504
          Task Parameter:
              Items=
                  Microsoft.PowerApps.MSBuild.Solution
@@ -833,6 +830,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:LogCode=NU1504
          Task Parameter:MSBuildProjectFullPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
        Done executing task "CheckForDuplicateNuGetItemsTask".
        Target output items:
@@ -846,10 +844,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _HasPackageReferenceItems=true
        Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreProjectStyleTask"
+         Task Parameter:MSBuildProjectName=PowerAppsToolsTemp_adnic
+         Task Parameter:RestoreProjectStyle=PackageReference
          Task Parameter:HasPackageReferenceItems=True
          Task Parameter:MSBuildProjectDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
-         Task Parameter:RestoreProjectStyle=PackageReference
-         Task Parameter:MSBuildProjectName=PowerAppsToolsTemp_adnic
          Output Property: RestoreProjectStyle=PackageReference
          Output Property: PackageReferenceCompatibleProjectStyle=True
        Done executing task "GetRestoreProjectStyleTask".
@@ -866,11 +864,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "Message".
        Added Item(s): 
            _RestoreGraphEntry=
-               375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+               6510ae21-f51b-4dd7-b01a-dc16015d42c9
                        ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                        Type=RestoreSpec
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
    1:5>Done building target "_GenerateRestoreSpecs" in project "PowerAppsToolsTemp_adnic.cdsproj".
@@ -883,19 +881,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:5>Target "_GetRestoreSettingsPerFramework" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GetRestoreSettingsCurrentProject" depends on it):
        Added Item(s): 
            _RestoreSettingsPerFramework=
-               7cfe9aee-e7c8-4b3a-8ddf-4b93d2db3674
+               40b93ec0-2f96-4488-9db4-c8af485d07da
                        RestoreAdditionalProjectFallbackFolders=
                        RestoreAdditionalProjectFallbackFoldersExcludes=
                        RestoreAdditionalProjectSources=
        Target output items:
-           7cfe9aee-e7c8-4b3a-8ddf-4b93d2db3674
+           40b93ec0-2f96-4488-9db4-c8af485d07da
                RestoreAdditionalProjectSources = 
                RestoreAdditionalProjectFallbackFoldersExcludes = 
                RestoreAdditionalProjectFallbackFolders = 
    1:5>Done building target "_GetRestoreSettingsPerFramework" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:5>Target "_GetRestoreSettingsCurrentProject" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GetRestoreSettings" depends on it):
        Target output items:
-           7cfe9aee-e7c8-4b3a-8ddf-4b93d2db3674
+           40b93ec0-2f96-4488-9db4-c8af485d07da
                RestoreAdditionalProjectSources = 
                RestoreAdditionalProjectFallbackFoldersExcludes = 
                RestoreAdditionalProjectFallbackFolders = 
@@ -904,14 +902,14 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:5>Target "_GetRestoreSettings" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GenerateDotnetCliToolReferenceSpecs" depends on it):
        Using "GetRestoreSettingsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreSettingsTask"
-         Task Parameter:MSBuildStartupDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:
              RestoreSettingsPerFramework=
-                 7cfe9aee-e7c8-4b3a-8ddf-4b93d2db3674
+                 40b93ec0-2f96-4488-9db4-c8af485d07da
                          RestoreAdditionalProjectFallbackFolders=
                          RestoreAdditionalProjectFallbackFoldersExcludes=
                          RestoreAdditionalProjectSources=
          Task Parameter:RestoreProjectStyle=PackageReference
+         Task Parameter:MSBuildStartupDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Output Property: _OutputSources=https://api.nuget.org/v3/index.json;C:\Program Files %28x86%29\Microsoft SDKs\NuGetPackages\
          Output Property: _OutputPackagesPath=C:\Users\Nishant\.nuget\packages\
@@ -931,28 +929,28 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: DotnetCliToolTargetFramework=netcoreapp1.0
        Using "GetRestoreDotnetCliToolsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreDotnetCliToolsTask"
+         Task Parameter:RestorePackagesPath=C:\Users\Nishant\.nuget\packages\
+         Task Parameter:ToolFramework=netcoreapp1.0
+         Task Parameter:RestoreFallbackFolders=C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
+         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Task Parameter:
              RestoreSources=
                  https://api.nuget.org/v3/index.json
                  C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
-         Task Parameter:ToolFramework=netcoreapp1.0
-         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:RestorePackagesPath=C:\Users\Nishant\.nuget\packages\
          Task Parameter:
              RestoreConfigFilePaths=
                  C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config
                  C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config
                  C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-         Task Parameter:RestoreFallbackFolders=C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
        Done executing task "GetRestoreDotnetCliToolsTask".
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
    1:5>Done building target "_GenerateDotnetCliToolReferenceSpecs" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:5>Target "_GenerateRestoreGraphProjectEntry" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (entry point):
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
    1:5>Done building target "_GenerateRestoreGraphProjectEntry" in project "PowerAppsToolsTemp_adnic.cdsproj".
@@ -960,13 +958,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
      1>_GenerateRestoreGraph:
          Output Item(s): 
              _RestoreGraphEntry=
-                 98f32669-0532-4205-abf2-0552ce2ada45
+                 849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          Type=RestoreSpec
-                 375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+                 6510ae21-f51b-4dd7-b01a-dc16015d42c9
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -974,8 +972,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          Type=RestoreSpec
        Done executing task "MSBuild".
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
          Task Parameter:Targets=_GenerateProjectRestoreGraph
-         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Task Parameter:
              Projects=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
@@ -986,7 +984,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:BuildInParallel=True
+         Task Parameter:Properties=ExcludeRestorePackageImports=true
          Global Properties:
            ExcludeRestorePackageImports=true
      1>Project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (1) is building "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (2:4) on node 1 (_GenerateProjectRestoreGraph target(s)).
@@ -1002,10 +1000,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _TargetFrameworkToBeUsed=
        Using "GetProjectTargetFrameworksTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetProjectTargetFrameworksTask"
-         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-         Task Parameter:TargetFramework=net462
          Task Parameter:TargetPlatformVersion=7.0
          Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
+         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
+         Task Parameter:TargetFramework=net462
          Task Parameter:TargetPlatformIdentifier=Windows
          Output Property: _RestoreProjectFramework=net462
        Done executing task "GetProjectTargetFrameworksTask".
@@ -1025,7 +1023,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _RestoreProjectVersion=1.0.0
        Added Item(s): 
            _RestoreGraphEntry=
-               88227979-6b25-4439-8f1c-61cfa9a2f72e
+               5359efdd-737a-4bf9-9181-0cc3b8745fa7
                        CentralPackageFloatingVersionsEnabled=
                        CentralPackageTransitivePinningEnabled=
                        CentralPackageVersionOverrideEnabled=
@@ -1061,10 +1059,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        WarningsNotAsErrors=
                        _CentralPackageVersionsEnabled=
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1142,13 +1140,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:4>Target "_GenerateProjectRestoreGraphPerFramework" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GenerateProjectRestoreGraphCurrentProject" depends on it):
        Using "GetRestoreProjectReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreProjectReferencesTask"
+         Task Parameter:ParentProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
          Task Parameter:TargetFrameworks=net462
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-         Task Parameter:ParentProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
        Done executing task "GetRestoreProjectReferencesTask".
        Using "GetRestorePackageReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestorePackageReferencesTask"
-         Task Parameter:TargetFrameworks=net462
          Task Parameter:
              PackageReferences=
                  Microsoft.PowerApps.MSBuild.Pcf
@@ -1156,16 +1153,17 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:TargetFrameworks=net462
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
          Output Item(s): 
              _RestoreGraphEntry=
-                 e432c93b-e8c8-4023-8b96-143d89ebb74f
+                 f8b28689-d787-4de2-a9e8-e0941f1132b2
                          Id=Microsoft.PowerApps.MSBuild.Pcf
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 199cff4d-96e5-4f43-a48b-386b23fbe04e
+                 3b4d279c-83fa-4e92-8c37-09aad82a9637
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
@@ -1196,7 +1194,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "GetRestorePrunePackageReferencesTask".
        Added Item(s): 
            _RestoreGraphEntry=
-               347dd4c7-e23e-4589-a456-cafd77c0233b
+               8783248a-418c-4a5c-9eae-56e5116c536e
                        AssetTargetFallback=
                        CLRSupport=
                        NuGetAuditMode=direct
@@ -1216,10 +1214,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        Type=TargetFrameworkInformation
                        WindowsTargetPlatformMinVersion=
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1254,20 +1252,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = pcf control
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           e432c93b-e8c8-4023-8b96-143d89ebb74f
+           f8b28689-d787-4de2-a9e8-e0941f1132b2
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.PowerApps.MSBuild.Pcf
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           199cff4d-96e5-4f43-a48b-386b23fbe04e
+           3b4d279c-83fa-4e92-8c37-09aad82a9637
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           347dd4c7-e23e-4589-a456-cafd77c0233b
+           8783248a-418c-4a5c-9eae-56e5116c536e
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1289,10 +1287,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:4>Done building target "_GenerateProjectRestoreGraphPerFramework" in project "pcf control.pcfproj".
    2:4>Target "_GenerateProjectRestoreGraphCurrentProject" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GenerateRestoreDependencies" depends on it):
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1327,20 +1325,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = pcf control
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           e432c93b-e8c8-4023-8b96-143d89ebb74f
+           f8b28689-d787-4de2-a9e8-e0941f1132b2
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.PowerApps.MSBuild.Pcf
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           199cff4d-96e5-4f43-a48b-386b23fbe04e
+           3b4d279c-83fa-4e92-8c37-09aad82a9637
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           347dd4c7-e23e-4589-a456-cafd77c0233b
+           8783248a-418c-4a5c-9eae-56e5116c536e
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1362,10 +1360,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:4>Done building target "_GenerateProjectRestoreGraphCurrentProject" in project "pcf control.pcfproj".
    2:4>Target "_GenerateRestoreDependencies" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "_GenerateProjectRestoreGraph" depends on it):
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1400,20 +1398,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = pcf control
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           e432c93b-e8c8-4023-8b96-143d89ebb74f
+           f8b28689-d787-4de2-a9e8-e0941f1132b2
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.PowerApps.MSBuild.Pcf
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           199cff4d-96e5-4f43-a48b-386b23fbe04e
+           3b4d279c-83fa-4e92-8c37-09aad82a9637
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           347dd4c7-e23e-4589-a456-cafd77c0233b
+           8783248a-418c-4a5c-9eae-56e5116c536e
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1435,10 +1433,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:4>Done building target "_GenerateRestoreDependencies" in project "pcf control.pcfproj".
    2:4>Target "_GenerateProjectRestoreGraph" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (entry point):
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1473,20 +1471,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = pcf control
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           e432c93b-e8c8-4023-8b96-143d89ebb74f
+           f8b28689-d787-4de2-a9e8-e0941f1132b2
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.PowerApps.MSBuild.Pcf
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           199cff4d-96e5-4f43-a48b-386b23fbe04e
+           3b4d279c-83fa-4e92-8c37-09aad82a9637
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           347dd4c7-e23e-4589-a456-cafd77c0233b
+           8783248a-418c-4a5c-9eae-56e5116c536e
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1520,10 +1518,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _TargetFrameworkToBeUsed=
        Using "GetProjectTargetFrameworksTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetProjectTargetFrameworksTask"
-         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:TargetFramework=net462
          Task Parameter:TargetPlatformVersion=7.0
          Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
+         Task Parameter:ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
+         Task Parameter:TargetFramework=net462
          Task Parameter:TargetPlatformIdentifier=Windows
          Output Property: _RestoreProjectFramework=net462
        Done executing task "GetProjectTargetFrameworksTask".
@@ -1543,7 +1541,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _RestoreProjectVersion=1.0.0
        Added Item(s): 
            _RestoreGraphEntry=
-               79bd6847-6836-4fe6-9e99-59e0826a0d40
+               d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                        CentralPackageFloatingVersionsEnabled=
                        CentralPackageTransitivePinningEnabled=
                        CentralPackageVersionOverrideEnabled=
@@ -1579,10 +1577,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        WarningsNotAsErrors=
                        _CentralPackageVersionsEnabled=
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1666,12 +1664,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          OutputItemType=
                          ReferenceSourceTarget=ProjectReference
                          Targets=
+         Task Parameter:ParentProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Task Parameter:TargetFrameworks=net462
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:ParentProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Output Item(s): 
              _RestoreGraphEntry=
-                 80453686-f651-4730-bff9-237e55d0df96
+                 2097ee15-1219-4a75-9b69-3d68526687cd
                          ProjectPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          ProjectReferenceUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -1680,7 +1678,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "GetRestoreProjectReferencesTask".
        Using "GetRestorePackageReferencesTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestorePackageReferencesTask"
-         Task Parameter:TargetFrameworks=net462
          Task Parameter:
              PackageReferences=
                  Microsoft.PowerApps.MSBuild.Solution
@@ -1688,16 +1685,17 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:TargetFrameworks=net462
          Task Parameter:ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
          Output Item(s): 
              _RestoreGraphEntry=
-                 8b237cbc-0ad5-4138-a619-0239e6cf2f31
+                 0b230d0f-25fa-416d-a972-02ea22702cff
                          Id=Microsoft.PowerApps.MSBuild.Solution
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+                 b3e21d33-7feb-4429-83ad-c999a7d6469e
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -1728,7 +1726,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "GetRestorePrunePackageReferencesTask".
        Added Item(s): 
            _RestoreGraphEntry=
-               c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+               e820f985-acc9-42e4-b8c4-25fd14635b47
                        AssetTargetFallback=
                        CLRSupport=
                        NuGetAuditMode=direct
@@ -1748,10 +1746,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        Type=TargetFrameworkInformation
                        WindowsTargetPlatformMinVersion=
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1786,26 +1784,26 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = PowerAppsToolsTemp_adnic
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           80453686-f651-4730-bff9-237e55d0df96
+           2097ee15-1219-4a75-9b69-3d68526687cd
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = ProjectReference
                TargetFrameworks = net462
                ProjectPath = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ProjectReferenceUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           8b237cbc-0ad5-4138-a619-0239e6cf2f31
+           0b230d0f-25fa-416d-a972-02ea22702cff
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.PowerApps.MSBuild.Solution
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+           b3e21d33-7feb-4429-83ad-c999a7d6469e
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+           e820f985-acc9-42e4-b8c4-25fd14635b47
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1827,10 +1825,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:6>Done building target "_GenerateProjectRestoreGraphPerFramework" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:6>Target "_GenerateProjectRestoreGraphCurrentProject" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GenerateRestoreDependencies" depends on it):
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1865,26 +1863,26 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = PowerAppsToolsTemp_adnic
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           80453686-f651-4730-bff9-237e55d0df96
+           2097ee15-1219-4a75-9b69-3d68526687cd
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = ProjectReference
                TargetFrameworks = net462
                ProjectPath = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ProjectReferenceUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           8b237cbc-0ad5-4138-a619-0239e6cf2f31
+           0b230d0f-25fa-416d-a972-02ea22702cff
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.PowerApps.MSBuild.Solution
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+           b3e21d33-7feb-4429-83ad-c999a7d6469e
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+           e820f985-acc9-42e4-b8c4-25fd14635b47
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1906,10 +1904,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:6>Done building target "_GenerateProjectRestoreGraphCurrentProject" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:6>Target "_GenerateRestoreDependencies" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GenerateProjectRestoreGraph" depends on it):
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -1944,26 +1942,26 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = PowerAppsToolsTemp_adnic
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           80453686-f651-4730-bff9-237e55d0df96
+           2097ee15-1219-4a75-9b69-3d68526687cd
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = ProjectReference
                TargetFrameworks = net462
                ProjectPath = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ProjectReferenceUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           8b237cbc-0ad5-4138-a619-0239e6cf2f31
+           0b230d0f-25fa-416d-a972-02ea22702cff
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.PowerApps.MSBuild.Solution
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+           b3e21d33-7feb-4429-83ad-c999a7d6469e
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+           e820f985-acc9-42e4-b8c4-25fd14635b47
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -1985,10 +1983,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:6>Done building target "_GenerateRestoreDependencies" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:6>Target "_GenerateProjectRestoreGraph" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (entry point):
        Target output items:
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                RestoreUseLegacyDependencyResolver = 
                FallbackFolders = C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages
@@ -2023,26 +2021,26 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectName = PowerAppsToolsTemp_adnic
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           80453686-f651-4730-bff9-237e55d0df96
+           2097ee15-1219-4a75-9b69-3d68526687cd
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = ProjectReference
                TargetFrameworks = net462
                ProjectPath = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ProjectReferenceUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           8b237cbc-0ad5-4138-a619-0239e6cf2f31
+           0b230d0f-25fa-416d-a972-02ea22702cff
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.PowerApps.MSBuild.Solution
                Type = Dependency
                TargetFrameworks = net462
                VersionRange = 1.*
-           b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+           b3e21d33-7feb-4429-83ad-c999a7d6469e
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
                Type = Dependency
                TargetFrameworks = net462
                PrivateAssets = All
                VersionRange = 1.0.0
-           c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+           e820f985-acc9-42e4-b8c4-25fd14635b47
                RestoreEnablePackagePruning = false
                TargetFrameworkProfile = 
                TargetFramework = net462
@@ -2066,13 +2064,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
      1>_GenerateRestoreGraph:
          Output Item(s): 
              _RestoreGraphEntry=
-                 98f32669-0532-4205-abf2-0552ce2ada45
+                 849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          Type=RestoreSpec
-                 88227979-6b25-4439-8f1c-61cfa9a2f72e
+                 5359efdd-737a-4bf9-9181-0cc3b8745fa7
                          CentralPackageFloatingVersionsEnabled=
                          CentralPackageTransitivePinningEnabled=
                          CentralPackageVersionOverrideEnabled=
@@ -2110,7 +2108,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          WarningsAsErrors=
                          WarningsNotAsErrors=
                          _CentralPackageVersionsEnabled=
-                 e432c93b-e8c8-4023-8b96-143d89ebb74f
+                 f8b28689-d787-4de2-a9e8-e0941f1132b2
                          Id=Microsoft.PowerApps.MSBuild.Pcf
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2119,7 +2117,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 199cff4d-96e5-4f43-a48b-386b23fbe04e
+                 3b4d279c-83fa-4e92-8c37-09aad82a9637
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2129,7 +2127,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.0.0
-                 347dd4c7-e23e-4589-a456-cafd77c0233b
+                 8783248a-418c-4a5c-9eae-56e5116c536e
                          AssetTargetFallback=
                          CLRSupport=
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2151,13 +2149,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformVersion=7.0
                          Type=TargetFrameworkInformation
                          WindowsTargetPlatformMinVersion=
-                 375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+                 6510ae21-f51b-4dd7-b01a-dc16015d42c9
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          Type=RestoreSpec
-                 79bd6847-6836-4fe6-9e99-59e0826a0d40
+                 d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                          CentralPackageFloatingVersionsEnabled=
                          CentralPackageTransitivePinningEnabled=
                          CentralPackageVersionOverrideEnabled=
@@ -2195,7 +2193,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          WarningsAsErrors=
                          WarningsNotAsErrors=
                          _CentralPackageVersionsEnabled=
-                 80453686-f651-4730-bff9-237e55d0df96
+                 2097ee15-1219-4a75-9b69-3d68526687cd
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2204,7 +2202,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          TargetFrameworks=net462
                          Type=ProjectReference
-                 8b237cbc-0ad5-4138-a619-0239e6cf2f31
+                 0b230d0f-25fa-416d-a972-02ea22702cff
                          Id=Microsoft.PowerApps.MSBuild.Solution
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2213,7 +2211,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+                 b3e21d33-7feb-4429-83ad-c999a7d6469e
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2223,7 +2221,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.0.0
-                 c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+                 e820f985-acc9-42e4-b8c4-25fd14635b47
                          AssetTargetFallback=
                          CLRSupport=
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2247,19 +2245,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          WindowsTargetPlatformMinVersion=
        Done executing task "MSBuild".
        Target output items:
-           98f32669-0532-4205-abf2-0552ce2ada45
+           849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Type = RestoreSpec
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+           6510ae21-f51b-4dd7-b01a-dc16015d42c9
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = RestoreSpec
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-           88227979-6b25-4439-8f1c-61cfa9a2f72e
+           5359efdd-737a-4bf9-9181-0cc3b8745fa7
                SkipContentFileWrite = 
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                RestoreUseLegacyDependencyResolver = 
@@ -2297,7 +2295,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           e432c93b-e8c8-4023-8b96-143d89ebb74f
+           f8b28689-d787-4de2-a9e8-e0941f1132b2
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.PowerApps.MSBuild.Pcf
@@ -2306,7 +2304,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                VersionRange = 1.*
-           199cff4d-96e5-4f43-a48b-386b23fbe04e
+           3b4d279c-83fa-4e92-8c37-09aad82a9637
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
@@ -2316,7 +2314,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                VersionRange = 1.0.0
-           347dd4c7-e23e-4589-a456-cafd77c0233b
+           8783248a-418c-4a5c-9eae-56e5116c536e
                RestoreEnablePackagePruning = false
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                TargetFrameworkProfile = 
@@ -2338,7 +2336,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                WindowsTargetPlatformMinVersion = 
                TargetPlatformMinVersion = 
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
-           79bd6847-6836-4fe6-9e99-59e0826a0d40
+           d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                SkipContentFileWrite = 
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                RestoreUseLegacyDependencyResolver = 
@@ -2376,7 +2374,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                PackagesPath = C:\Users\Nishant\.nuget\packages\
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ConfigFilePaths = C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.FallbackLocation.config;C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
-           80453686-f651-4730-bff9-237e55d0df96
+           2097ee15-1219-4a75-9b69-3d68526687cd
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Type = ProjectReference
@@ -2385,7 +2383,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                ProjectPath = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                ProjectReferenceUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-           8b237cbc-0ad5-4138-a619-0239e6cf2f31
+           0b230d0f-25fa-416d-a972-02ea22702cff
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.PowerApps.MSBuild.Solution
@@ -2394,7 +2392,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                VersionRange = 1.*
-           b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+           b3e21d33-7feb-4429-83ad-c999a7d6469e
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                ProjectUniqueName = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                Id = Microsoft.NETFramework.ReferenceAssemblies
@@ -2404,7 +2402,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                MSBuildSourceTargetName = _IsProjectRestoreSupported
                OriginalItemSpec = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                VersionRange = 1.0.0
-           c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+           e820f985-acc9-42e4-b8c4-25fd14635b47
                RestoreEnablePackagePruning = false
                MSBuildSourceProjectFile = C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                TargetFrameworkProfile = 
@@ -2431,35 +2429,35 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Task "RemoveDuplicates"
          Output Item(s): 
              _RestoreGraphEntryFiltered=
-                 98f32669-0532-4205-abf2-0552ce2ada45
-                 375ecc24-63a7-4d03-bc3f-86bd59df3cb5
-                 88227979-6b25-4439-8f1c-61cfa9a2f72e
-                 e432c93b-e8c8-4023-8b96-143d89ebb74f
-                 199cff4d-96e5-4f43-a48b-386b23fbe04e
-                 347dd4c7-e23e-4589-a456-cafd77c0233b
-                 79bd6847-6836-4fe6-9e99-59e0826a0d40
-                 80453686-f651-4730-bff9-237e55d0df96
-                 8b237cbc-0ad5-4138-a619-0239e6cf2f31
-                 b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
-                 c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+                 849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
+                 6510ae21-f51b-4dd7-b01a-dc16015d42c9
+                 5359efdd-737a-4bf9-9181-0cc3b8745fa7
+                 f8b28689-d787-4de2-a9e8-e0941f1132b2
+                 3b4d279c-83fa-4e92-8c37-09aad82a9637
+                 8783248a-418c-4a5c-9eae-56e5116c536e
+                 d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
+                 2097ee15-1219-4a75-9b69-3d68526687cd
+                 0b230d0f-25fa-416d-a972-02ea22702cff
+                 b3e21d33-7feb-4429-83ad-c999a7d6469e
+                 e820f985-acc9-42e4-b8c4-25fd14635b47
        Done executing task "RemoveDuplicates".
        Using "RestoreTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "RestoreTask"
          Task Parameter:
              RestoreGraphItems=
-                 98f32669-0532-4205-abf2-0552ce2ada45
+                 849bc3b9-4f2c-45d1-8ac7-dacfb83024ab
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
                          Type=RestoreSpec
-                 375ecc24-63a7-4d03-bc3f-86bd59df3cb5
+                 6510ae21-f51b-4dd7-b01a-dc16015d42c9
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          Type=RestoreSpec
-                 88227979-6b25-4439-8f1c-61cfa9a2f72e
+                 5359efdd-737a-4bf9-9181-0cc3b8745fa7
                          CentralPackageFloatingVersionsEnabled=
                          CentralPackageTransitivePinningEnabled=
                          CentralPackageVersionOverrideEnabled=
@@ -2497,7 +2495,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          WarningsAsErrors=
                          WarningsNotAsErrors=
                          _CentralPackageVersionsEnabled=
-                 e432c93b-e8c8-4023-8b96-143d89ebb74f
+                 f8b28689-d787-4de2-a9e8-e0941f1132b2
                          Id=Microsoft.PowerApps.MSBuild.Pcf
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2506,7 +2504,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 199cff4d-96e5-4f43-a48b-386b23fbe04e
+                 3b4d279c-83fa-4e92-8c37-09aad82a9637
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2516,7 +2514,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.0.0
-                 347dd4c7-e23e-4589-a456-cafd77c0233b
+                 8783248a-418c-4a5c-9eae-56e5116c536e
                          AssetTargetFallback=
                          CLRSupport=
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2538,7 +2536,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformVersion=7.0
                          Type=TargetFrameworkInformation
                          WindowsTargetPlatformMinVersion=
-                 79bd6847-6836-4fe6-9e99-59e0826a0d40
+                 d0dbde0d-ea8e-46db-87bd-31aa4bae80fc
                          CentralPackageFloatingVersionsEnabled=
                          CentralPackageTransitivePinningEnabled=
                          CentralPackageVersionOverrideEnabled=
@@ -2576,7 +2574,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          WarningsAsErrors=
                          WarningsNotAsErrors=
                          _CentralPackageVersionsEnabled=
-                 80453686-f651-4730-bff9-237e55d0df96
+                 2097ee15-1219-4a75-9b69-3d68526687cd
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
                          OriginalItemSpec=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2585,7 +2583,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          ProjectUniqueName=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          TargetFrameworks=net462
                          Type=ProjectReference
-                 8b237cbc-0ad5-4138-a619-0239e6cf2f31
+                 0b230d0f-25fa-416d-a972-02ea22702cff
                          Id=Microsoft.PowerApps.MSBuild.Solution
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2594,7 +2592,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.*
-                 b27b9f8e-c64d-40d6-ab25-25a50e3d1f88
+                 b3e21d33-7feb-4429-83ad-c999a7d6469e
                          Id=Microsoft.NETFramework.ReferenceAssemblies
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
                          MSBuildSourceTargetName=_IsProjectRestoreSupported
@@ -2604,7 +2602,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetFrameworks=net462
                          Type=Dependency
                          VersionRange=1.0.0
-                 c5fc893b-ce82-4671-a46d-f16dc9eac5f2
+                 e820f985-acc9-42e4-b8c4-25fd14635b47
                          AssetTargetFallback=
                          CLRSupport=
                          MSBuildSourceProjectFile=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
@@ -2626,8 +2624,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformVersion=7.0
                          Type=TargetFrameworkInformation
                          WindowsTargetPlatformMinVersion=
-         Task Parameter:RestoreRecursive=True
          Task Parameter:HideWarningsAndErrors=False
+         Task Parameter:RestoreRecursive=True
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Packaging, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Packaging.dll, MVID: cdc50a13-9777-4bbf-997e-763beae18a61, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.LibraryModel, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.LibraryModel.dll, MVID: e00b38b3-9e45-44a2-8023-8c8ae09208b7, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.Versioning, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.Versioning.dll, MVID: ecae64d3-0ef8-4164-9110-1e65ba08bca4, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
@@ -2640,8 +2638,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          X.509 certificate chain validation will use the default trust store selected by .NET for timestamping.
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): NuGet.DependencyResolver.Core, Version=6.14.0.116, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Program Files\dotnet\sdk\9.0.311\NuGet.DependencyResolver.Core.dll, MVID: 6b197cc7-1c4a-4e48-895c-328987fdea28, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
          Running restore with 4 concurrent jobs.
-         Reading project file C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj.
          Reading project file C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj.
+         Reading project file C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj.
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed (location: C:\Program Files\dotnet\sdk\9.0.311\Newtonsoft.Json.dll, MVID: 7e62198b-eab2-4380-bbac-29171862d1d8, AssemblyLoadContext: MSBuild plugin C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Serialization.Primitives, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Runtime.Serialization.Primitives.dll, MVID: 79c6eb78-9a6d-46b1-8aec-68bf7a682ded, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Numerics, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Runtime.Numerics.dll, MVID: 8939f403-42fe-4ec7-b304-f837e9814392, AssemblyLoadContext: Default)
@@ -2649,9 +2647,9 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Restoring packages for C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj...
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Text.Encodings.Web, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51 (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Text.Encodings.Web.dll, MVID: 4b9c5e41-94a2-4a57-a38a-1ab05f9d711f, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Intrinsics, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51 (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Runtime.Intrinsics.dll, MVID: 5f46fc85-93b2-4294-b137-86caa44858ca, AssemblyLoadContext: Default)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Linq.Expressions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Linq.Expressions.dll, MVID: 28088830-b31e-4578-aa79-1c52a8c70a3a, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Reflection.Emit.Lightweight, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Reflection.Emit.Lightweight.dll, MVID: 515cbcd6-ac5a-4c17-940c-8a5944639b74, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Reflection.Primitives, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Reflection.Primitives.dll, MVID: da23998e-60b9-42b1-ae47-f95a93ea4b59, AssemblyLoadContext: Default)
-         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Linq.Expressions, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Linq.Expressions.dll, MVID: 28088830-b31e-4578-aa79-1c52a8c70a3a, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.ComponentModel.TypeConverter, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.ComponentModel.TypeConverter.dll, MVID: 45c7ed53-d067-46a1-8083-ae60c19cfdb4, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Reflection.Emit.ILGeneration, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Reflection.Emit.ILGeneration.dll, MVID: e0452d14-7f21-4d6c-abba-b07efbfb1dda, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.ObjectModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.ObjectModel.dll, MVID: 201d7848-d3e5-410c-9dc8-f0c21623ad2a, AssemblyLoadContext: Default)
@@ -2659,25 +2657,25 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Committing restore...
          Assets file has not changed. Skipping assets file writing. Path: C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\project.assets.json
          No-Op restore. The cache will not be updated. Path: C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\project.nuget.cache
-         Restored C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (in 168 ms).
+         Restored C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (in 105 ms).
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Net.Sockets, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Net.Sockets.dll, MVID: cc4ea526-226b-4dcd-84e2-0af030e3c319, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Threading.Overlapped, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Threading.Overlapped.dll, MVID: 115b1838-f4a5-43a8-8aa6-e1e220a62d9e, AssemblyLoadContext: Default)
-         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Net.Requests, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Net.Requests.dll, MVID: e5360c81-55b2-4466-9f18-fa8fa537c94d, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Runtime.Serialization.Formatters, Version=8.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Runtime.Serialization.Formatters.dll, MVID: 7d442b8a-f67c-4aaf-b45b-ea3ceae543d1, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Diagnostics.TraceSource, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Diagnostics.TraceSource.dll, MVID: ca5e1eca-3234-470c-b77c-3afa45694400, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Data.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Data.Common.dll, MVID: fd821387-f96c-4ee6-9e57-bc30b83e6d0e, AssemblyLoadContext: Default)
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.ComponentModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.ComponentModel.dll, MVID: b7f59035-baeb-4216-8f44-7bd2287a265f, AssemblyLoadContext: Default)
-         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): Anonymously Hosted DynamicMethods Assembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null (location: , MVID: f63ace77-264f-46f6-be2f-4e02328fad35, AssemblyLoadContext: Default)
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): Anonymously Hosted DynamicMethods Assembly, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null (location: , MVID: 5da97ad3-1c33-49d0-8681-4672d385cc25, AssemblyLoadContext: Default)
            GET https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.solution/index.json
-           OK https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.solution/index.json 277ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.solution/index.json 836ms
            GET https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.pcf/index.json
-           OK https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.pcf/index.json 275ms
+           OK https://api.nuget.org/v3-flatcontainer/microsoft.powerapps.msbuild.pcf/index.json 384ms
            GET https://api.nuget.org/v3/vulnerabilities/index.json
-           OK https://api.nuget.org/v3/vulnerabilities/index.json 254ms
-           GET https://api.nuget.org/v3-vulnerabilities/2026.07.08.00.14.58/vulnerability.base.json
-           GET https://api.nuget.org/v3-vulnerabilities/2026.07.08.00.14.58/2026.07.08.00.14.58/vulnerability.update.json
-           OK https://api.nuget.org/v3-vulnerabilities/2026.07.08.00.14.58/vulnerability.base.json 272ms
-           OK https://api.nuget.org/v3-vulnerabilities/2026.07.08.00.14.58/2026.07.08.00.14.58/vulnerability.update.json 291ms
+           OK https://api.nuget.org/v3/vulnerabilities/index.json 239ms
+           GET https://api.nuget.org/v3-vulnerabilities/2026.07.09.00.17.55/vulnerability.base.json
+           GET https://api.nuget.org/v3-vulnerabilities/2026.07.09.00.17.55/2026.07.09.00.17.55/vulnerability.update.json
+         Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.Net.Requests, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Net.Requests.dll, MVID: e5360c81-55b2-4466-9f18-fa8fa537c94d, AssemblyLoadContext: Default)
+           OK https://api.nuget.org/v3-vulnerabilities/2026.07.09.00.17.55/vulnerability.base.json 251ms
+           OK https://api.nuget.org/v3-vulnerabilities/2026.07.09.00.17.55/2026.07.09.00.17.55/vulnerability.update.json 274ms
          All packages and projects are compatible with .NETFramework,Version=v4.6.2.
          Committing restore...
          Generating MSBuild file C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\PowerAppsToolsTemp_adnic.cdsproj.nuget.g.props.
@@ -2686,7 +2684,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Writing cache file to disk. Path: C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\project.nuget.cache
          Assembly loaded during TaskRun (NuGet.Build.Tasks.RestoreTask): System.IO.Pipelines, Version=9.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51 (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.IO.Pipelines.dll, MVID: 19981dd5-e6c2-45e0-882f-82b99290644c, AssemblyLoadContext: Default)
          Persisting dg to C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\PowerAppsToolsTemp_adnic.cdsproj.nuget.dgspec.json
-         Restored C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (in 2.64 sec).
+         Restored C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (in 2.87 sec).
          
          NuGet Config files used:
              C:\Users\Nishant\AppData\Roaming\NuGet\NuGet.Config
@@ -2850,15 +2848,15 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "PpbtTelemetryInitializeSession" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Telemetry.Tasks.dll".
        Task "PpbtTelemetryInitializeSession"
          Task Parameter:PpbtTelemetryRecorderDirectory=C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
-         Task Parameter:PpbtTelemetryRecorderWaitToExit=False
          Task Parameter:PpbtTelemetryRecorderUseDotnet=True
-         PpbtTelemetryInitializeSession: Initialized the telemetry sessionId to 47a9214a-c881-4b93-bb94-64b4cc4eba84.
+         Task Parameter:PpbtTelemetryRecorderWaitToExit=False
+         PpbtTelemetryInitializeSession: Initialized the telemetry sessionId to 46f88c92-95b5-416c-bd8d-a36e4410a8d6.
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
            ppbtTelemetryRecorder.dll PreLoad
-         PpbtTelemetryInitializeSession: Initialized the telemetry service for Power Platform Build Tools (sessionId: `47a9214a-c881-4b93-bb94-64b4cc4eba84`, key: `ppbt.TelemetrySessionService--C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0`).
-         Output Property: PpbtTelemetrySessionId=47a9214a-c881-4b93-bb94-64b4cc4eba84
+         PpbtTelemetryInitializeSession: Initialized the telemetry service for Power Platform Build Tools (sessionId: `46f88c92-95b5-416c-bd8d-a36e4410a8d6`, key: `ppbt.TelemetrySessionService--C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0`).
+         Output Property: PpbtTelemetrySessionId=46f88c92-95b5-416c-bd8d-a36e4410a8d6
        Done executing task "PpbtTelemetryInitializeSession".
    1:7>Done building target "_PpbtTelemetryInitializeSession" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "_GetProjectJsonPath" in file "C:\Program Files\dotnet\sdk\9.0.311\NuGet.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "_GetRestoreProjectStyle" depends on it):
@@ -2869,7 +2867,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "CheckForDuplicateNuGetItemsTask"
          Task Parameter:ItemName=PackageReference
-         Task Parameter:LogCode=NU1504
          Task Parameter:
              Items=
                  Microsoft.PowerApps.MSBuild.Solution
@@ -2877,6 +2874,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:LogCode=NU1504
          Task Parameter:MSBuildProjectFullPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
        Done executing task "CheckForDuplicateNuGetItemsTask".
        Target output items:
@@ -2890,10 +2888,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _HasPackageReferenceItems=true
        Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreProjectStyleTask"
+         Task Parameter:MSBuildProjectName=PowerAppsToolsTemp_adnic
+         Task Parameter:RestoreProjectStyle=PackageReference
          Task Parameter:HasPackageReferenceItems=True
          Task Parameter:MSBuildProjectDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
-         Task Parameter:RestoreProjectStyle=PackageReference
-         Task Parameter:MSBuildProjectName=PowerAppsToolsTemp_adnic
          Output Property: RestoreProjectStyle=PackageReference
          Output Property: PackageReferenceCompatibleProjectStyle=True
        Done executing task "GetRestoreProjectStyleTask".
@@ -2968,8 +2966,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "WriteLinesToFile" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "WriteLinesToFile"
          Task Parameter:Overwrite=True
-         Task Parameter:WriteOnlyWhenDifferent=True
          Task Parameter:File=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.FileListAbsolute.txt
+         Task Parameter:WriteOnlyWhenDifferent=True
        Done executing task "WriteLinesToFile".
    1:7>Done building target "CoreClean" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "IgnoreJavaScriptOutputAssembly" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "AssignProjectConfiguration" depends on it):
@@ -2980,20 +2978,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: AddSyntheticProjectReferencesForSolutionDependencies=true
        Using "AssignProjectConfiguration" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "AssignProjectConfiguration"
-         Task Parameter:ShouldUnsetParentConfigurationAndPlatform=False
-         Task Parameter:CurrentProjectConfiguration=Debug
+         Task Parameter:OutputType=exe
+         Task Parameter:CurrentProjectPlatform=AnyCPU
          Task Parameter:
              ProjectReferences=
                  ..\..\pcf control.pcfproj
                          OutputItemType=
                          ReferenceSourceTarget=ProjectReference
                          Targets=
-         Task Parameter:OnlyReferenceAndBuildProjectsEnabledInSolutionConfiguration=True
-         Task Parameter:CurrentProjectPlatform=AnyCPU
-         Task Parameter:AddSyntheticProjectReferencesForSolutionDependencies=True
-         Task Parameter:CurrentProject=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
-         Task Parameter:OutputType=exe
+         Task Parameter:CurrentProjectConfiguration=Debug
          Task Parameter:ResolveConfigurationPlatformUsingMappings=False
+         Task Parameter:OnlyReferenceAndBuildProjectsEnabledInSolutionConfiguration=True
+         Task Parameter:CurrentProject=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj
+         Task Parameter:ShouldUnsetParentConfigurationAndPlatform=False
+         Task Parameter:AddSyntheticProjectReferencesForSolutionDependencies=True
          Project reference "..\..\pcf control.pcfproj" has not been resolved.
          Output Item(s): 
              _ProjectReferenceWithConfiguration=
@@ -3033,8 +3031,9 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:7>Target "_GetProjectReferenceTargetFrameworkProperties" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "PrepareProjectReferences" depends on it):
        Set Property: ReferringTargetFrameworkForProjectReferences=.NETFramework,Version=v4.6.2
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
+         Task Parameter:SkipNonexistentTargets=True
          Task Parameter:Targets=GetTargetFrameworks
-         Task Parameter:RemoveProperties=;TargetFramework;RuntimeIdentifier;SelfContained;
          Task Parameter:
              Projects=
                  ..\..\pcf control.pcfproj
@@ -3043,8 +3042,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          ReferenceOutputAssembly=true
                          ReferenceSourceTarget=ProjectReference
                          Targets=
-         Task Parameter:BuildInParallel=True
-         Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:RemoveProperties=;TargetFramework;RuntimeIdentifier;SelfContained;
          Removing Properties:
            TargetFramework
            RuntimeIdentifier
@@ -3186,15 +3184,15 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "PpbtTelemetryInitializeSession" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Telemetry.Tasks.dll".
        Task "PpbtTelemetryInitializeSession"
          Task Parameter:PpbtTelemetryRecorderDirectory=C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
-         Task Parameter:PpbtTelemetryRecorderWaitToExit=False
          Task Parameter:PpbtTelemetryRecorderUseDotnet=True
-         PpbtTelemetryInitializeSession: Reusing telemetry sessionId 47a9214a-c881-4b93-bb94-64b4cc4eba84 from build.
+         Task Parameter:PpbtTelemetryRecorderWaitToExit=False
+         PpbtTelemetryInitializeSession: Reusing telemetry sessionId 46f88c92-95b5-416c-bd8d-a36e4410a8d6 from build.
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
            ppbtTelemetryRecorder.dll PreLoad
-         PpbtTelemetryInitializeSession: Initialized the telemetry service for Power Platform Build Tools (sessionId: `47a9214a-c881-4b93-bb94-64b4cc4eba84`, key: `ppbt.TelemetrySessionService--C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0`).
-         Output Property: PpbtTelemetrySessionId=47a9214a-c881-4b93-bb94-64b4cc4eba84
+         PpbtTelemetryInitializeSession: Initialized the telemetry service for Power Platform Build Tools (sessionId: `46f88c92-95b5-416c-bd8d-a36e4410a8d6`, key: `ppbt.TelemetrySessionService--C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0`).
+         Output Property: PpbtTelemetrySessionId=46f88c92-95b5-416c-bd8d-a36e4410a8d6
        Done executing task "PpbtTelemetryInitializeSession".
    2:5>Done building target "_PpbtTelemetryInitializeSession" in project "pcf control.pcfproj".
    2:5>Target "GetTargetFrameworksWithPlatformForSingleTargetFramework" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "GetTargetFrameworks" depends on it):
@@ -3330,9 +3328,9 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                        Targets=
        Using "GetReferenceNearestTargetFrameworkTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetReferenceNearestTargetFrameworkTask"
-         Task Parameter:CurrentProjectTargetFramework=.NETFramework,Version=v4.6.2
-         Task Parameter:CurrentProjectName=PowerAppsToolsTemp_adnic
          Task Parameter:CurrentProjectTargetPlatform=Windows,Version=7.0
+         Task Parameter:CurrentProjectName=PowerAppsToolsTemp_adnic
+         Task Parameter:CurrentProjectTargetFramework=.NETFramework,Version=v4.6.2
          Task Parameter:
              AnnotatedProjectReferences=
                  ..\..\pcf control.pcfproj
@@ -3516,6 +3514,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:7>Done building target "PrepareProjectReferences" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "CleanReferencedProjects" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Clean" depends on it):
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
          Task Parameter:Targets=Clean
          Task Parameter:
              Projects=
@@ -3538,7 +3537,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformMonikers=Windows,Version=7.0
                          Targets=
                          UndefineProperties=;TargetFramework;RuntimeIdentifier;SelfContained
-         Task Parameter:BuildInParallel=True
          Removing Properties for project "..\..\pcf control.pcfproj":
            TargetFramework
            RuntimeIdentifier
@@ -3554,7 +3552,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "CheckForDuplicateNuGetItemsTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "CheckForDuplicateNuGetItemsTask"
          Task Parameter:ItemName=PackageReference
-         Task Parameter:LogCode=NU1504
          Task Parameter:
              Items=
                  Microsoft.PowerApps.MSBuild.Pcf
@@ -3562,6 +3559,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  Microsoft.NETFramework.ReferenceAssemblies
                          PrivateAssets=All
                          Version=1.0.0
+         Task Parameter:LogCode=NU1504
          Task Parameter:MSBuildProjectFullPath=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj
        Done executing task "CheckForDuplicateNuGetItemsTask".
        Target output items:
@@ -3575,10 +3573,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: _HasPackageReferenceItems=true
        Using "GetRestoreProjectStyleTask" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\NuGet.Build.Tasks.dll".
        Task "GetRestoreProjectStyleTask"
+         Task Parameter:MSBuildProjectName=pcf control
+         Task Parameter:RestoreProjectStyle=PackageReference
          Task Parameter:HasPackageReferenceItems=True
          Task Parameter:MSBuildProjectDirectory=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E
-         Task Parameter:RestoreProjectStyle=PackageReference
-         Task Parameter:MSBuildProjectName=pcf control
          Output Property: RestoreProjectStyle=PackageReference
          Output Property: PackageReferenceCompatibleProjectStyle=True
        Done executing task "GetRestoreProjectStyleTask".
@@ -3686,13 +3684,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Task Parameter:Directories=obj\Debug\
        Done executing task "MakeDir".
        Task "WriteLinesToFile"
+         Task Parameter:Overwrite=True
          Task Parameter:
              Lines=
                  C:\Nishant Own Files\SutherLand\ADNIC\PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.AssemblyReference.cache
                  C:\Nishant Own Files\SutherLand\ADNIC\PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
-         Task Parameter:Overwrite=True
-         Task Parameter:WriteOnlyWhenDifferent=True
          Task Parameter:File=obj\Debug\pcf control.pcfproj.FileListAbsolute.txt
+         Task Parameter:WriteOnlyWhenDifferent=True
        Done executing task "WriteLinesToFile".
    2:6>Done building target "CoreClean" in project "pcf control.pcfproj".
        Target "AssignProjectConfiguration" skipped, due to false condition; ('$(CurrentSolutionConfigurationContents)' != '' or '@(ProjectReference)'!='') was evaluated as ('' != '' or ''!='').
@@ -3706,10 +3704,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    2:6>Target "_GetProjectReferenceTargetFrameworkProperties" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "PrepareProjectReferences" depends on it):
        Set Property: ReferringTargetFrameworkForProjectReferences=.NETFramework,Version=v4.6.2
        Task "MSBuild"
-         Task Parameter:Targets=GetTargetFrameworks
-         Task Parameter:RemoveProperties=;TargetFramework;RuntimeIdentifier;SelfContained;
          Task Parameter:BuildInParallel=True
          Task Parameter:SkipNonexistentTargets=True
+         Task Parameter:Targets=GetTargetFrameworks
+         Task Parameter:RemoveProperties=;TargetFramework;RuntimeIdentifier;SelfContained;
        Done executing task "MSBuild".
        Task "MSBuild" skipped, due to false condition; ('%(_MSBuildProjectReferenceExistent.SkipGetTargetFrameworkProperties)' != 'true' and '$(EnableDynamicPlatformResolution)' == 'true') was evaluated as ('' != 'true' and '' == 'true').
        Task "GetReferenceNearestTargetFrameworkTask" skipped, due to false condition; ('@(_ProjectReferenceTargetFrameworkPossibilities)' != '' and '$(ReferringTargetFrameworkForProjectReferences)' != ''
@@ -3743,8 +3741,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:39:56.1512486+00:00 pcf 47a9214a-c881-4b93-bb94-64b4cc4eba84 StartBuildPhase {\"buildPhase\":\"npm-clean\",\"Success\":\"true\"} null
-         Output Property: _PcfNpmCleanStartTimeTicks=639191255961437086
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:18:58.4495456+00:00 pcf 46f88c92-95b5-416c-bd8d-a36e4410a8d6 StartBuildPhase {\"buildPhase\":\"npm-clean\",\"Success\":\"true\"} null
+         Output Property: _PcfNpmCleanStartTimeTicks=639191747384438104
        Done executing task "PpbtTelemetryStartBuildPhase".
        Using "Exec" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "Exec"
@@ -3755,19 +3753,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          > crm-input-pcf@1.0.0 clean
          > pcf-scripts clean --noColor --buildMode development --outDir C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls --buildSource MSBuild
          
-         [10:10:03 pm] [clean] Initializing...
-         [10:10:03 pm] [clean] Cleaning build outputs...
-         [10:10:03 pm] [clean] Succeeded
+         [11:49:02 am] [clean] Initializing...
+         [11:49:02 am] [clean] Cleaning build outputs...
+         [11:49:02 am] [clean] Succeeded
        Done executing task "Exec".
        Using "PpbtTelemetryEndBuildPhase" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Telemetry.Tasks.dll".
        Task "PpbtTelemetryEndBuildPhase"
          Task Parameter:ProjectType=pcf
-         Task Parameter:BuildPhaseStartTimeTicks=639191255961437086
+         Task Parameter:BuildPhaseStartTimeTicks=639191747384438104
          Task Parameter:BuildPhase=npm-clean
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:04.2850321+00:00 pcf 47a9214a-c881-4b93-bb94-64b4cc4eba84 EndBuildPhase {\"buildPhase\":\"npm-clean\"} "{\"Execution Time(ms)\":8141.0}"
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:03.8479925+00:00 pcf 46f88c92-95b5-416c-bd8d-a36e4410a8d6 EndBuildPhase {\"buildPhase\":\"npm-clean\"} "{\"Execution Time(ms)\":5404.0}"
        Done executing task "PpbtTelemetryEndBuildPhase".
    2:6>Done building target "PcfClean" in project "pcf control.pcfproj".
        Target "_CheckForInvalidConfigurationAndPlatform" skipped. Previously built successfully.
@@ -3789,8 +3787,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:04.3227636+00:00 solution 47a9214a-c881-4b93-bb94-64b4cc4eba84 StartBuildPhase {\"buildPhase\":\"clean\",\"Success\":\"true\"} null
-         Output Property: _SolutionCleanStartTimeTicks=639191256043154675
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:03.8773676+00:00 solution 46f88c92-95b5-416c-bd8d-a36e4410a8d6 StartBuildPhase {\"buildPhase\":\"clean\",\"Success\":\"true\"} null
+         Output Property: _SolutionCleanStartTimeTicks=639191747438705123
        Done executing task "PpbtTelemetryStartBuildPhase".
        Task "Message"
          Task Parameter:Importance=High
@@ -3826,12 +3824,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "PpbtTelemetryEndBuildPhase" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Telemetry.Tasks.dll".
        Task "PpbtTelemetryEndBuildPhase"
          Task Parameter:ProjectType=solution
-         Task Parameter:BuildPhaseStartTimeTicks=639191256043154675
+         Task Parameter:BuildPhaseStartTimeTicks=639191747438705123
          Task Parameter:BuildPhase=clean
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:04.4512331+00:00 solution 47a9214a-c881-4b93-bb94-64b4cc4eba84 EndBuildPhase {\"buildPhase\":\"clean\"} "{\"Execution Time(ms)\":135.0}"
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:03.9642844+00:00 solution 46f88c92-95b5-416c-bd8d-a36e4410a8d6 EndBuildPhase {\"buildPhase\":\"clean\"} "{\"Execution Time(ms)\":93.0}"
        Done executing task "PpbtTelemetryEndBuildPhase".
    1:7>Done building target "AfterClean" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "Clean" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Rebuild" depends on it):
@@ -3843,8 +3841,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:04.4952705+00:00 solution 47a9214a-c881-4b93-bb94-64b4cc4eba84 StartBuildPhase {\"buildPhase\":\"build\",\"Success\":\"true\"} null
-         Output Property: _SolutionBuildStartTimeTicks=639191256044952667
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:04.0025009+00:00 solution 46f88c92-95b5-416c-bd8d-a36e4410a8d6 StartBuildPhase {\"buildPhase\":\"build\",\"Success\":\"true\"} null
+         Output Property: _SolutionBuildStartTimeTicks=639191747440024968
        Done executing task "PpbtTelemetryStartBuildPhase".
    1:7>Done building target "StartTelemetryTask" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "BeforeBuild" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Build" depends on it):
@@ -3892,11 +3890,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
+         Task Parameter:TargetPath=PowerAppsToolsTemp_adnic.exe.config
          Task Parameter:
              SecondaryList=
                  bin\Debug\PowerAppsToolsTemp_adnic.zip
                          CopyToOutputDirectory=PreserveNewest
-         Task Parameter:TargetPath=PowerAppsToolsTemp_adnic.exe.config
        Done executing task "FindAppConfigFile".
        Task "MakeDir"
          Task Parameter:
@@ -3915,6 +3913,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:7>Target "ResolveProjectReferences" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "ResolveReferences" depends on it):
        Task "MSBuild" skipped, due to false condition; ('%(_MSBuildProjectReferenceExistent.BuildReference)' == 'true' and '@(ProjectReferenceWithConfiguration)' != '' and ('$(BuildingInsideVisualStudio)' == 'true' or '$(BuildProjectReferences)' != 'true') and '$(VisualStudioVersion)' != '10.0' and '@(_MSBuildProjectReferenceExistent)' != '') was evaluated as ('true' == 'true' and '..\..\pcf control.pcfproj' != '' and ('' == 'true' or 'true' != 'true') and '17.0' != '10.0' and '..\..\pcf control.pcfproj' != '').
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
          Task Parameter:
              Projects=
                  ..\..\pcf control.pcfproj
@@ -3936,7 +3935,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformMonikers=Windows,Version=7.0
                          Targets=
                          UndefineProperties=;TargetFramework;RuntimeIdentifier;SelfContained
-         Task Parameter:BuildInParallel=True
          Removing Properties for project "..\..\pcf control.pcfproj":
            TargetFramework
            RuntimeIdentifier
@@ -4072,6 +4070,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "ResolvePackageFileConflicts" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\Microsoft\Microsoft.NET.Build.Extensions\\tools\net9.0\Microsoft.NET.Build.Extensions.Tasks.dll".
        Task "ResolvePackageFileConflicts"
          Task Parameter:
+             References=
+                 mscorlib
+                         Pack=false
+         Task Parameter:
              PackageOverrides=
                  NETStandard.Library
                          OverriddenPackages=
@@ -4172,10 +4174,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  System.Xml.XPath.XDocument|4.3.0;
                
          Task Parameter:
-             References=
-                 mscorlib
-                         Pack=false
-         Task Parameter:
              TargetFrameworkDirectories=
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\Facades\
@@ -4213,40 +4211,16 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: FindDependenciesOfExternallyResolvedReferences=false
        Using "ResolveAssemblyReference" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "ResolveAssemblyReference"
-         Task Parameter:StateFile=obj\Debug\pcf control.pcfproj.AssemblyReference.cache
-         Task Parameter:FindSatellites=True
-         Task Parameter:TargetedRuntimeVersion=v
-         Task Parameter:WarnOrErrorOnTargetArchitectureMismatch=Warning
-         Task Parameter:FullFrameworkFolders=C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
-         Task Parameter:SupportsBindingRedirectGeneration=True
-         Task Parameter:FullTargetFrameworkSubsetNames=Full
-         Task Parameter:TargetFrameworkMonikerDisplayName=.NET Framework 4.6.2
+         Task Parameter:OutputUnresolvedAssemblyConflicts=False
+         Task Parameter:TargetFrameworkVersion=v4.6.2
          Task Parameter:EnableCustomCulture=False
+         Task Parameter:FindRelatedFiles=True
          Task Parameter:FindDependenciesOfExternallyResolvedReferences=False
-         Task Parameter:
-             SearchPaths=
-                 {CandidateAssemblyFiles}
-                 {HintPathFromItem}
-                 {TargetFrameworkDirectory}
-                 {Registry:Software\Microsoft\.NETFramework,v4.6.2,AssemblyFoldersEx}
-                 {AssemblyFolders}
-                 {GAC}
-                 {RawFileName}
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\
-         Task Parameter:
-             AllowedRelatedFileExtensions=
-                 .pdb
-                 .xml
-                 .pri
-                 .dll.config
-                 .exe.config
          Task Parameter:
              AllowedAssemblyExtensions=
                  .winmd
                  .dll
                  .exe
-         Task Parameter:FindSerializationAssemblies=True
-         Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
          Task Parameter:
              CandidateAssemblyFiles=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\CustomListOfMember\ControlManifest.Input.xml
@@ -4261,22 +4235,46 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\package.json
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcfconfig.json
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\tsconfig.json
+         Task Parameter:FullTargetFrameworkSubsetNames=Full
          Task Parameter:
              Assemblies=
                  mscorlib
                          Pack=false
                  System.Core
                          Implicit=true
-         Task Parameter:OutputUnresolvedAssemblyConflicts=False
+         Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
+         Task Parameter:FindSerializationAssemblies=True
+         Task Parameter:FullFrameworkFolders=C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
+         Task Parameter:SupportsBindingRedirectGeneration=True
          Task Parameter:TargetProcessorArchitecture=msil
-         Task Parameter:AutoUnify=False
          Task Parameter:Silent=False
-         Task Parameter:TargetFrameworkVersion=v4.6.2
-         Task Parameter:FindRelatedFiles=True
+         Task Parameter:FindSatellites=True
+         Task Parameter:TargetFrameworkMonikerDisplayName=.NET Framework 4.6.2
+         Task Parameter:StateFile=obj\Debug\pcf control.pcfproj.AssemblyReference.cache
+         Task Parameter:WarnOrErrorOnTargetArchitectureMismatch=Warning
+         Task Parameter:TargetedRuntimeVersion=v
          Task Parameter:
              TargetFrameworkDirectories=
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\Facades\
+         Task Parameter:
+             AllowedRelatedFileExtensions=
+                 .pdb
+                 .xml
+                 .pri
+                 .dll.config
+                 .exe.config
+         Task Parameter:
+             SearchPaths=
+                 {CandidateAssemblyFiles}
+                 {HintPathFromItem}
+                 {TargetFrameworkDirectory}
+                 {Registry:Software\Microsoft\.NETFramework,v4.6.2,AssemblyFoldersEx}
+                 {AssemblyFolders}
+                 {GAC}
+                 {RawFileName}
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\
+         Task Parameter:AutoUnify=False
          Primary reference "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089".
              Resolved file path is "C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\mscorlib.dll".
              Reference found at search path location "{TargetFrameworkDirectory}".
@@ -4408,7 +4406,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E
        Done executing task "AssignTargetPath".
        Task "AssignTargetPath"
-         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E
          Task Parameter:
              Files=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\CustomListOfMember\ControlManifest.Input.xml
@@ -4423,6 +4420,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\package.json
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcfconfig.json
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\tsconfig.json
+         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E
          Output Item(s): 
              _NoneWithTargetPath=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\CustomListOfMember\ControlManifest.Input.xml
@@ -4480,8 +4478,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Task "MSBuildInternalMessage" skipped, due to false condition; ('@(NonResxWithNoCulture)'!='') was evaluated as (''!='').
        Using "AssignCulture" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "AssignCulture"
-         Task Parameter:WarnOnCultureOverwritten=False
          Task Parameter:RespectAlreadyAssignedItemCulture=False
+         Task Parameter:WarnOnCultureOverwritten=False
        Done executing task "AssignCulture".
    2:7>Done building target "SplitResourcesByCulture" in project "pcf control.pcfproj".
    2:7>Target "CreateManifestResourceNames" in file "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\build\Microsoft.PowerApps.MSBuild.Pcf.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj" (target "PrepareResourceNames" depends on it):
@@ -4604,10 +4602,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Output Property: CoreCompileDependencyHash=826b5f7a6947de60766682cf60fb1184318d84ceab388286a0b9ab9007eeba27
        Done executing task "Hash".
        Task "WriteLinesToFile"
-         Task Parameter:Lines=826b5f7a6947de60766682cf60fb1184318d84ceab388286a0b9ab9007eeba27
          Task Parameter:Overwrite=True
-         Task Parameter:WriteOnlyWhenDifferent=True
+         Task Parameter:Lines=826b5f7a6947de60766682cf60fb1184318d84ceab388286a0b9ab9007eeba27
          Task Parameter:File=obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
+         Task Parameter:WriteOnlyWhenDifferent=True
        Done executing task "WriteLinesToFile".
        Added Item(s): FileWrites=obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
    2:7>Done building target "_GenerateCompileDependencyCache" in project "pcf control.pcfproj".
@@ -4800,13 +4798,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
        Done executing task "RemoveDuplicates".
        Task "WriteLinesToFile"
+         Task Parameter:Overwrite=True
          Task Parameter:
              Lines=
                  C:\Nishant Own Files\SutherLand\ADNIC\PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.AssemblyReference.cache
                  C:\Nishant Own Files\SutherLand\ADNIC\PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.AssemblyReference.cache
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\Debug\pcf control.pcfproj.CoreCompileInputs.cache
-         Task Parameter:Overwrite=True
          Task Parameter:File=obj\Debug\pcf control.pcfproj.FileListAbsolute.txt
        Done executing task "WriteLinesToFile".
    2:7>Done building target "IncrementalClean" in project "pcf control.pcfproj".
@@ -35187,8 +35185,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:06.5855098+00:00 pcf 47a9214a-c881-4b93-bb94-64b4cc4eba84 StartBuildPhase {\"buildPhase\":\"npm-build\",\"Success\":\"true\"} null
-         Output Property: _PcfNpmBuildStartTimeTicks=639191256065855060
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:05.7188600+00:00 pcf 46f88c92-95b5-416c-bd8d-a36e4410a8d6 StartBuildPhase {\"buildPhase\":\"npm-build\",\"Success\":\"true\"} null
+         Output Property: _PcfNpmBuildStartTimeTicks=639191747457188563
        Done executing task "PpbtTelemetryStartBuildPhase".
        Task "Exec"
          Task Parameter:Command=npm run build -- --noColor --buildMode development --outDir "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls" --buildSource MSBuild
@@ -35198,15 +35196,15 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          > crm-input-pcf@1.0.0 build
          > pcf-scripts build --noColor --buildMode development --outDir C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls --buildSource MSBuild
          
-         [10:10:12 pm] [build] Initializing...
-         [10:10:12 pm] [build] Validating manifest...
-         [10:10:12 pm] [build] Validating control...
-         [10:10:16 pm] [build] Generating manifest types...
-         [10:10:16 pm] [build] Generating design types...
-         [10:10:16 pm] [build] Running ESLint...
-         [10:10:16 pm] [build] Compiling and bundling control...
+         [11:49:09 am] [build] Initializing...
+         [11:49:09 am] [build] Validating manifest...
+         [11:49:09 am] [build] Validating control...
+         [11:49:13 am] [build] Generating manifest types...
+         [11:49:13 am] [build] Generating design types...
+         [11:49:13 am] [build] Running ESLint...
+         [11:49:13 am] [build] Compiling and bundling control...
          [Webpack stats]:
-         asset [1m[32mbundle.js[39m[22m 211 KiB [1m[32m[emitted][39m[22m (name: main)
+         asset [1m[32mbundle.js[39m[22m 212 KiB [1m[32m[emitted][39m[22m (name: main)
          runtime modules 972 bytes 5 modules
          modules by path [1m./node_modules/[39m[22m 117 KiB
            modules by path [1m./node_modules/flatpickr/dist/[39m[22m 109 KiB
@@ -35220,19 +35218,19 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
            modules by path [1m./node_modules/css-loader/dist/runtime/*.js[39m[22m 2.31 KiB
              [1m./node_modules/css-loader/dist/runtime/noSourceMaps.js[39m[22m 64 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
              [1m./node_modules/css-loader/dist/runtime/api.js[39m[22m 2.25 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-         [1m./CustomListOfMember/index.ts[39m[22m 59.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
-         webpack 5.105.4 compiled [1m[32msuccessfully[39m[22m in 9037 ms
-         [10:10:27 pm] [build] Generating build outputs...
-         [10:10:27 pm] [build] Succeeded
+         [1m./CustomListOfMember/index.ts[39m[22m 60.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+         webpack 5.105.4 compiled [1m[32msuccessfully[39m[22m in 5662 ms
+         [11:49:20 am] [build] Generating build outputs...
+         [11:49:20 am] [build] Succeeded
        Done executing task "Exec".
        Task "PpbtTelemetryEndBuildPhase"
          Task Parameter:ProjectType=pcf
-         Task Parameter:BuildPhaseStartTimeTicks=639191256065855060
+         Task Parameter:BuildPhaseStartTimeTicks=639191747457188563
          Task Parameter:BuildPhase=npm-build
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.pcf\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:31.3252768+00:00 pcf 47a9214a-c881-4b93-bb94-64b4cc4eba84 EndBuildPhase {\"buildPhase\":\"npm-build\"} "{\"Execution Time(ms)\":24739.0}"
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:21.4811934+00:00 pcf 46f88c92-95b5-416c-bd8d-a36e4410a8d6 EndBuildPhase {\"buildPhase\":\"npm-build\"} "{\"Execution Time(ms)\":15762.0}"
        Done executing task "PpbtTelemetryEndBuildPhase".
    2:7>Done building target "PcfBuild" in project "pcf control.pcfproj".
        Done executing task "CallTarget".
@@ -35277,6 +35275,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          UndefineProperties=;TargetFramework;RuntimeIdentifier;SelfContained
        Done executing task "MSBuild".
        Task "MSBuild"
+         Task Parameter:BuildInParallel=True
+         Task Parameter:SkipNonexistentTargets=True
          Task Parameter:Targets=GetNativeManifest
          Task Parameter:
              Projects=
@@ -35299,8 +35299,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformMonikers=Windows,Version=7.0
                          Targets=
                          UndefineProperties=;TargetFramework;RuntimeIdentifier;SelfContained
-         Task Parameter:BuildInParallel=True
-         Task Parameter:SkipNonexistentTargets=True
          Removing Properties for project "..\..\pcf control.pcfproj":
            TargetFramework
            RuntimeIdentifier
@@ -35433,6 +35431,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "ResolvePackageFileConflicts" task from assembly "C:\Program Files\dotnet\sdk\9.0.311\Microsoft\Microsoft.NET.Build.Extensions\\tools\net9.0\Microsoft.NET.Build.Extensions.Tasks.dll".
        Task "ResolvePackageFileConflicts"
          Task Parameter:
+             References=
+                 mscorlib
+                         Pack=false
+         Task Parameter:
              PackageOverrides=
                  NETStandard.Library
                          OverriddenPackages=
@@ -35533,10 +35535,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  System.Xml.XPath.XDocument|4.3.0;
                
          Task Parameter:
-             References=
-                 mscorlib
-                         Pack=false
-         Task Parameter:
              TargetFrameworkDirectories=
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
                  C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\Facades\
@@ -35573,13 +35571,33 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Set Property: EnableCustomCulture=false
        Set Property: FindDependenciesOfExternallyResolvedReferences=false
        Task "ResolveAssemblyReference"
-         Task Parameter:StateFile=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.AssemblyReference.cache
-         Task Parameter:FindSatellites=True
-         Task Parameter:TargetedRuntimeVersion=v
-         Task Parameter:WarnOrErrorOnTargetArchitectureMismatch=Warning
+         Task Parameter:OutputUnresolvedAssemblyConflicts=False
+         Task Parameter:TargetFrameworkVersion=v4.6.2
+         Task Parameter:EnableCustomCulture=False
+         Task Parameter:FindRelatedFiles=True
+         Task Parameter:FindDependenciesOfExternallyResolvedReferences=False
+         Task Parameter:
+             AllowedAssemblyExtensions=
+                 .winmd
+                 .dll
+                 .exe
+         Task Parameter:
+             CandidateAssemblyFiles=
+                 bin\Debug\PowerAppsToolsTemp_adnic.zip
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
+         Task Parameter:FullTargetFrameworkSubsetNames=Full
+         Task Parameter:
+             Assemblies=
+                 mscorlib
+                         Pack=false
+                 System.Core
+                         Implicit=true
+         Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
+         Task Parameter:FindSerializationAssemblies=True
          Task Parameter:FullFrameworkFolders=C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
          Task Parameter:SupportsBindingRedirectGeneration=True
-         Task Parameter:FullTargetFrameworkSubsetNames=Full
          Task Parameter:
              AssemblyFiles=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\pcf control.exe
@@ -35607,9 +35625,24 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPlatformMonikers=Windows,Version=7.0
                          Targets=
                          UndefineProperties=;TargetFramework;RuntimeIdentifier;SelfContained
+         Task Parameter:TargetProcessorArchitecture=msil
+         Task Parameter:Silent=False
+         Task Parameter:FindSatellites=True
          Task Parameter:TargetFrameworkMonikerDisplayName=.NET Framework 4.6.2
-         Task Parameter:EnableCustomCulture=False
-         Task Parameter:FindDependenciesOfExternallyResolvedReferences=False
+         Task Parameter:StateFile=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.AssemblyReference.cache
+         Task Parameter:WarnOrErrorOnTargetArchitectureMismatch=Warning
+         Task Parameter:TargetedRuntimeVersion=v
+         Task Parameter:
+             TargetFrameworkDirectories=
+                 C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
+                 C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\Facades\
+         Task Parameter:
+             AllowedRelatedFileExtensions=
+                 .pdb
+                 .xml
+                 .pri
+                 .dll.config
+                 .exe.config
          Task Parameter:
              SearchPaths=
                  {CandidateAssemblyFiles}
@@ -35620,42 +35653,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  {GAC}
                  {RawFileName}
                  bin\Debug\
-         Task Parameter:
-             AllowedRelatedFileExtensions=
-                 .pdb
-                 .xml
-                 .pri
-                 .dll.config
-                 .exe.config
-         Task Parameter:
-             AllowedAssemblyExtensions=
-                 .winmd
-                 .dll
-                 .exe
-         Task Parameter:FindSerializationAssemblies=True
-         Task Parameter:TargetFrameworkMoniker=.NETFramework,Version=v4.6.2
-         Task Parameter:
-             CandidateAssemblyFiles=
-                 bin\Debug\PowerAppsToolsTemp_adnic.zip
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
-         Task Parameter:
-             Assemblies=
-                 mscorlib
-                         Pack=false
-                 System.Core
-                         Implicit=true
-         Task Parameter:OutputUnresolvedAssemblyConflicts=False
-         Task Parameter:TargetProcessorArchitecture=msil
          Task Parameter:AutoUnify=False
-         Task Parameter:Silent=False
-         Task Parameter:TargetFrameworkVersion=v4.6.2
-         Task Parameter:FindRelatedFiles=True
-         Task Parameter:
-             TargetFrameworkDirectories=
-                 C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\
-                 C:\Users\Nishant\.nuget\packages\microsoft.netframework.referenceassemblies.net462\1.0.0\build\.NETFramework\v4.6.2\Facades\
          Primary reference "pcf control".
              Could not find dependent files. Expected file "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\pcf control.exe" does not exist.
              Could not find dependent files. Expected file "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\pcf control.exe" does not exist.
@@ -35941,11 +35939,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
        Done executing task "AssignTargetPath".
        Task "AssignTargetPath"
-         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:
              Files=
                  bin\Debug\PowerAppsToolsTemp_adnic.zip
                          CopyToOutputDirectory=PreserveNewest
+         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Output Item(s): 
              ContentWithTargetPath=
                  bin\Debug\PowerAppsToolsTemp_adnic.zip
@@ -35954,12 +35952,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          TargetPath=bin\Debug\PowerAppsToolsTemp_adnic.zip
        Done executing task "AssignTargetPath".
        Task "AssignTargetPath"
-         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Task Parameter:
              Files=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
+         Task Parameter:RootFolder=C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic
          Output Item(s): 
              _NoneWithTargetPath=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
@@ -35986,8 +35984,8 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Task "MSBuildInternalMessage" skipped, due to false condition; ('@(NonResxWithCulture)'!='') was evaluated as (''!='').
        Task "MSBuildInternalMessage" skipped, due to false condition; ('@(NonResxWithNoCulture)'!='') was evaluated as (''!='').
        Task "AssignCulture"
-         Task Parameter:WarnOnCultureOverwritten=False
          Task Parameter:RespectAlreadyAssignedItemCulture=False
+         Task Parameter:WarnOnCultureOverwritten=False
        Done executing task "AssignCulture".
    1:7>Done building target "SplitResourcesByCulture" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "CreateManifestResourceNames" in file "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\build\Microsoft.PowerApps.MSBuild.Solution.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "PrepareResourceNames" depends on it):
@@ -36173,10 +36171,10 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          Output Property: CoreCompileDependencyHash=63f9a8dffae9fc9e2052dd407c7456d24c3f9ca50b341d7d0251f1f4693b469a
        Done executing task "Hash".
        Task "WriteLinesToFile"
-         Task Parameter:Lines=63f9a8dffae9fc9e2052dd407c7456d24c3f9ca50b341d7d0251f1f4693b469a
          Task Parameter:Overwrite=True
-         Task Parameter:WriteOnlyWhenDifferent=True
+         Task Parameter:Lines=63f9a8dffae9fc9e2052dd407c7456d24c3f9ca50b341d7d0251f1f4693b469a
          Task Parameter:File=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.CoreCompileInputs.cache
+         Task Parameter:WriteOnlyWhenDifferent=True
        Done executing task "WriteLinesToFile".
        Added Item(s): FileWrites=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.CoreCompileInputs.cache
    1:7>Done building target "_GenerateCompileDependencyCache" in project "PowerAppsToolsTemp_adnic.cdsproj".
@@ -36366,11 +36364,11 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.CoreCompileInputs.cache
        Done executing task "RemoveDuplicates".
        Task "WriteLinesToFile"
+         Task Parameter:Overwrite=True
          Task Parameter:
              Lines=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.AssemblyReference.cache
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.CoreCompileInputs.cache
-         Task Parameter:Overwrite=True
          Task Parameter:File=obj\Debug\PowerAppsToolsTemp_adnic.cdsproj.FileListAbsolute.txt
        Done executing task "WriteLinesToFile".
    1:7>Done building target "IncrementalClean" in project "PowerAppsToolsTemp_adnic.cdsproj".
@@ -36398,19 +36396,20 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "Copy" task from assembly "Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a".
        Task "Copy"
          Task Parameter:
-             SourceFiles=
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
-                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
-         Task Parameter:
              DestinationFiles=
                  obj\Debug\Metadata/Other\Customizations.xml
                  obj\Debug\Metadata/Other\Relationships.xml
                  obj\Debug\Metadata/Other\Solution.xml
+         Task Parameter:
+             SourceFiles=
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml
+                 C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml
          Creating directory "obj\Debug\Metadata\Other".
+         Creating directory "obj\Debug\Metadata\Other".
+         Copying file from "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml" to "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\Metadata\Other\Solution.xml".
          Copying file from "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Relationships.xml" to "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\Metadata\Other\Relationships.xml".
          Copying file from "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Customizations.xml" to "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\Metadata\Other\Customizations.xml".
-         Copying file from "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\src\Other\Solution.xml" to "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\obj\Debug\Metadata\Other\Solution.xml".
        Done executing task "Copy".
    1:7>Done building target "CopyCdsSolutionContent" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "ProcessCdsProjectReferencesOutputs" in file "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\build\Microsoft.PowerApps.MSBuild.Solution.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "PowerAppsPackage" depends on it):
@@ -36451,6 +36450,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Using "ProcessCdsProjectReferencesOutputs" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Solution.Tasks.dll".
        Task "ProcessCdsProjectReferencesOutputs"
          Task Parameter:WorkingDirectoryPath=obj\Debug\Metadata
+         Task Parameter:PcfForceUpdateFlag=true
          Task Parameter:
              SourceFileItems=
                  C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\out\controls\
@@ -36461,7 +36461,6 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
                          PowerAppsComponentType=Pcf
                          ReferenceSourceTarget=ProjectReference
                          Targets=
-         Task Parameter:PcfForceUpdateFlag=true
          Assembly loaded during TaskRun (Microsoft.PowerPlatform.MSBuild.Tasks.ProcessCdsProjectReferencesOutputs): System.Xml.XPath.XDocument, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Xml.XPath.XDocument.dll, MVID: 75508563-219f-4f17-bb9c-86013b32df73, AssemblyLoadContext: Default)
          Solution.xml path obj\Debug\Metadata\Other\Solution.xml
          Publisher prefix is set to adnic
@@ -36486,13 +36485,13 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
        Done executing task "Message".
        Using "SolutionPackagerTask" task from assembly "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Solution.Tasks.dll".
        Task "SolutionPackagerTask"
-         Task Parameter:ErrorLevel=Info
-         Task Parameter:SolutionRootDirectory=obj\Debug\Metadata
          Task Parameter:Action=Pack
-         Task Parameter:PathToZipFile=bin\Debug\PowerAppsToolsTemp_adnic.zip
          Task Parameter:PackageType=Unmanaged
+         Task Parameter:SolutionRootDirectory=obj\Debug\Metadata
          Task Parameter:Localize=False
          Task Parameter:LogFilePath=obj\Debug\SolutionPackager.log
+         Task Parameter:PathToZipFile=bin\Debug\PowerAppsToolsTemp_adnic.zip
+         Task Parameter:ErrorLevel=Info
          Assembly loaded during TaskRun (Microsoft.PowerPlatform.MSBuild.Tasks.SolutionPackagerTask): SolutionPackagerLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35 (location: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\SolutionPackagerLib.dll, MVID: 8f0f7d2f-c0cf-44ee-a100-556753aa16a0, AssemblyLoadContext: MSBuild plugin C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Solution.Tasks.dll)
          Assembly loaded during TaskRun (Microsoft.PowerPlatform.MSBuild.Tasks.SolutionPackagerTask): System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 (location: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\System.ComponentModel.Composition.dll, MVID: 0339460e-cdb4-43d2-86a0-7d4ee5e9f385, AssemblyLoadContext: MSBuild plugin C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\Microsoft.PowerPlatform.MSBuild.Solution.Tasks.dll)
          Assembly loaded during TaskRun (Microsoft.PowerPlatform.MSBuild.Tasks.SolutionPackagerTask): System.Diagnostics.TextWriterTraceListener, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a (location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.13\System.Diagnostics.TextWriterTraceListener.dll, MVID: b5110217-56b9-4164-adaa-79d8f9059541, AssemblyLoadContext: Default)
@@ -36534,7 +36533,7 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:32.1035928+00:00 solution 47a9214a-c881-4b93-bb94-64b4cc4eba84 target-PowerAppsPackage {\"SolutionPackageType\":\"Unmanaged\",\"SolutionPackageLocalTemplate\":\"null\",\"SolutionPackageEnableLocalization\":\"false\"} null
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:21.9666751+00:00 solution 46f88c92-95b5-416c-bd8d-a36e4410a8d6 target-PowerAppsPackage {\"SolutionPackageType\":\"Unmanaged\",\"SolutionPackageLocalTemplate\":\"null\",\"SolutionPackageEnableLocalization\":\"false\"} null
        Done executing task "PpbtTelemetryTrackEvent".
    1:7>Done building target "PowerAppsPackage" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "CleanUpIntermediateFiles" in file "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\build\Microsoft.PowerApps.MSBuild.Solution.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Build" depends on it):
@@ -36552,12 +36551,12 @@ Logging verbosity is set to: Detailed.     0>Terminal Logger was not used becaus
    1:7>Target "EndTelemetryTask" in file "C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\build\Microsoft.PowerApps.MSBuild.Solution.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Build" depends on it):
        Task "PpbtTelemetryEndBuildPhase"
          Task Parameter:ProjectType=solution
-         Task Parameter:BuildPhaseStartTimeTicks=639191256044952667
+         Task Parameter:BuildPhaseStartTimeTicks=639191747440024968
          Task Parameter:BuildPhase=build
          TelemetrySessionService: Calling telemetry recorder with process info: 
            WD: C:\Users\Nishant\.nuget\packages\microsoft.powerapps.msbuild.solution\1.52.1\tasks\net6.0\ppbtTelemetryRecorder
            FileName: C:\Program Files\dotnet\dotnet.exe
-           ppbtTelemetryRecorder.dll TrackEvent 2026-07-08T16:40:32.1507789+00:00 solution 47a9214a-c881-4b93-bb94-64b4cc4eba84 EndBuildPhase {\"buildPhase\":\"build\"} "{\"Execution Time(ms)\":27655.0}"
+           ppbtTelemetryRecorder.dll TrackEvent 2026-07-09T06:19:22.0085214+00:00 solution 46f88c92-95b5-416c-bd8d-a36e4410a8d6 EndBuildPhase {\"buildPhase\":\"build\"} "{\"Execution Time(ms)\":18006.0}"
        Done executing task "PpbtTelemetryEndBuildPhase".
    1:7>Done building target "EndTelemetryTask" in project "PowerAppsToolsTemp_adnic.cdsproj".
    1:7>Target "Build" in file "C:\Program Files\dotnet\sdk\9.0.311\Microsoft.Common.CurrentVersion.targets" from project "C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj" (target "Rebuild" depends on it):
@@ -36586,34 +36585,34 @@ Detailed Build Summary
          ============================== Build Hierarchy (IDs represent configurations) =====================================================
          Id                  : Exclusive Time   Total Time   Path (Targets)
          -----------------------------------------------------------------------------------------------------------------------------------
-         0                   : 3.565s           6.873s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (Restore) 
-         | 1                 : 0.049s           0.049s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_IsProjectRestoreSupported) 
-         | 2                 : 0.012s           3.031s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateRestoreProjectPathWalk) 
-         | . 3               : 3.019s           3.019s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateRestoreProjectPathWalk) 
-         | 4                 : 0.003s           0.003s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_IsProjectRestoreSupported) 
-         | 5                 : 0.160s           0.160s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateRestoreGraphProjectEntry) 
-         | 6                 : 0.022s           0.022s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateRestoreGraphProjectEntry) 
-         | 7                 : 0.021s           0.021s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateProjectRestoreGraph) 
-         . 8                 : 0.021s           0.021s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateProjectRestoreGraph) 
+         0                   : 3.332s           4.998s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (Restore) 
+         | 1                 : 0.017s           0.017s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_IsProjectRestoreSupported) 
+         | 2                 : 0.007s           1.555s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateRestoreProjectPathWalk) 
+         | . 3               : 1.548s           1.548s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateRestoreProjectPathWalk) 
+         | 4                 : 0.001s           0.001s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_IsProjectRestoreSupported) 
+         | 5                 : 0.061s           0.061s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateRestoreGraphProjectEntry) 
+         | 6                 : 0.012s           0.012s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateRestoreGraphProjectEntry) 
+         | 7                 : 0.010s           0.010s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (_GenerateProjectRestoreGraph) 
+         . 8                 : 0.010s           0.010s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (_GenerateProjectRestoreGraph) 
          
          ============================== Node Utilization (IDs represent configurations) ====================================================
          Timestamp:            1        Duration   Cumulative
          -----------------------------------------------------------------------------------------------------------------------------------
-         639191255857160108:   0        0.545s     0.545s ..........
-         639191255862605876:   1        0.049s     0.594s 
-         639191255863095933:   0        0.068s     0.662s .
-         639191255863775181:   2        0.008s     0.669s 
-         639191255863854481:   3        3.019s     3.689s ............................................................
-         639191255894045788:   2        0.004s     3.693s 
-         639191255894090206:   0        0.014s     3.707s 
-         639191255894229206:   4        0.003s     3.710s 
-         639191255894259049:   0        0.009s     3.719s 
-         639191255894348564:   5        0.160s     3.879s ...
-         639191255895951079:   6        0.022s     3.901s 
-         639191255896171891:   0        0.007s     3.908s 
-         639191255896241639:   7        0.021s     3.929s 
-         639191255896449517:   8        0.021s     3.950s 
-         639191255896660185:   0        2.932s     6.882s ..........................................................
+         639191747315396901:   0        0.258s     0.258s .....
+         639191747317976145:   1        0.017s     0.275s 
+         639191747318144004:   0        0.045s     0.320s 
+         639191747318596152:   2        0.004s     0.324s 
+         639191747318638512:   3        1.548s     1.872s ..............................
+         639191747334115642:   2        0.003s     1.875s 
+         639191747334143345:   0        0.004s     1.878s 
+         639191747334178585:   4        0.001s     1.879s 
+         639191747334186560:   0        0.003s     1.882s 
+         639191747334220836:   5        0.061s     1.944s .
+         639191747334834811:   6        0.013s     1.956s 
+         639191747334959922:   0        0.001s     1.958s 
+         639191747334972981:   7        0.010s     1.968s 
+         639191747335077667:   8        0.010s     1.978s 
+         639191747335173324:   0        3.028s     5.005s ............................................................
          -----------------------------------------------------------------------------------------------------------------------------------
          Utilization:          100.0    Average Utilization: 100.0
          
@@ -36624,42 +36623,42 @@ Detailed Build Summary
          ============================== Build Hierarchy (IDs represent configurations) =====================================================
          Id                  : Exclusive Time   Total Time   Path (Targets)
          -----------------------------------------------------------------------------------------------------------------------------------
-         9                   : 1.678s           39.601s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (Rebuild) 
-         | 10                : 2.926s           2.926s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (GetTargetFrameworks) 
-         | 11                : 8.208s           8.208s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (Clean) 
-         | 12                : 26.784s           26.784s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj () 
+         9                   : 1.104s           25.490s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\obj\PowerAppsToolsTemp_adnic\PowerAppsToolsTemp_adnic.cdsproj (Rebuild) 
+         | 10                : 1.533s           1.533s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (GetTargetFrameworks) 
+         | 11                : 5.438s           5.438s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (Clean) 
+         | 12                : 17.412s           17.412s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj () 
          | 13                : 0.001s           0.001s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (GetNativeManifest) 
-         . 14                : 0.003s           0.003s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (GetProjectOutputPath) 
+         . 14                : 0.002s           0.002s       C:\Nishant Own Files\SutherLand\ADNIC\Adnic PCF Controls\customMemberListB2E\pcf control.pcfproj (GetProjectOutputPath) 
          
          ============================== Node Utilization (IDs represent configurations) ====================================================
          Timestamp:            1        Duration   Cumulative
          -----------------------------------------------------------------------------------------------------------------------------------
-         639191255857160108:   0        0.545s     0.545s ..........
-         639191255862605876:   1        0.049s     0.594s 
-         639191255863095933:   0        0.068s     0.662s .
-         639191255863775181:   2        0.008s     0.669s 
-         639191255863854481:   3        3.019s     3.689s ............................................................
-         639191255894045788:   2        0.004s     3.693s 
-         639191255894090206:   0        0.014s     3.707s 
-         639191255894229206:   4        0.003s     3.710s 
-         639191255894259049:   0        0.009s     3.719s 
-         639191255894348564:   5        0.160s     3.879s ...
-         639191255895951079:   6        0.022s     3.901s 
-         639191255896171891:   0        0.007s     3.908s 
-         639191255896241639:   7        0.021s     3.929s 
-         639191255896449517:   8        0.021s     3.950s 
-         639191255896660185:   0        2.932s     6.882s ..........................................................
-         639191255926022004:   9        0.559s     7.445s ...........
-         639191255931613186:   10       2.926s     10.372s ..........................................................
-         639191255960875769:   9        0.016s     10.387s 
-         639191255961031747:   11       8.210s     18.597s + (scale 1:100)
-         639191256043127302:   9        0.260s     18.857s .....
-         639191256045732121:   12       26.784s     45.641s +++++ (scale 1:100)
-         639191256313571798:   9        0.006s     45.647s 
-         639191256313629714:   13       0.001s     45.648s 
-         639191256313641295:   9        0.079s     45.728s .
-         639191256314435639:   14       0.003s     45.731s 
-         639191256314470597:   9        0.756s     46.487s ...............
+         639191747315396901:   0        0.258s     0.258s .....
+         639191747317976145:   1        0.017s     0.275s 
+         639191747318144004:   0        0.045s     0.320s 
+         639191747318596152:   2        0.004s     0.324s 
+         639191747318638512:   3        1.548s     1.872s ..............................
+         639191747334115642:   2        0.003s     1.875s 
+         639191747334143345:   0        0.004s     1.878s 
+         639191747334178585:   4        0.001s     1.879s 
+         639191747334186560:   0        0.003s     1.882s 
+         639191747334220836:   5        0.061s     1.944s .
+         639191747334834811:   6        0.013s     1.956s 
+         639191747334959922:   0        0.001s     1.958s 
+         639191747334972981:   7        0.010s     1.968s 
+         639191747335077667:   8        0.010s     1.978s 
+         639191747335173324:   0        3.028s     5.005s ............................................................
+         639191747365466228:   9        0.343s     5.350s ......
+         639191747368899237:   10       1.533s     6.883s ..............................
+         639191747384226573:   9        0.007s     6.890s 
+         639191747384295607:   11       5.438s     12.328s + (scale 1:100)
+         639191747438678411:   9        0.219s     12.547s ....
+         639191747440871482:   12       17.412s     29.959s +++ (scale 1:100)
+         639191747614990328:   9        0.001s     29.961s 
+         639191747615002423:   13       0.001s     29.961s 
+         639191747615010801:   9        0.057s     30.018s .
+         639191747615576575:   14       0.002s     30.020s 
+         639191747615600486:   9        0.476s     30.497s .........
          -----------------------------------------------------------------------------------------------------------------------------------
          Utilization:          100.0    Average Utilization: 100.0
 
@@ -36667,4 +36666,4 @@ Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:46.56
+Time Elapsed 00:00:30.52

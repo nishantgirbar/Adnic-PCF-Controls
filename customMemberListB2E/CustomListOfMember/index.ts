@@ -34,6 +34,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private lastAbove65Raw: string | null = null;
   private hasLoadedShowEbpPlan: boolean = false;
   private showEbpPlanSignature: string = "";
+  private shouldOutputShowEbpPlan: boolean = false;
   private enableUpload: boolean = false;
   private productType: string = "";
   private isReadOnly: boolean = false;
@@ -463,6 +464,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     this.showEbpPlan = nextShowEbpPlan;
+    this.shouldOutputShowEbpPlan = true;
     return true;
   }
 
@@ -621,12 +623,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     });
   }
 
-  private async uploadFileToAnnotation(file: File): Promise<string> {
+  private async uploadFileToAnnotation(file: File, dataUrl?: string): Promise<string> {
     const { entityId, entityTypeName } = this.getCurrentRecordContext();
     const entitySetName = await this.getEntitySetName(entityTypeName);
 
-    const dataUrl = await this.convertFileToBase64(file);
-    const base64 = dataUrl.split(",").slice(1).join(",");
+    const fileDataUrl = dataUrl ?? await this.convertFileToBase64(file);
+    const base64 = fileDataUrl.split(",").slice(1).join(",");
 
     const body: any = {
       subject: file.name,
@@ -648,6 +650,41 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     const annotationId = await this.context.webAPI.createRecord("annotation", body);
 
     return this.normalizeAnnotationId(annotationId);
+  }
+
+  private async createAttachmentFromFile(file: File): Promise<any> {
+    const dataUrl = await this.convertFileToBase64(file);
+    const { entityId } = this.getCurrentRecordContext();
+
+    if (!entityId) {
+      return {
+        name: file.name,
+        mimeType: file.type || "application/pdf",
+        size: file.size,
+        annotationId: "",
+        content: dataUrl
+      };
+    }
+
+    try {
+      const annotationId = await this.uploadFileToAnnotation(file, dataUrl);
+      return {
+        name: file.name,
+        mimeType: file.type || "application/pdf",
+        size: file.size,
+        annotationId,
+        content: ""
+      };
+    } catch (error) {
+      console.warn("Annotation upload failed; keeping attachment content in control output.", error);
+      return {
+        name: file.name,
+        mimeType: file.type || "application/pdf",
+        size: file.size,
+        annotationId: "",
+        content: dataUrl
+      };
+    }
   }
 
   private normalizeAnnotationId(annotationId?: any): string {
@@ -1678,15 +1715,9 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           btn.disabled = true;
 
           try {
-            const uploadedAttachments = await Promise.all(files.map(async file => {
-              const annotationId = await this.uploadFileToAnnotation(file);
-              return {
-                name: file.name,
-                mimeType: file.type || "application/pdf",
-                size: file.size,
-                annotationId
-              };
-            }));
+            const uploadedAttachments = await Promise.all(
+              files.map(file => this.createAttachmentFromFile(file))
+            );
 
             row.attachments = row.attachments || [];
             row.attachments.push(...uploadedAttachments);
@@ -1820,12 +1851,17 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   }
 
   public getOutputs(): IOutputs {
-    return {
+    const outputs: IOutputs = {
       memberData: JSON.stringify(this.members),
       listOfMemberAbove65: this.above65MembersJson,
       uniqueCategoriesJson: this.uniqueCategoriesJson,
-      adnic_adnic_showebpplan: this.showEbpPlan
+      adnic_adnic_showebpplan: this.shouldOutputShowEbpPlan
+        ? this.showEbpPlan
+        : undefined
     };
+
+    this.shouldOutputShowEbpPlan = false;
+    return outputs;
   }
 
   public destroy(): void { }

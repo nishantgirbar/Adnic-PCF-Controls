@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="QuoteSummaryPCF"
            constructor="QuoteSummaryPCF"
-           version="1.7.7"
+           version="1.7.8"
            display-name-key="Quote Summary"
            description-key="Quote Summary from API"
            control-type="standard">

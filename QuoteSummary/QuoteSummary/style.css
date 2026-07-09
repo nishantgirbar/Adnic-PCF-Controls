@@ -4,6 +4,8 @@
     background: #f5f6f8;
     box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .quote-wrapper *,
@@ -35,6 +37,7 @@
     margin-bottom: 20px;
     overflow: hidden;
     border: 1px solid #edebe9;
+    max-width: 100%;
 }
 
 /* BLUE HEADER */
@@ -86,17 +89,19 @@
 /* PLAN GRID */
 .plan-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px 24px;
     padding: 16px;
     align-items: start;
 }
 
 .plan-row {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: minmax(130px, 190px) minmax(0, 1fr);
+    column-gap: 8px;
     margin: 12px;
     align-items: start;
+    min-width: 0;
 }
 
 .quote-wrapper .value {
@@ -127,6 +132,21 @@
 
     .section-title.blue {
         padding: 10px 12px;
+    }
+
+    .quote-wrapper {
+        padding: 10px;
+    }
+
+    .plan-grid {
+        grid-template-columns: 1fr;
+        padding: 12px;
+    }
+
+    .plan-row {
+        grid-template-columns: 1fr;
+        row-gap: 2px;
+        margin: 10px 0;
     }
 }
 
@@ -162,13 +182,17 @@
 }
 .matrix-table {
     width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .matrix-header,
 .matrix-row {
     display: grid;
-    grid-template-columns: 250px repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: minmax(150px, 1.2fr) repeat(var(--plan-count, 1), minmax(128px, 1fr));
     align-items: center;
+    min-width: max-content;
 }
 
 .matrix-header {
@@ -180,8 +204,11 @@
 .matrix-header div,
 .matrix-row div,
 .matrix-footer div {
-    padding: 14px 16px;
+    min-width: 0;
+    padding: 12px 14px;
     border-bottom: 1px solid #edebe9;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 
 .matrix-row:nth-child(even) {
@@ -197,12 +224,33 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     padding: 16px;
     font-weight: 700;
     background: #f3f2f1;
     color: #d13438;
+    min-width: max-content;
 }
 
 .matrix-total-value {
     font-size: 18px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .matrix-header,
+    .matrix-row {
+        grid-template-columns: minmax(132px, 1fr) repeat(var(--plan-count, 1), minmax(112px, 1fr));
+    }
+
+    .matrix-header div,
+    .matrix-row div,
+    .matrix-footer div {
+        padding: 10px 12px;
+    }
+
+    .matrix-footer {
+        padding: 12px;
+    }
 }

@@ -1027,7 +1027,7 @@ private async loadData(): Promise<void> {
                     Premium Calculations (in ${this.getDirhamSymbol()})
                 </div>
 
-                <div class="matrix-table">
+                <div class="matrix-table" style="--plan-count: ${Math.max(data.plans.length, 1)};">
 
                     <div class="matrix-header">
 
