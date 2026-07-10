@@ -185,14 +185,15 @@
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    background: #f3f2f1;
 }
 
 .matrix-header,
 .matrix-row {
     display: grid;
-    grid-template-columns: minmax(150px, 1.2fr) repeat(var(--plan-count, 1), minmax(128px, 1fr));
+    grid-template-columns: minmax(150px, 1.2fr) repeat(var(--plan-count, 1), minmax(128px, 2fr));
     align-items: center;
-    min-width: max-content;
+    min-width: fit-content;
 }
 
 .matrix-header {
@@ -241,7 +242,7 @@
 @media (max-width: 640px) {
     .matrix-header,
     .matrix-row {
-        grid-template-columns: minmax(132px, 1fr) repeat(var(--plan-count, 1), minmax(112px, 1fr));
+        grid-template-columns: minmax(200px, 1fr) repeat(var(--plan-count, 1), minmax(112px, 2fr));
     }
 
     .matrix-header div,

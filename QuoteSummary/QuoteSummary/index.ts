@@ -29,187 +29,187 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
         `;
     }
 
-private apiUrl: string = "";
-private async getEnvironmentVariableValue(
-    schemaName: string
-): Promise<string> {
+    private apiUrl: string = "";
+    private async getEnvironmentVariableValue(
+        schemaName: string
+    ): Promise<string> {
 
-    try {
+        try {
 
-        // ✅ Get Environment Variable Definition
-        const definitionResult =
-            await this.context.webAPI.retrieveMultipleRecords(
-                "environmentvariabledefinition",
-                `?$select=environmentvariabledefinitionid,schemaname&$filter=schemaname eq '${schemaName}'`
+            // ✅ Get Environment Variable Definition
+            const definitionResult =
+                await this.context.webAPI.retrieveMultipleRecords(
+                    "environmentvariabledefinition",
+                    `?$select=environmentvariabledefinitionid,schemaname&$filter=schemaname eq '${schemaName}'`
+                );
+
+            console.log(
+                "Definition Result:",
+                definitionResult
             );
 
-        console.log(
-            "Definition Result:",
-            definitionResult
-        );
+            if (definitionResult.entities.length === 0) {
 
-        if (definitionResult.entities.length === 0) {
+                console.error(
+                    "Environment Variable Definition not found"
+                );
+
+                return "";
+            }
+
+            const definitionId =
+                definitionResult.entities[0]
+                    .environmentvariabledefinitionid;
+
+            console.log(
+                "Definition Id:",
+                definitionId
+            );
+
+            // ✅ Get Environment Variable Value
+            const valueResult =
+                await this.context.webAPI.retrieveMultipleRecords(
+                    "environmentvariablevalue",
+                    `?$select=value&$filter=_environmentvariabledefinitionid_value eq '${definitionId}'`
+                );
+
+            console.log(
+                "Value Result:",
+                valueResult
+            );
+
+            if (valueResult.entities.length > 0) {
+
+                const value =
+                    valueResult.entities[0].value || "";
+
+                console.log(
+                    "Environment Variable Value:",
+                    value
+                );
+
+                return value;
+            }
 
             console.error(
-                "Environment Variable Definition not found"
+                "Environment Variable Value not found"
             );
 
-            return "";
+        } catch (error) {
+
+            console.error(
+                "Environment Variable Error:",
+                error
+            );
         }
 
-        const definitionId =
-            definitionResult.entities[0]
-                .environmentvariabledefinitionid;
-
-        console.log(
-            "Definition Id:",
-            definitionId
-        );
-
-        // ✅ Get Environment Variable Value
-        const valueResult =
-            await this.context.webAPI.retrieveMultipleRecords(
-                "environmentvariablevalue",
-                `?$select=value&$filter=_environmentvariabledefinitionid_value eq '${definitionId}'`
-            );
-
-        console.log(
-            "Value Result:",
-            valueResult
-        );
-
-        if (valueResult.entities.length > 0) {
-
-            const value =
-                valueResult.entities[0].value || "";
-
-            console.log(
-                "Environment Variable Value:",
-                value
-            );
-
-            return value;
-        }
-
-        console.error(
-            "Environment Variable Value not found"
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Environment Variable Error:",
-            error
-        );
+        return "";
     }
 
-    return "";
-}
+    private async loadData(): Promise<void> {
 
-private async loadData(): Promise<void> {
+        try {
 
-    try {
+            const quoteId =
+                this.context.parameters.quoterecordId.raw;
 
-        const quoteId =
-            this.context.parameters.quoterecordId.raw;
+            const quoteNumber =
+                this.context.parameters.quoteNumber.raw;
 
-        const quoteNumber =
-            this.context.parameters.quoteNumber.raw;
+            if (!quoteId) {
 
-        if (!quoteId) {
-
-            throw new Error(
-                "Quote ID missing"
-            );
-        }
-
-        console.log(
-            "Loading Quote Summary..."
-        );
-
-        // ✅ Build API URL from Environment Variables
-        if (!this.apiUrl) {
-
-            const baseUrl =
-                await this.getEnvironmentVariableValue(
-                    "adnic_BaseServiceUrl"
+                throw new Error(
+                    "Quote ID missing"
                 );
-
-            const environmentName =
-                await this.getEnvironmentVariableValue(
-                    "adnic_EnvironmentName"
-                );
-
-            const quoteApi ="quote-management/api/v1/sme-quotes";
-
-            // ✅ Final API URL
-            this.apiUrl =
-                `${baseUrl}${environmentName}/${quoteApi}`;
+            }
 
             console.log(
-                "Final API URL:",
-                this.apiUrl
+                "Loading Quote Summary..."
             );
-        }
 
-        if (!this.apiUrl) {
+            // ✅ Build API URL from Environment Variables
+            if (!this.apiUrl) {
 
-            throw new Error(
-                "API URL is empty"
+                const baseUrl =
+                    await this.getEnvironmentVariableValue(
+                        "adnic_BaseServiceUrl"
+                    );
+
+                const environmentName =
+                    await this.getEnvironmentVariableValue(
+                        "adnic_EnvironmentName"
+                    );
+
+                const quoteApi = "quote-management/api/v1/sme-quotes";
+
+                // ✅ Final API URL
+                this.apiUrl =
+                    `${baseUrl}${environmentName}/${quoteApi}`;
+
+                console.log(
+                    "Final API URL:",
+                    this.apiUrl
+                );
+            }
+
+            if (!this.apiUrl) {
+
+                throw new Error(
+                    "API URL is empty"
+                );
+            }
+
+            // ✅ Final Quote API
+            const finalUrl =
+                `${this.apiUrl}/${quoteId}?quoteNumber=${quoteNumber}`;
+
+            console.log(
+                "Calling API:",
+                finalUrl
             );
-        }
 
-        // ✅ Final Quote API
-        const finalUrl =
-            `${this.apiUrl}/${quoteId}?quoteNumber=${quoteNumber}`;
+            const response =
+                await fetch(finalUrl);
 
-        console.log(
-            "Calling API:",
-            finalUrl
-        );
+            if (!response.ok) {
 
-        const response =
-            await fetch(finalUrl);
+                throw new Error(
+                    "API failed"
+                );
+            }
 
-        if (!response.ok) {
+            const apiData =
+                await response.json();
 
-            throw new Error(
-                "API failed"
+            console.log(
+                "API Response:",
+                apiData
             );
-        }
 
-        const apiData =
-            await response.json();
+            const data =
+                this.mapApiToUI(apiData);
 
-        console.log(
-            "API Response:",
-            apiData
-        );
+            console.log(
+                "Mapped UI Data:",
+                data
+            );
 
-        const data =
-            this.mapApiToUI(apiData);
+            this.render(data);
 
-        console.log(
-            "Mapped UI Data:",
-            data
-        );
+        } catch (error) {
 
-        this.render(data);
+            console.error(
+                "Load Data Error:",
+                error
+            );
 
-    } catch (error) {
-
-        console.error(
-            "Load Data Error:",
-            error
-        );
-
-        this.container.innerHTML = `
+            this.container.innerHTML = `
             <div class="loader error">
                 Failed to load Quote Summary
             </div>
         `;
+        }
     }
-}
 
     private mapApiToUI(api: any): any {
 
@@ -257,7 +257,7 @@ private async loadData(): Promise<void> {
 
             const categoryMembers =
                 isEbpProduct &&
-                this.isEbpCategory(categoryCode)
+                    this.isEbpCategory(categoryCode)
                     ? this.getEbpMembers(members)
                     : matchedCategoryMembers;
 
@@ -283,15 +283,21 @@ private async loadData(): Promise<void> {
                 category: categoryCode,
 
                 network:
-                    this.getNetworkProvider(cat),
+                    productType === "SME" && this.isEbpCategory(categoryCode)
+                        ? "ECare"
+                        : this.getNetworkProvider(cat),
+
+
 
                 networkType:
-                    this.getNetworkType(cat),
+                    productType === "SME" && this.isEbpCategory(categoryCode)
+                        ? "Basic EBP Plan"
+                        : this.getNetworkType(cat),
 
                 benefits:
                     this.mapBenefits(benefits),
 
-                isEbp: isEbpProduct,
+                isEbp: this.isEbpCategory(categoryCode),
 
                 totalMembers:
                     categoryMembers.length,
@@ -350,8 +356,13 @@ private async loadData(): Promise<void> {
 
             plans.push({
                 category: "EBP",
-                network: this.getNetworkProvider(ebpCategorySource),
-                networkType: this.getNetworkType(ebpCategorySource),
+                network: productType === "SME"
+                    ? "ECare"
+                    : this.getNetworkProvider(ebpCategorySource),
+                networkType:
+                    productType === "SME"
+                        ? "Basic EBP Plan"
+                        : this.getNetworkType(ebpCategorySource),
                 benefits: this.mapBenefits(
                     this.getBenefitsArray(ebpCategorySource)
                 ),
@@ -372,7 +383,7 @@ private async loadData(): Promise<void> {
         }
 
         return {
-
+            productType: productType,
             quoteNumber:
                 api.quoteNumber || "-",
 
@@ -627,12 +638,16 @@ private async loadData(): Promise<void> {
         return hasEbpCategory ? "EBP" : "SME";
     }
 
-    private getPlanDisplayLabel(category: string): string {
+  private getPlanDisplayLabel(category: string): string {
 
-        return category === "EBP"
-            ? "EBP"
-            : `Category ${category}`;
+    const normalized = this.normalizeCategory(category);
+
+    if (normalized === "EBP" || normalized === "LSB") {
+        return "Category EBP";
     }
+
+    return `Category ${normalized}`;
+}
 
     private getMemberBreakdown(
         members: any[],
@@ -669,8 +684,8 @@ private async loadData(): Promise<void> {
                 m.gender === "M"
                     ? "M"
                     : m.gender === "F"
-                    ? "F"
-                    : "U";
+                        ? "F"
+                        : "U";
 
             const maritalStatus =
                 m.maritalStatus ||
@@ -894,52 +909,52 @@ private async loadData(): Promise<void> {
                 </div>
 
                 ${this.row(
-                    "Qtn Number",
-                    data.quoteNumber,
-                    0
-                )}
+            "Qtn Number",
+            data.quoteNumber,
+            0
+        )}
 
                 ${this.row(
-                    "Client Name",
-                    data.quotation.clientName,
-                    1
-                )}
+            "Client Name",
+            data.quotation.clientName,
+            1
+        )}
 
                 ${this.row(
-                    "Contact Number",
-                    data.quotation.contact,
-                    2
-                )}
+            "Contact Number",
+            data.quotation.contact,
+            2
+        )}
 
                 ${this.row(
-                    "Email",
-                    data.quotation.email,
-                    3
-                )}
+            "Email",
+            data.quotation.email,
+            3
+        )}
 
                 ${this.row(
-                    "Insurance Company",
-                    data.quotation.company,
-                    4
-                )}
+            "Insurance Company",
+            data.quotation.company,
+            4
+        )}
 
                 ${this.row(
-                    "Start Date",
-                    data.quotation.startDate,
-                    5
-                )}
+            "Start Date",
+            data.quotation.startDate,
+            5
+        )}
 
                 ${this.row(
-                    "End Date",
-                    data.quotation.endDate,
-                    6
-                )}
+            "End Date",
+            data.quotation.endDate,
+            6
+        )}
 
                 ${this.row(
-                    "Issued Date",
-                    data.quotation.issuedDate,
-                    7
-                )}
+            "Issued Date",
+            data.quotation.issuedDate,
+            7
+        )}
 
             </div>
 
@@ -950,9 +965,7 @@ private async loadData(): Promise<void> {
                 <div class="section">
 
                     <div class="section-title blue">
-                        Enhanced Plan - ${plan.isEbp
-                            ? "EBP"
-                            : this.getPlanDisplayLabel(plan.category)}
+                       Enhanced Plan - ${this.getPlanDisplayLabel(plan.category)}
                     </div>
 
                     <div class="plan-grid">
@@ -960,32 +973,34 @@ private async loadData(): Promise<void> {
                         <div>
 
                             ${this.planRow(
-                                "Network Provider",
-                                plan.network
-                            )}
+                    "Network Provider",
+                    plan.network
+                )}
 
-                            ${this.planRow(
-                                "Network Type",
-                                plan.networkType
-                            )}
+                       ${this.planRow(
+                    plan.isEbp
+                        ? "Plan Type"
+                        : "Network Type",
+                    plan.networkType
+                )}
 
                             ${plan.benefits
-                                .map((b: any) =>
-                                    this.planRow(
-                                        b.name,
-                                        b.value
-                                    )
-                                )
-                                .join("")}
+                .map((b: any) =>
+                    this.planRow(
+                        b.name,
+                        b.value
+                    )
+                )
+                .join("")}
 
                         </div>
 
                         <div>
 
                             ${this.planRow(
-                                "Total Members",
-                                `<span class="red">${plan.totalMembers}</span>`
-                            )}
+                    "Total Members",
+                    `<span class="red">${plan.totalMembers}</span>`
+                )}
 
                             <div class="plan-row">
 
@@ -996,20 +1011,20 @@ private async loadData(): Promise<void> {
                             <div class="value red">
 
                                 ${plan.memberBreakdown
-                                    .map(
-                                        (item: string) =>
-                                            `<div class="member-breakdown-row">${item}</div>`
-                                    )
-                                    .join("")}
+                .map(
+                    (item: string) =>
+                        `<div class="member-breakdown-row">${item}</div>`
+                )
+                .join("")}
 
                             </div>
 
                             </div>
 
                             ${this.planRow(
-                                "Total Premium",
-                                `<span class="red">${plan.totalPremium}</span>`
-                            )}
+                    "Total Premium",
+                    `<span class="red">${plan.totalPremium}</span>`
+                )}
 
                         </div>
 
@@ -1035,9 +1050,7 @@ private async loadData(): Promise<void> {
 
                         ${data.plans.map((plan: any) => `
                             <div>
-                                ${plan.isEbp
-                                    ? "EBP"
-                                    : this.getPlanDisplayLabel(plan.category)}
+                               ${this.getPlanDisplayLabel(plan.category)}
                             </div>
                         `).join("")}
 
@@ -1069,11 +1082,14 @@ private async loadData(): Promise<void> {
                             Network
                         </div>
 
-                        ${data.plans.map((plan: any) => `
+                       ${data.plans.map((plan: any) => `
 
-                            <div>
-                                ${plan.networkType}
-                            </div>
+                        <div>
+                           ${data.productType === "SME" && plan.isEbp
+                                ? "Basic EBP Plan"
+                                : plan.networkType
+                            }
+                    </div>
 
                         `).join("")}
 
@@ -1161,5 +1177,5 @@ private async loadData(): Promise<void> {
         return {};
     }
 
-    public destroy(): void {}
+    public destroy(): void { }
 }
