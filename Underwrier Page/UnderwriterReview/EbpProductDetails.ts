@@ -314,13 +314,6 @@ export const buildJsonProductDetailMap = (
             categoryCode,
             provider || category?.networkProviderName
         );
-
-        setDetail(
-            "Network Type",
-            categoryCode,
-            plan || category?.networkType
-        );
-
         setDetail(
             "Plan",
             categoryCode,
@@ -376,7 +369,6 @@ export const buildEbpDetailMap = (
         "Employee Salary <20000": {},
         "Dependent": {},
         "Annual Limit": {},
-        "Network Type": {},
         "Territorial Coverage": {}
     };
 
@@ -404,8 +396,6 @@ export const buildEbpDetailMap = (
             stats.dependent;
         details["Annual Limit"][categoryCode] =
             getAnnualLimit(provider, plan);
-        details["Network Type"][categoryCode] =
-            getNetworkType(provider, plan) || "-";
         details["Territorial Coverage"][categoryCode] =
             getTerritorialCoverage(provider, plan) || "-";
     });

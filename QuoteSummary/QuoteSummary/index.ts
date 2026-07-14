@@ -237,17 +237,29 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             ? api.categoryPremiums
             : [];
 
+        const customerEbpPlan = productType === "SME"
+            ? this.getCustomerEbpPlan()
+            : undefined;
+
         const plans: any[] = categories.map((cat: any) => {
 
             const categoryCode =
                 this.getCategoryCode(cat);
 
+            const planDetailsSource =
+                productType === "SME" &&
+                    this.isEbpCategory(categoryCode) &&
+                    customerEbpPlan
+                    ? customerEbpPlan
+                    : cat;
+
             const benefits =
-                this.getDisplayBenefits(
-                    cat,
-                    productType,
-                    useJsonProductDetails
-                );
+                planDetailsSource === customerEbpPlan
+                    ? this.getBenefitsArray(customerEbpPlan)
+                    : this.getDisplayBenefits(
+                        planDetailsSource,
+                        useJsonProductDetails
+                    );
 
             const matchedCategoryMembers = members.filter(
                 (m: any) =>
@@ -352,6 +364,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             (ebpPremium || ebpMembers.length || hasEbpCategory)) {
 
             const ebpCategorySource =
+                (productType === "SME" ? customerEbpPlan : undefined) ||
                 this.getEbpCategorySource(categories);
 
             plans.push({
@@ -472,6 +485,34 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             );
     }
 
+    private getCustomerEbpPlan(): any {
+
+        return {
+            benefits: [
+                {
+                    name: "Consultation",
+                    value: "20% Coinsurance"
+                },
+                {
+                    name: "Copay on Lab/Diagnostic",
+                    value: "20% Copay for All OP Services"
+                },
+                {
+                    name: "Pharmacy Co-pay",
+                    value: "30% Copay for Medication"
+                },
+                {
+                    name: "Pharmacy Limit",
+                    value: "Maximum AED 2,500"
+                },
+                {
+                    name: "Co-Pay on all IP Services",
+                    value: "20% Copay for IP Services"
+                }
+            ]
+        };
+    }
+
     private getNetworkProvider(category: any): string {
 
         return String(
@@ -534,22 +575,26 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             return category.benefits.benefits;
         }
 
+        if (Array.isArray(category?.details)) {
+            return category.details;
+        }
+
+        if (Array.isArray(category?.planDetails)) {
+            return category.planDetails;
+        }
+
         return [];
     }
 
     private getDisplayBenefits(
         category: any,
-        productType: string,
         fromProductDetailsJson: boolean
     ): any[] {
 
         const benefits =
             this.getBenefitsArray(category);
 
-        if (
-            !fromProductDetailsJson ||
-            productType !== "EBP"
-        ) {
+        if (!fromProductDetailsJson) {
             return benefits;
         }
 
@@ -965,7 +1010,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 <div class="section">
 
                     <div class="section-title blue">
-                       Enhanced Plan - ${this.getPlanDisplayLabel(plan.category)}
+                       ${data.productType === "EBP" ? "Plan Type : " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
                     </div>
 
                     <div class="plan-grid">

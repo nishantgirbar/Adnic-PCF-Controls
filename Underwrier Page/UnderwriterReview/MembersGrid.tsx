@@ -6,6 +6,19 @@ export const MembersGrid = ({ members }: any) => {
 
     const [currentPage, setCurrentPage] = React.useState(1);
 
+    const isLsbMember = (member: any): boolean =>
+        [
+            member?.salaryType,
+            member?.visaLocation
+        ].some((value: any) =>
+            String(
+                value?.displayName ??
+                value?.code ??
+                value ??
+                ""
+            ).trim().toUpperCase() === "LSB"
+        );
+
     const pageSize = 10;
 
     const totalPages = Math.ceil((members?.length || 0) / pageSize);
@@ -83,9 +96,13 @@ export const MembersGrid = ({ members }: any) => {
                             </td>
 
                             <td>
-                                {m?.category?.displayName ||
-                                    m?.category ||
-                                    "-"}
+                                {
+                                    isLsbMember(m)
+                                        ? ""
+                                        : m?.category?.displayName ||
+                                            m?.category ||
+                                            "-"
+                                }
                             </td>
 
                             <td>

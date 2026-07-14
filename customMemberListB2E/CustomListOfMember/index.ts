@@ -34,7 +34,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private lastAbove65Raw: string | null = null;
   private hasLoadedShowEbpPlan: boolean = false;
   private showEbpPlanSignature: string = "";
-  private shouldOutputShowEbpPlan: boolean = false;
   private enableUpload: boolean = false;
   private productType: string = "";
   private isReadOnly: boolean = false;
@@ -43,6 +42,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private fileInteractionActive: boolean = false;
   private refreshPending: boolean = false;
   private uploadErrors = new WeakMap<object, string>();
+  private uploadsInProgress = new Set<string>();
 
   private createEmptyMember(): any {
 
@@ -384,8 +384,19 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     const raw = context.parameters.memberData.raw;
     const above65Raw = context.parameters.listOfMemberAbove65.raw;
+    const memberDataChanged = raw !== this.lastRaw;
+    const above65DataChanged = above65Raw !== this.lastAbove65Raw;
 
-    if (raw !== this.lastRaw || above65Raw !== this.lastAbove65Raw) {
+    console.log("[EBP DEBUG] updateView inputs", {
+      memberDataChanged,
+      above65DataChanged,
+      boundShowEbpPlan: context.parameters.adnic_adnic_showebpplan.raw,
+      internalShowEbpPlan: this.showEbpPlan,
+      memberDataLength: raw?.length ?? 0,
+      above65DataLength: above65Raw?.length ?? 0
+    });
+
+    if (memberDataChanged || above65DataChanged) {
       this.lastRaw = raw;
       this.lastAbove65Raw = above65Raw;
 
@@ -405,7 +416,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         });
 
         this.members = this.hydrateMembersFromAbove65(above65Raw, parsedMembers);
-        this.showEbpPlanSignature = this.getShowEbpPlanSignature();
       } catch {
         console.warn("Invalid memberData JSON ignored.", raw);
       }
@@ -424,7 +434,23 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     }
     console.log("updateView: members", this.members);
-    if (this.updateDerivedOutputJsons(false)) {
+    const derivedOutputsChanged = this.updateDerivedOutputJsons(false);
+    // listOfMemberAbove65 is derived from memberData and must not drive the
+    // EBP flag. Otherwise its follow-up update can overwrite a valid true
+    // value calculated from the complete member list.
+    const showEbpPlanChanged = !this.enableUpload && memberDataChanged
+      ? this.updateShowEbpPlan(true)
+      : false;
+
+    console.log("[EBP DEBUG] updateView result", {
+      derivedOutputsChanged,
+      showEbpPlanChanged,
+      showEbpPlan: this.showEbpPlan,
+      notificationWillFire: derivedOutputsChanged || showEbpPlanChanged
+    });
+
+    if (derivedOutputsChanged || showEbpPlanChanged) {
+      console.log("[EBP DEBUG] notifyOutputChanged from updateView");
       this.notifyOutputChanged();
     }
 
@@ -442,11 +468,23 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     return above65Changed || categoriesChanged || showEbpPlanChanged;
   }
 
-  private updateShowEbpPlan(): boolean {
+  private updateShowEbpPlan(suppressUnsetFalseOutput = false): boolean {
 
     const nextSignature = this.getShowEbpPlanSignature();
 
+    console.table(this.members.map((member, index) => ({
+      index,
+      relation: (member.relation || "").trim().toUpperCase(),
+      salaryType: (member.salaryType || "").trim().toUpperCase(),
+      age: this.getAge(member.dateOfBirth, this.getAgeReferenceDate()),
+      matchesEbpRule: (member.relation || "").trim().toUpperCase() === "EMPLOYEE" &&
+        this.isLsbSalaryType(member.salaryType)
+    })));
+
     if (nextSignature === this.showEbpPlanSignature) {
+      console.log("[EBP DEBUG] calculation skipped: signature unchanged", {
+        showEbpPlan: this.showEbpPlan
+      });
       return false;
     }
 
@@ -459,12 +497,23 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     this.showEbpPlanSignature = nextSignature;
 
-    if (nextShowEbpPlan === this.showEbpPlan) {
+    const previousShowEbpPlan = this.showEbpPlan;
+
+    console.log("[EBP DEBUG] calculated showEbpPlan", {
+      previousShowEbpPlan,
+      nextShowEbpPlan,
+      suppressUnsetFalseOutput
+    });
+
+    if (nextShowEbpPlan === previousShowEbpPlan) {
       return false;
     }
 
     this.showEbpPlan = nextShowEbpPlan;
-    this.shouldOutputShowEbpPlan = true;
+    if (suppressUnsetFalseOutput && previousShowEbpPlan === undefined && !nextShowEbpPlan) {
+      return false;
+    }
+
     return true;
   }
 
@@ -475,6 +524,87 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         relation: (member.relation || "").trim().toUpperCase(),
         salaryType: (member.salaryType || "").trim().toUpperCase()
       }))
+    );
+  }
+
+  private compactAttachmentForOutput(attachment: any): any {
+
+    const annotationId = this.normalizeAnnotationId(
+      attachment?.annotationId ||
+      attachment?.id ||
+      attachment?.annotationid
+    );
+
+    return {
+      name: String(attachment?.name || attachment?.filename || ""),
+      mimeType: String(attachment?.mimeType || attachment?.mimetype || "application/pdf"),
+      size: Number(attachment?.size || attachment?.filesize || 0),
+      annotationId
+    };
+  }
+
+  private compactMemberForOutput(member: any, serialNo: number): any {
+
+    const attachments = this.normalizeAttachmentsFromMember(member)
+      .map(attachment => this.compactAttachmentForOutput(attachment))
+      .filter(attachment =>
+        attachment.name ||
+        attachment.annotationId
+      );
+
+    const compactMember: any = {
+      serialNo,
+      relation: member?.relation || "",
+      gender: member?.gender || "",
+      dateOfBirth: member?.dateOfBirth || null,
+      overaged: this.getAge(
+        member?.dateOfBirth,
+        this.getAgeReferenceDate()
+      ) >= 65,
+      salaryType: member?.salaryType || "",
+      visaLocation: member?.visaLocation || "",
+      category: member?.category || "",
+      maritalStatus: member?.maritalStatus || "",
+      remarks: String(member?.remarks || ""),
+      attachments,
+      document: "",
+      documentName: attachments[0]?.name || String(member?.documentName || "")
+    };
+
+    [
+      "id",
+      "memberId",
+      "memberName",
+      "firstName",
+      "lastName",
+      "relationship",
+      "relationCode",
+      "salary",
+      "salaryAmount",
+      "monthlySalary",
+      "premium"
+    ].forEach(fieldName => {
+      if (
+        member?.[fieldName] !== undefined &&
+        member?.[fieldName] !== null &&
+        member?.[fieldName] !== ""
+      ) {
+        compactMember[fieldName] = member[fieldName];
+      }
+    });
+
+    return compactMember;
+  }
+
+  private serializeMembersForOutput(members: any[]): string {
+
+    return JSON.stringify(
+      members.map((member, index) =>
+        this.compactMemberForOutput(
+          member,
+          Number(member?.serialNo || index + 1)
+        )
+      )
     );
   }
 
@@ -490,22 +620,21 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           referenceDate
         ) >= 65
       )
-      .map(({ member, serialNo }) => {
-        const attachments = this.normalizeAttachmentsFromMember(member);
-
-        return {
-          ...member,
-          serialNo,
-          remarks: String(member.remarks || ""),
-          attachments,
-          document: "",
-          documentName: typeof member.documentName === "string"
-            ? member.documentName
-            : attachments[0]?.name || ""
-        };
-      });
+      .map(({ member, serialNo }) =>
+        this.compactMemberForOutput(member, Number(serialNo))
+      );
 
     const nextAbove65MembersJson = JSON.stringify(above65);
+
+    console.log("[EBP DEBUG] calculated listOfMemberAbove65", {
+      count: above65.length,
+      members: above65.map(member => ({
+        serialNo: member.serialNo,
+        relation: member.relation,
+        salaryType: member.salaryType,
+        dateOfBirth: member.dateOfBirth
+      }))
+    });
 
     if (nextAbove65MembersJson === this.above65MembersJson) {
       return false;
@@ -624,9 +753,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   }
 
   private async uploadFileToAnnotation(file: File, dataUrl?: string): Promise<string> {
-    const { entityId, entityTypeName } = this.getCurrentRecordContext();
-    const entitySetName = await this.getEntitySetName(entityTypeName);
-
     const fileDataUrl = dataUrl ?? await this.convertFileToBase64(file);
     const base64 = fileDataUrl.split(",").slice(1).join(",");
 
@@ -638,15 +764,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       notetext: "Uploaded from Member List control"
     };
 
-    if (entityId && entityTypeName && entitySetName) {
-      body[`objectid_${entityTypeName}@odata.bind`] = `/${entitySetName}(${entityId})`;
-    } else {
-      console.warn(
-        "Upload annotation without objectid binding because current record context is unavailable.",
-        { entityId, entityTypeName, entitySetName }
-      );
-    }
-
     const annotationId = await this.context.webAPI.createRecord("annotation", body);
 
     return this.normalizeAnnotationId(annotationId);
@@ -654,17 +771,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
   private async createAttachmentFromFile(file: File): Promise<any> {
     const dataUrl = await this.convertFileToBase64(file);
-    const { entityId } = this.getCurrentRecordContext();
-
-    if (!entityId) {
-      return {
-        name: file.name,
-        mimeType: file.type || "application/pdf",
-        size: file.size,
-        annotationId: "",
-        content: dataUrl
-      };
-    }
 
     try {
       const annotationId = await this.uploadFileToAnnotation(file, dataUrl);
@@ -676,14 +782,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         content: ""
       };
     } catch (error) {
-      console.warn("Annotation upload failed; keeping attachment content in control output.", error);
-      return {
-        name: file.name,
-        mimeType: file.type || "application/pdf",
-        size: file.size,
-        annotationId: "",
-        content: dataUrl
-      };
+      console.error("Annotation upload failed.", error);
+      throw error;
     }
   }
 
@@ -1528,7 +1628,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
                 </svg>
               </span>
               <span>View</span>`;
-            viewBtn.disabled = !attachment.annotationId && !attachment.content;
             viewBtn.onclick = async () => {
               console.debug("View button clicked", attachment);
               const url = await this.getAttachmentDataUrl(attachment);
@@ -1568,7 +1667,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
                 </svg>
               </span>
               <span>Download</span>`;
-            downloadBtn.disabled = !attachment.annotationId && !attachment.content;
             downloadBtn.onclick = async () => {
               console.debug("Download button clicked", attachment);
               const url = await this.getAttachmentDataUrl(attachment);
@@ -1651,22 +1749,28 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           const normalizeFileName = (name: string): string =>
             String(name || "").trim().toLocaleLowerCase();
 
-          const existingNames = new Set<string>(
-            (Array.isArray(row.attachments) ? row.attachments : [])
+          const existingNames = new Set<string>();
+
+          // A filename can be used only once across the complete member list,
+          // not once per member.
+          this.members.forEach(member => {
+            (Array.isArray(member.attachments) ? member.attachments : [])
               .map((attachment: any) => normalizeFileName(attachment?.name))
               .filter((name: string) => !!name)
-          );
+              .forEach((name: string) => existingNames.add(name));
 
-          const existingDocumentName = normalizeFileName(row.documentName);
-          if (existingDocumentName) {
-            existingNames.add(existingDocumentName);
-          }
+            const documentName = normalizeFileName(member.documentName);
+            if (documentName) {
+              existingNames.add(documentName);
+            }
+          });
 
           const selectedNames = new Set<string>();
           const duplicateFile = files.find(file => {
             const normalizedName = normalizeFileName(file.name);
             const isDuplicate =
               existingNames.has(normalizedName) ||
+              this.uploadsInProgress.has(normalizedName) ||
               selectedNames.has(normalizedName);
 
             selectedNames.add(normalizedName);
@@ -1674,7 +1778,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           });
 
           if (duplicateFile) {
-            setUploadError("This file has already been uploaded for this member.");
+            setUploadError("This file has already been uploaded for another member.");
             return;
           }
 
@@ -1713,6 +1817,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           processingIndicator.innerText = "Processing...";
           btn.parentElement?.insertBefore(processingIndicator, btn.nextSibling);
           btn.disabled = true;
+          selectedNames.forEach(name => this.uploadsInProgress.add(name));
 
           try {
             const uploadedAttachments = await Promise.all(
@@ -1740,6 +1845,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               { width: 420, height: 180 }
             );
           } finally {
+            selectedNames.forEach(name => this.uploadsInProgress.delete(name));
             processingIndicator.remove();
             btn.disabled = this.isReadOnly;
             fileInput.value = "";
@@ -1852,15 +1958,28 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
   public getOutputs(): IOutputs {
     const outputs: IOutputs = {
-      memberData: JSON.stringify(this.members),
+      memberData: this.serializeMembersForOutput(this.members),
       listOfMemberAbove65: this.above65MembersJson,
-      uniqueCategoriesJson: this.uniqueCategoriesJson,
-      adnic_adnic_showebpplan: this.shouldOutputShowEbpPlan
-        ? this.showEbpPlan
-        : undefined
+      uniqueCategoriesJson: this.uniqueCategoriesJson
     };
 
-    this.shouldOutputShowEbpPlan = false;
+    // Only the main member grid owns this bound value. For the 65+ upload
+    // grid, omit the property completely: including it with `undefined`
+    // causes PCF to clear the shared bound field.
+    if (!this.enableUpload) {
+      outputs.adnic_adnic_showebpplan = this.showEbpPlan;
+    }
+
+    console.log("[EBP DEBUG] getOutputs", {
+      showEbpPlan: outputs.adnic_adnic_showebpplan,
+      includesShowEbpPlan: Object.prototype.hasOwnProperty.call(
+        outputs,
+        "adnic_adnic_showebpplan"
+      ),
+      memberDataLength: outputs.memberData?.length ?? 0,
+      above65DataLength: outputs.listOfMemberAbove65?.length ?? 0
+    });
+
     return outputs;
   }
 

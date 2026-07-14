@@ -876,7 +876,7 @@ const openQuoteViewDialog = async (item: any) => {
       <Stack className="pcf-search-container" horizontal tokens={{ childrenGap: 8 }}>
         <SearchBox
           className="pcf-search-box"
-          placeholder="Search by Quote No, Customer Name, Email, Status or LOB"
+          placeholder="Search by Quote No, Customer Name, Email or LOB"
           value={search}
           onChange={(_, value) => setSearch(value || "")}
           onClear={clearSearch}

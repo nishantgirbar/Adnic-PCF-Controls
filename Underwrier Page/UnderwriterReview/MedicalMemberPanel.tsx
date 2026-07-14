@@ -51,18 +51,27 @@ export const MedicalMemberPanel = ({
             member?.premium?.loadingAmount || 0
         );
 
+    const memberKey =
+        member?.id ??
+        member?.memberId;
+
+    const currentLoading =
+        Number(
+            savedLoading ?? existingLoading
+        );
+
     // =====================================
     // STATES
     // =====================================
 
     const [inputValue, setInputValue] =
         React.useState<string>(
-            String(savedLoading || 0)
+            String(currentLoading)
         );
 
     const [loadingAmount, setLoadingAmount] =
         React.useState<number>(
-            savedLoading || existingLoading
+            currentLoading
         );
 
     const [isSaving, setIsSaving] =
@@ -78,17 +87,16 @@ export const MedicalMemberPanel = ({
     React.useEffect(() => {
 
         setInputValue(
-            String(savedLoading || 0)
+            String(currentLoading)
         );
 
         setLoadingAmount(
-            savedLoading || existingLoading
+            currentLoading
         );
 
     }, [
-        member,
-        savedLoading,
-        existingLoading
+        memberKey,
+        currentLoading
     ]);
 
     // =====================================

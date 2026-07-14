@@ -8,7 +8,15 @@ import { MembersGrid } from "./MembersGrid";
 import { MedicalMembers } from "./MedicalMembers";
 import { MedicalMemberPanel } from "./MedicalMemberPanel";
 import { CoverageTable } from "./CoverageTable";
+import { EbpPlan } from "./EbpPlan";
 import { MAFDeclaration } from "./MAFDeclaration";
+
+const getMemberKey = (member: any): string =>
+    String(
+        member?.id ??
+        member?.memberId ??
+        ""
+    );
 
 export const MainContainer = ({
     quoteId,
@@ -253,7 +261,9 @@ export const MainContainer = ({
         (doc: any) =>
             Number(doc?.entityNumber) ===
             Number(
-                selectedMedicalMember?.id
+                getMemberKey(
+                    selectedMedicalMember
+                )
             )
     );
 
@@ -261,7 +271,9 @@ export const MainContainer = ({
         (doc: any) =>
             Number(doc?.entityNumber) ===
             Number(
-                selectedOverAgeMember?.id
+                getMemberKey(
+                    selectedOverAgeMember
+                )
             )
     );
 
@@ -329,6 +341,10 @@ export const MainContainer = ({
 
                                     <MedicalMemberPanel
 
+                                        key={`medical-${getMemberKey(
+                                            selectedMedicalMember
+                                        )}`}
+
                                         member={
                                             selectedMedicalMember
                                         }
@@ -347,8 +363,10 @@ export const MainContainer = ({
 
                                         savedLoading={
                                             medicalLoadingMap[
-                                                selectedMedicalMember?.memberId
-                                            ] || 0
+                                                getMemberKey(
+                                                    selectedMedicalMember
+                                                )
+                                            ]
                                         }
 
                                         onApplyLoading={(
@@ -363,7 +381,9 @@ export const MainContainer = ({
                                                     ...prev,
 
                                                     [
-                                                        selectedMedicalMember?.memberId
+                                                        getMemberKey(
+                                                            selectedMedicalMember
+                                                        )
                                                     ]: amount
 
                                                 })
@@ -400,6 +420,13 @@ export const MainContainer = ({
             <CoverageTable
                 categories={categories}
                 quoteInfo={data}
+                pricingResponse={pricingResponse}
+            />
+
+            <EbpPlan
+                categories={categories}
+                members={members}
+                categoryPremiums={categoryPremiums}
                 pricingResponse={pricingResponse}
             />
 
@@ -446,6 +473,10 @@ export const MainContainer = ({
 
                                     <MedicalMemberPanel
 
+                                        key={`overage-${getMemberKey(
+                                            selectedOverAgeMember
+                                        )}`}
+
                                         member={
                                             selectedOverAgeMember
                                         }
@@ -464,8 +495,10 @@ export const MainContainer = ({
 
                                         savedLoading={
                                             overAgeLoadingMap[
-                                                selectedOverAgeMember?.memberId
-                                            ] || 0
+                                                getMemberKey(
+                                                    selectedOverAgeMember
+                                                )
+                                            ]
                                         }
 
                                         onApplyLoading={(
@@ -480,7 +513,9 @@ export const MainContainer = ({
                                                     ...prev,
 
                                                     [
-                                                        selectedOverAgeMember?.memberId
+                                                        getMemberKey(
+                                                            selectedOverAgeMember
+                                                        )
                                                     ]: amount
 
                                                 })

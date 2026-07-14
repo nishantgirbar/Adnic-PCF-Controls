@@ -25,6 +25,24 @@ export const CoverageTable = ({
     const benefitMap: any = {};
     const isEBP = isEbpProduct(quoteInfo);
 
+    const getDisplayValue = (value: any): string => {
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        if (typeof value === "object") {
+            return String(
+                value?.displayName ||
+                value?.name ||
+                value?.label ||
+                value?.code ||
+                ""
+            );
+        }
+
+        return String(value);
+    };
+
     // =====================================
     // CATEGORY PREMIUM MAP
     // =====================================
@@ -91,6 +109,37 @@ export const CoverageTable = ({
 
         const categoryCode =
             cat?.categoryCode;
+
+        if (!isEBP) {
+            const networkProvider = getDisplayValue(
+                cat?.productSelection?.networkProviderName ||
+                cat?.networkProvider?.name ||
+                cat?.networkProviderName ||
+                cat?.networkProvider
+            );
+
+            const networkType = getDisplayValue(
+                cat?.productSelection?.networkTypeName ||
+                cat?.network?.name ||
+                cat?.networkTypeName ||
+                cat?.networkType ||
+                cat?.plan
+            );
+
+            if (!benefitMap["Network Provider"]) {
+                benefitMap["Network Provider"] = {};
+            }
+
+            if (!benefitMap["Network Type"]) {
+                benefitMap["Network Type"] = {};
+            }
+
+            benefitMap["Network Provider"][categoryCode] =
+                networkProvider || "-";
+
+            benefitMap["Network Type"][categoryCode] =
+                networkType || "-";
+        }
 
         const benefits =
             cat?.benefits?.benefits ||
@@ -254,8 +303,10 @@ export const CoverageTable = ({
 
                 Plan Type: {
 
-                    quoteInfo?.planType ||
-                    "Enhanced Plan"
+                    isEBP
+                        ? "EBP Plan"
+                        : quoteInfo?.planType ||
+                            "Enhanced Plan"
 
                 }
 

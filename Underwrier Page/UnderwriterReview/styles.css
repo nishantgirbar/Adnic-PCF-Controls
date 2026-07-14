@@ -376,6 +376,16 @@ body {
     table-layout: fixed;
 }
 
+.coverage-table thead th:first-child,
+.coverage-table tbody td:first-child {
+    width: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    padding-left: 2px;
+    padding-right: 2px;
+    text-align: center;
+}
+
 .coverage-table thead th:nth-child(n + 3),
 .coverage-table .premium-footer {
     min-width: 180px;
@@ -413,6 +423,40 @@ body {
     border-top: 2px solid #e5e5e5;
     padding-top: 20px;
     padding-bottom: 20px;
+}
+
+.ebp-plan-section .plan-type-section {
+    margin-bottom: 12px;
+}
+
+.ebp-plan-table {
+    min-width: 620px;
+    table-layout: fixed;
+}
+
+.ebp-plan-table thead th:first-child,
+.ebp-plan-table tbody td:first-child {
+    width: 40px;
+    text-align: center;
+}
+
+.ebp-plan-table thead th:nth-child(2),
+.ebp-plan-table tbody td:nth-child(2) {
+    width: 35%;
+}
+
+.ebp-plan-table tbody td:nth-child(2) {
+    font-weight: 600;
+    background: #fafafa;
+}
+
+.ebp-plan-table tfoot td {
+    border-top: 2px solid #e5e5e5;
+}
+
+.ebp-plan-totals {
+    line-height: 1.8;
+    font-weight: 600;
 }
 
 .premium-footer {
