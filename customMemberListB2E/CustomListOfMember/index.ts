@@ -176,10 +176,27 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           currentAttachments.every((attachment: any) => !attachment.annotationId && !attachment.content)
         );
 
-      const attachments = shouldUseSavedAttachments
-        ? savedAttachments
-        : currentAttachments;
+      const attachmentMap = new Map<string, any>();
 
+      [...savedAttachments, ...currentAttachments].forEach((attachment: any) => {
+
+        const key =
+          attachment.annotationId ||
+          attachment.name;
+
+        if (key && !attachmentMap.has(key)) {
+          attachmentMap.set(key, attachment);
+        }
+
+      });
+
+      const attachments = Array.from(attachmentMap.values());
+      console.log("Attachment merge", {
+        serialNo: member.serialNo,
+        current: currentAttachments.map(a => a.name),
+        saved: savedAttachments.map(a => a.name),
+        final: attachments.map(a => a.name)
+      });
       return this.normalizeMemberCategoryForSalaryType({
         ...member,
         remarks: String(member.remarks || savedMember.remarks || ""),
@@ -1224,7 +1241,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       d.innerText = h;
       grid.appendChild(d);
     });
-    
+
 
     const createDropdown = (
       options: string[],
@@ -1372,7 +1389,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         cb.dataset.memberIndex = idx.toString();
         cb.disabled = this.isReadOnly;
         grid.appendChild(cell(cb));
-      }else{
+      } else {
         const cb = document.createElement("input");
         cb.type = "hidden";
         grid.appendChild(cell(cb));
@@ -1884,6 +1901,11 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               files.map(file => this.createAttachmentFromFile(file))
             );
 
+            if (!row.serialNo) {
+              row.serialNo = idx + 1;
+            }
+
+
             row.attachments = row.attachments || [];
             row.attachments.push(...uploadedAttachments);
             if (!row.documentName && uploadedAttachments.length) {
@@ -1894,7 +1916,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
             renderAttachments();
             this.updateDerivedOutputJsons();
             this.notifyOutputChanged();
-            this.refresh();
+            // this.refresh();
           } catch (error) {
             console.error("Member attachment upload failed.", error);
             await this.context.navigation.openAlertDialog(
