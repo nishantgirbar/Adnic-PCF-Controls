@@ -43,6 +43,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private refreshPending: boolean = false;
   private uploadErrors = new WeakMap<object, string>();
   private uploadsInProgress = new Set<string>();
+  private loadedDataValidationSignature: string = "";
 
   private createEmptyMember(): any {
 
@@ -418,6 +419,10 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         this.members = this.hydrateMembersFromAbove65(above65Raw, parsedMembers);
       } catch {
         console.warn("Invalid memberData JSON ignored.", raw);
+      }
+
+      if (memberDataChanged) {
+        this.validateLoadedMemberData();
       }
 
       //this.currentPage = 1;
@@ -967,6 +972,61 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     return null;
+  }
+
+  private validateMemberBusinessRules(member: any): string | null {
+    const relation = String(member?.relation || "").trim().toUpperCase();
+    const maritalStatus = String(member?.maritalStatus || "").trim().toUpperCase();
+    const visaLocation = String(member?.visaLocation || "").trim().toUpperCase();
+
+    const relationAgeError = this.validateRelationAge(member);
+    if (relationAgeError) {
+      return relationAgeError;
+    }
+
+    if (relation === "SPOUSE" && maritalStatus === "SINGLE") {
+      return "Spouse cannot have marital status 'Single'. Please set relation or marital status appropriately.";
+    }
+
+    if ((relation === "SPOUSE" || relation === "CHILD") && this.isLsbSalaryType(member?.salaryType)) {
+      return "Spouse and Child cannot have Salary Type 'LSB'. Please choose a different Salary Type.";
+    }
+
+    if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB") {
+      return "Salary Type 'LSB' requires Visa Location 'DXB'.";
+    }
+
+    return null;
+  }
+
+  private validateLoadedMemberData(): void {
+    const invalidMemberIndex = this.members.findIndex(member =>
+      this.validateMemberBusinessRules(member) !== null
+    );
+
+    if (invalidMemberIndex < 0) {
+      this.loadedDataValidationSignature = "";
+      return;
+    }
+
+    const message = this.validateMemberBusinessRules(this.members[invalidMemberIndex]);
+    const serialNo = Number(this.members[invalidMemberIndex]?.serialNo) || invalidMemberIndex + 1;
+    const signature = `${serialNo}|${message}|${JSON.stringify(this.members[invalidMemberIndex])}`;
+
+    // updateView can be called repeatedly for the same host update. Show one
+    // dialog per invalid payload instead of opening duplicate dialogs.
+    if (!message || signature === this.loadedDataValidationSignature) {
+      return;
+    }
+
+    this.loadedDataValidationSignature = signature;
+    void this.context.navigation.openAlertDialog(
+      {
+        text: `Member ${serialNo}: ${message}`,
+        confirmButtonLabel: "OK"
+      },
+      { width: 480, height: 200 }
+    );
   }
 
   private parseDisplayDate(value: string): string | null {
