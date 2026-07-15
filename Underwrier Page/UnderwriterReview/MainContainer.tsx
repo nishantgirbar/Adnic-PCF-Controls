@@ -239,6 +239,14 @@ export const MainContainer = ({
             };
     });
 
+    const currentTotalPremium = Number(
+        pricingResponse?.totalFinalPremium ??
+        pricingResponse?.currentTotalPremium ??
+        data?.currentTotalPremium ??
+        data?.premiumSummary?.grandTotal ??
+        data?.totalPremium
+    );
+
     // =====================================
     // FILTERED MEMBERS
     // =====================================
@@ -553,6 +561,7 @@ export const MainContainer = ({
                 categories={categories}
                 quoteId={quoteId}
                 apiUrl={apiUrl}
+                totalPremium={currentTotalPremium}
 
                 onPricingUpdate={(
                     pricing: any

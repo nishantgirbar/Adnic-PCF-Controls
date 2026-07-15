@@ -25,6 +25,7 @@ export const MAFDeclaration = ({
     categories,
     quoteId,
     apiUrl,
+    totalPremium,
     onPricingUpdate
 }: any) => {
 
@@ -115,15 +116,22 @@ export const MAFDeclaration = ({
                     overallValue
                 );
 
+            const maximumPercentage =
+                overallLoadingType === "discount"
+                    ? 50
+                    : 999;
+
             if (
                 !Number.isFinite(enteredPercentage) ||
                 enteredPercentage <= 0 ||
-                enteredPercentage >= 100
+                enteredPercentage > maximumPercentage
             ) {
 
                 await showDialog(
                     "Invalid Percentage",
-                    "Loading percentage must be above 0% and below 100%."
+                    overallLoadingType === "discount"
+                        ? "Discount percentage must be a positive number not greater than 50%."
+                        : "Loading percentage must be above 0% and not greater than 999%."
                 );
 
                 return;
@@ -134,6 +142,31 @@ export const MAFDeclaration = ({
             
             if(overallLoadingType === "discount") {
                 percentage = -Math.abs(percentage);
+            }
+
+            if (overallLoadingType === "discount") {
+
+                const currentPremium =
+                    Number(totalPremium);
+
+                const premiumAfterDiscount =
+                    currentPremium *
+                    (1 - enteredPercentage / 100);
+
+                if (
+                    !Number.isFinite(currentPremium) ||
+                    currentPremium < 0 ||
+                    !Number.isFinite(premiumAfterDiscount) ||
+                    premiumAfterDiscount < 0
+                ) {
+
+                    await showDialog(
+                        "Invalid Discount",
+                        "This discount cannot be applied because it would make the total premium less than 0 or the current total premium is unavailable."
+                    );
+
+                    return;
+                }
             }
 
             const payload = {
@@ -178,12 +211,14 @@ export const MAFDeclaration = ({
             if (
                 !Number.isFinite(payloadPercentage) ||
                 payloadPercentage <= 0 ||
-                payloadPercentage >= 100
+                payloadPercentage > maximumPercentage
             ) {
 
                 await showDialog(
                     "Invalid Percentage",
-                    "Loading percentage must be above 0% and below 100%."
+                    overallLoadingType === "discount"
+                        ? "Discount percentage must be a positive number not greater than 50%."
+                        : "Loading percentage must be above 0% and not greater than 999%."
                 );
 
                 return;
@@ -291,12 +326,12 @@ export const MAFDeclaration = ({
             if (
                 !Number.isFinite(percentage) ||
                 percentage <= 0 ||
-                percentage >= 100
+                percentage > 999
             ) {
 
                 await showDialog(
                     "Invalid Percentage",
-                    "Loading percentage must be above 0% and below 100%."
+                    "Loading percentage must be above 0% and not greater than 999%."
                 );
 
                 return;
@@ -352,12 +387,12 @@ export const MAFDeclaration = ({
             if (
                 !Number.isFinite(payloadPercentage) ||
                 payloadPercentage <= 0 ||
-                payloadPercentage >= 100
+                payloadPercentage > 999
             ) {
 
                 await showDialog(
                     "Invalid Percentage",
-                    "Loading percentage must be above 0% and below 100%."
+                    "Loading percentage must be above 0% and not greater than 999%."
                 );
 
                 return;
@@ -572,7 +607,11 @@ export const MAFDeclaration = ({
                                 ref={overallInputRef}
                                 type="number"
                                 min="0"
-                                max="100"
+                                max={
+                                    overallLoadingType === "discount"
+                                        ? 50
+                                        : 999
+                                }
                                 value={overallValue}
                                 onChange={(e) =>
                                     setOverallValue(
@@ -682,7 +721,7 @@ export const MAFDeclaration = ({
                                         }}
                                         type="number"
                                         min="0"
-                                        max="100"
+                                        max="999"
                                         value={
                                             categoryValues[
                                                 categoryCode

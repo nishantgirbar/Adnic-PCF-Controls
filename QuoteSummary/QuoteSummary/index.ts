@@ -700,10 +700,13 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
         productType: string
     ): string[] {
 
-        const employeeMembers =
-            (members || []).filter((member: any) =>
+        const employeeMembers = (members || []);
+            
+            /*
+            .filter((member: any) =>
                 this.isEmployee(member)
             );
+            */
 
         if (!employeeMembers.length) {
             return [];
@@ -732,6 +735,11 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                         ? "F"
                         : "U";
 
+              const employeeType =
+                 this.isEmployee(m)
+                    ? "E ONLY"
+                    : "D ONLY";
+
             const maritalStatus =
                 m.maritalStatus ||
                 m.maritalStatusName ||
@@ -755,7 +763,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 );
 
             const key =
-                `Age ${ageBand} (${gender}) [${emirate}] [${category}] ${maritalStatus}`;
+                `Age ${ageBand} (${gender}) [${emirate} ${employeeType}] [${category}] ${maritalStatus}`;
 
             if (!groups[key]) {
 
@@ -1010,7 +1018,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 <div class="section">
 
                     <div class="section-title blue">
-                       ${data.productType === "EBP" ? "Plan Type : " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
+                       ${data.productType === "EBP" ? " Plan Type : Enhanced Plan " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
                     </div>
 
                     <div class="plan-grid">
@@ -1023,7 +1031,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 )}
 
                        ${this.planRow(
-                    plan.isEbp
+                    plan.isEbp || data.productType === "EBP"
                         ? "Plan Type"
                         : "Network Type",
                     plan.networkType
@@ -1067,7 +1075,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                             </div>
 
                             ${this.planRow(
-                    "Total Premium",
+                    "Category Premium",
                     `<span class="red">${plan.totalPremium}</span>`
                 )}
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <manifest>
-  <control namespace="QuoteSummaryPCF" constructor="QuoteSummaryPCF" version="1.7.8" display-name-key="Quote Summary" description-key="Quote Summary from API" control-type="standard" api-version="1.3.18">
+  <control namespace="QuoteSummaryPCF" constructor="QuoteSummaryPCF" version="1.8.7" display-name-key="Quote Summary" description-key="Quote Summary from API" control-type="standard" api-version="1.3.18">
     <property name="quoterecordId" display-name-key="Quote  Record Id" description-key="Quote Record Id" of-type="Whole.None" usage="bound" required="true"/>
     <property name="quoteNumber" display-name-key="Quote Number" description-key="Quote Number" of-type="SingleLine.Text" usage="bound" required="true"/>
     <property name="adnic_name" display-name-key="Product Type" description-key="Product Type (EBP, SME, or DIFC)" of-type="SingleLine.Text" usage="bound" required="false"/>

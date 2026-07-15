@@ -123,13 +123,12 @@ export const MedicalMemberPanel = ({
 
             if (
                 !Number.isFinite(amount) ||
-                amount <= 0 ||
-                amount >= 1000
+                amount <= 0
             ) {
 
                 await showDialog(
                     "Invalid Loading",
-                    "Member loading amount must be above 0 and below 1,000."
+                    "Member loading amount must be a positive number."
                 );
 
                 return;
@@ -190,13 +189,12 @@ export const MedicalMemberPanel = ({
 
             if (
                 !Number.isFinite(payloadAmount) ||
-                payloadAmount <= 0 ||
-                payloadAmount >= 1000
+                payloadAmount <= 0
             ) {
 
                 await showDialog(
                     "Invalid Loading",
-                    "Member loading amount must be above 0 and below 1,000."
+                    "Member loading amount must be a positive number."
                 );
 
                 return;
@@ -388,7 +386,6 @@ export const MedicalMemberPanel = ({
                         ref={inputRef}
                         type="number"
                         min="0"
-                        max="1000"
                         className="loading-input"
                         placeholder="100"
                         value={inputValue}
