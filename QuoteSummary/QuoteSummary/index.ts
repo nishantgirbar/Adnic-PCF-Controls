@@ -5,6 +5,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
     private container!: HTMLDivElement;
     private context!: ComponentFramework.Context<IInputs>;
     private symbolUrl = (window as any).Xrm?.Utility?.getGlobalContext?.().getClientUrl() + "/WebResources/adnic_dirham_symbol";
+    private whiteSymbolUrl = (window as any).Xrm?.Utility?.getGlobalContext?.().getClientUrl() + "/WebResources/adnic_UAEDirham";
 
     public init(
         context: ComponentFramework.Context<IInputs>,
@@ -642,7 +643,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 benefit.benefitValue ||
                 benefit.value ||
                 "-"
-            )
+            ).replace(/\bAED\b/gi, this.getDirhamSymbol())
         }));
     }
 
@@ -936,6 +937,12 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
         return `<img src="${this.symbolUrl}" alt="Dirham" class="currency-symbol" />`;
     }
 
+    //whiteSymbolUrl
+    private getDirhamWhiteSymbol(): string {
+
+        return `<img src="${this.whiteSymbolUrl}" alt="Dirham" class="currency-symbol" />`;
+    }
+
     private render(data: any): void {
 
         this.container.innerHTML = `
@@ -1018,7 +1025,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 <div class="section">
 
                     <div class="section-title blue">
-                       ${data.productType === "EBP" ? " Plan Type : Enhanced Plan " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
+                       ${data.productType === "EBP" ? " Plan Type : EBP/Enhanced EBP Plan " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
                     </div>
 
                     <div class="plan-grid">
@@ -1091,8 +1098,8 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
 
             <div class="section">
 
-                <div class="section-title blue">
-                    Premium Calculations (in ${this.getDirhamSymbol()})
+                <div class="section-title blue premium-calculations-title">
+                    Premium Calculations (in ${this.getDirhamWhiteSymbol()})
                 </div>
 
                 <div class="matrix-table" style="--plan-count: ${Math.max(data.plans.length, 1)};">

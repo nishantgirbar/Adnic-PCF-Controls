@@ -23,6 +23,7 @@ export const MainContainer = ({
     apiUrl,
     documentApiUrl,
     quoteNumber,
+    quoteStatus,
     onPremiumUpdated
 }: any) => {
 
@@ -208,6 +209,34 @@ export const MainContainer = ({
 
     const members =
         data?.members || [];
+
+    const containsLockedStatus = (value: any): boolean =>
+        /APPROVED|GENERATED/i.test(String(value));
+
+    const hasLockedStatus = (
+        value: any,
+        parentKey = "",
+        visited = new Set<any>()
+    ): boolean => {
+
+        if (value === null || value === undefined) return false;
+
+        if (typeof value !== "object") {
+            return /status|stage/i.test(parentKey) &&
+                containsLockedStatus(value);
+        }
+
+        if (visited.has(value)) return false;
+        visited.add(value);
+
+        return Object.keys(value).some((key) =>
+            hasLockedStatus(value[key], key, visited)
+        );
+    };
+
+    const disableLoading =
+        containsLockedStatus(quoteStatus) ||
+        hasLockedStatus(data);
 
    
     const rawCategories =
@@ -409,6 +438,8 @@ export const MainContainer = ({
                                             );
                                         }}
 
+                                        disableLoading={disableLoading}
+
                                     />
 
                                 )
@@ -541,6 +572,8 @@ export const MainContainer = ({
                                             );
                                         }}
 
+                                        disableLoading={disableLoading}
+
                                     />
 
                                 )
@@ -562,6 +595,7 @@ export const MainContainer = ({
                 quoteId={quoteId}
                 apiUrl={apiUrl}
                 totalPremium={currentTotalPremium}
+                disableLoading={disableLoading}
 
                 onPricingUpdate={(
                     pricing: any

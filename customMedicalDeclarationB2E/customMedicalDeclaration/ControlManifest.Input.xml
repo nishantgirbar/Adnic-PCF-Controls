@@ -4,7 +4,7 @@
   <control
     namespace="MedicalControl"
     constructor="MedicalControl"
-    version="1.8.5"
+    version="2.0.1"
     display-name-key="MedicalControl_Display"
     description-key="MedicalControl_Desc"
     control-type="standard">
@@ -24,6 +24,14 @@
       of-type="SingleLine.Text"
       usage="input"
       required="true" />
+
+    <property
+      name="memberData"
+      display-name-key="MemberData_Display"
+      description-key="MemberData_Desc"
+      of-type="Multiple"
+      usage="input"
+      required="false" />
 
     <resources>
       <code path="index.ts" order="1"/>

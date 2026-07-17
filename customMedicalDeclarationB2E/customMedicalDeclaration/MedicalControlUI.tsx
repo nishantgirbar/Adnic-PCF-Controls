@@ -49,6 +49,7 @@ const MedicalControlUI = ({
     onChange,
     isDisabled,
     existingData,
+    memberData,
     pcfContext
 }: any) => {
 
@@ -167,8 +168,9 @@ const MedicalControlUI = ({
 
     const getExistingQuestionAnswer = (question: any): boolean => {
 
-        const existingQuestions =
-            existingData?.questions || [];
+        const existingQuestions = Array.isArray(existingData?.questions)
+            ? existingData.questions
+            : [];
 
         const matchedQuestion =
             existingQuestions.find((q: any) =>
@@ -184,8 +186,9 @@ const MedicalControlUI = ({
 
     const buildExistingMembers = (): Member[] => {
 
-        const existingMembers =
-            existingData?.medicalDeclaredMembers || [];
+        const existingMembers = Array.isArray(existingData?.medicalDeclaredMembers)
+            ? existingData.medicalDeclaredMembers
+            : [];
 
         return existingMembers
             .filter((m: any) => m.serialNo)
@@ -220,6 +223,10 @@ const MedicalControlUI = ({
 
     const [isLoadingQuestions, setIsLoadingQuestions] = React.useState(true);
 
+    const [questionLoadError, setQuestionLoadError] = React.useState("");
+
+    const [hasLoadedQuestionsSuccessfully, setHasLoadedQuestionsSuccessfully] = React.useState(false);
+
     const [uploadingCounts, setUploadingCounts] = React.useState<Record<number, number>>({});
 
     const fileRefs = React.useRef<
@@ -228,9 +235,31 @@ const MedicalControlUI = ({
 
     const uploadsInProgressRef = React.useRef<Set<string>>(new Set());
 
+    const getMemberList = (): any[] => {
+
+        let raw = memberData;
+
+        if (!raw) {
+            raw = (window as any).Xrm?.Page
+                ?.getAttribute("adnic_memberlistjson")
+                ?.getValue();
+        }
+
+        try {
+            const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+            if (Array.isArray(parsed)) return parsed;
+            if (Array.isArray(parsed?.members)) return parsed.members;
+        } catch (e) {
+            console.warn("Invalid member list JSON ignored.", e);
+        }
+
+        return [];
+    };
+
     React.useEffect(() => {
         loadQuestions();
-    }, []);
+    }, [apiUrl]);
 
     // =====================================
     // AUTO OUTPUT
@@ -238,12 +267,16 @@ const MedicalControlUI = ({
 
     React.useEffect(() => {
 
+        // Do not replace a bound field containing existing answers with an
+        // empty payload before the question API has finished loading.
+        if (!hasLoadedQuestionsSuccessfully) return;
+
         emitOutput(
             questions,
             members
         );
 
-    }, [questions, members]);
+    }, [questions, members, hasLoadedQuestionsSuccessfully]);
 
     // =====================================
     // OUTPUT
@@ -381,6 +414,8 @@ const MedicalControlUI = ({
     const loadQuestions = async () => {
 
         setIsLoadingQuestions(true);
+        setQuestionLoadError("");
+        setHasLoadedQuestionsSuccessfully(false);
 
         try {
             const productCode =
@@ -392,6 +427,10 @@ const MedicalControlUI = ({
                     "adnic_medicalquestionsapi"
                 ) || apiUrl;
 
+            if (!medicalApiUrl?.trim()) {
+                throw new Error("Medical question API URL is not configured.");
+            }
+
             const res = await fetch(
                 medicalApiUrl + "?product=" + productCode
             );
@@ -402,8 +441,12 @@ const MedicalControlUI = ({
 
             const data = await res.json();
 
+            if (!Array.isArray(data?.medicalQuestions)) {
+                throw new Error("Question API response does not contain a medicalQuestions array.");
+            }
+
             const mapped: Question[] =
-                (data.medicalQuestions || [])
+                data.medicalQuestions
 
                     .filter((q: any) =>
                         q.question?.toString().trim().toLowerCase() !==
@@ -421,6 +464,12 @@ const MedicalControlUI = ({
 
             setQuestions(mapped);
 
+            if (mapped.length === 0) {
+                setQuestionLoadError(
+                    `No medical questions are configured${productCode ? ` for product ${productCode}` : " for this product"}.`
+                );
+            }
+
             const existingMembers =
                 buildExistingMembers();
 
@@ -437,8 +486,16 @@ const MedicalControlUI = ({
                     createBlankMember()
                 ]);
             }
+
+            setHasLoadedQuestionsSuccessfully(true);
         } catch (error) {
             console.error("Failed to load medical questions", error);
+            setQuestions([]);
+            setQuestionLoadError(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to load medical questions."
+            );
         } finally {
             setIsLoadingQuestions(false);
         }
@@ -491,10 +548,36 @@ const MedicalControlUI = ({
 
         if (isDisabled) return;
 
+        const memberCount = getMemberList().length;
+
+        if (memberCount === 0 || members.length >= memberCount) return;
+
         setMembers(prev => [
             ...prev,
             createBlankMember()
         ]);
+    };
+
+    const deleteRow = async (memberId: number) => {
+
+        if (isDisabled) return;
+
+        const member = members.find(m => m.id === memberId);
+
+        await Promise.all((member?.files || []).map(async file => {
+            const annotationId = normalizeAnnotationId(file.annotationId || file.id);
+
+            if (!annotationId) return;
+
+            try {
+                await pcfContext.webAPI.deleteRecord("annotation", annotationId);
+            } catch (e) {
+                console.error("Delete annotation failed", e);
+            }
+        }));
+
+        delete fileRefs.current[memberId];
+        setMembers(prev => prev.filter(m => m.id !== memberId));
     };
 
     // =====================================
@@ -889,26 +972,7 @@ const downloadFile = async (file: any) => {
 
         const serial = Number(value);
 
-        let membersData: any[] = [];
-
-        try {
-
-            const raw =
-                (window as any).Xrm?.Page
-                    ?.getAttribute(
-                        "adnic_memberlistjson"
-                    )
-                    ?.getValue();
-
-            membersData =
-                raw
-                    ? JSON.parse(raw)
-                    : [];
-
-        } catch {
-
-            membersData = [];
-        }
+        const membersData = getMemberList();
 
         const updatedMembers =
             members.map(m => {
@@ -1008,6 +1072,9 @@ const downloadFile = async (file: any) => {
     const anyYes =
         questions.some(q => q.answer);
 
+    const memberCount = getMemberList().length;
+    const hasReachedMemberLimit = memberCount === 0 || members.length >= memberCount;
+
     // =====================================
     // UI
     // =====================================
@@ -1030,6 +1097,12 @@ const downloadFile = async (file: any) => {
                             size={SpinnerSize.medium}
                             label="Loading medical questions..."
                         />
+                    </div>
+                )}
+
+                {!isLoadingQuestions && questionLoadError && (
+                    <div className="questions-error" role="alert">
+                        {questionLoadError}
                     </div>
                 )}
 
@@ -1113,7 +1186,12 @@ const downloadFile = async (file: any) => {
 
                                 <PrimaryButton
                                     text="Add Row"
-                                    disabled={isDisabled}
+                                    disabled={isDisabled || hasReachedMemberLimit}
+                                    title={
+                                        hasReachedMemberLimit
+                                            ? `Maximum ${memberCount} member row${memberCount === 1 ? "" : "s"} allowed`
+                                            : "Add medical declaration row"
+                                    }
                                     iconProps={{
                                         iconName: "Add"
                                     }}
@@ -1136,12 +1214,13 @@ const downloadFile = async (file: any) => {
                             <div>Visa</div>
                             <div>Category</div>
                             <div>Marital</div>
+                            <div>Action</div>
 
                         </div>
 
                         {/* ROWS */}
 
-                        {members.map(m => (
+                        {members.map((m, rowIndex) => (
 
                             <div
                                 key={m.id}
@@ -1184,6 +1263,23 @@ const downloadFile = async (file: any) => {
                                     <div>{m.visa}</div>
                                     <div>{m.category}</div>
                                     <div>{m.marital}</div>
+
+                                    <div className="row-action-cell">
+                                        {rowIndex > 0 && (
+                                            <button
+                                                type="button"
+                                                className="row-delete-btn"
+                                                disabled={isDisabled || (uploadingCounts[m.id] || 0) > 0}
+                                                aria-label={`Delete medical declaration row${m.serialNo ? ` for member ${m.serialNo}` : ""}`}
+                                                title="Delete row"
+                                                onClick={() => deleteRow(m.id)}
+                                            >
+                                                <svg viewBox="0 0 16 16" focusable="false" aria-hidden="true">
+                                                    <path d="M6 2h4l.5 1H14a.5.5 0 0 1 0 1h-.54l-.75 10.08A1 1 0 0 1 11.71 15H4.29a1 1 0 0 1-1-.92L2.54 4H2a.5.5 0 0 1 0-1h3.5L6 2Zm-2.46 2 .75 10h7.42l.75-10H3.54ZM6 6a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0v-5A.5.5 0 0 1 6 6Zm4 0a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-1 0v-5A.5.5 0 0 1 10 6Z" />
+                                                </svg>
+                                            </button>
+                                        )}
+                                    </div>
 
                                 </div>
 

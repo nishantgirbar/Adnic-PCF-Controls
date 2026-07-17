@@ -29,7 +29,8 @@ export const MedicalMemberPanel = ({
     quoteId,
     apiUrl,
     type,
-    onPricingUpdate
+    onPricingUpdate,
+    disableLoading
 }: any) => {
 
     // =====================================
@@ -110,6 +111,8 @@ export const MedicalMemberPanel = ({
     // =====================================
 
     const applyLoading = async () => {
+
+        if (disableLoading) return;
 
         try {
 
@@ -275,6 +278,52 @@ export const MedicalMemberPanel = ({
         }
     };
 
+    const viewDocument = async (doc: any) => {
+
+        const sourceUrl = doc?.blobUrl || doc?.url;
+
+        if (!sourceUrl) {
+            await showDialog("Error", "Document URL is not available");
+            return;
+        }
+
+        // Open synchronously so the browser does not treat the tab as a popup
+        // after the asynchronous download finishes.
+        const previewWindow = window.open("", "_blank");
+
+        try {
+            const response = await fetch(sourceUrl);
+
+            if (!response.ok) {
+                throw new Error(`Unable to load document (${response.status})`);
+            }
+
+            const downloadedBlob = await response.blob();
+            const fileName = String(
+                doc?.originalFilename || doc?.fileName || ""
+            ).toLowerCase();
+            const mimeType =
+                downloadedBlob.type ||
+                (fileName.endsWith(".pdf") ? "application/pdf" : "");
+            const previewBlob = mimeType && mimeType !== downloadedBlob.type
+                ? new Blob([downloadedBlob], { type: mimeType })
+                : downloadedBlob;
+            const previewUrl = URL.createObjectURL(previewBlob);
+
+            if (previewWindow) {
+                previewWindow.location.href = previewUrl;
+            } else {
+                window.open(previewUrl, "_blank");
+            }
+
+            window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60000);
+        } catch (error) {
+            previewWindow?.close();
+            console.error("Failed to preview document", error);
+            await showDialog("Error", "Unable to preview this document");
+        }
+    };
+
     return (
 
         <div className="medical-panel">
@@ -389,6 +438,7 @@ export const MedicalMemberPanel = ({
                         className="loading-input"
                         placeholder="100"
                         value={inputValue}
+                        disabled={disableLoading}
                         onChange={(e) =>
                             setInputValue(
                                 e.target.value
@@ -399,7 +449,7 @@ export const MedicalMemberPanel = ({
                     <button
                         className="apply-btn"
                         onClick={applyLoading}
-                        disabled={isSaving}
+                        disabled={isSaving || disableLoading}
                     >
 
                         {
@@ -490,13 +540,7 @@ export const MedicalMemberPanel = ({
 
                             <button
                                 className="view-btn"
-                                onClick={() =>
-                                    window.open(
-                                        doc?.blobUrl ||
-                                        doc?.url,
-                                        "_blank"
-                                    )
-                                }
+                                onClick={() => viewDocument(doc)}
                             >
                                 View
                             </button>

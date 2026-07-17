@@ -21,12 +21,47 @@ const showDialog = async (
     alert(message);
 };
 
+const getApiErrorMessage = (
+    result: any,
+    fallbackMessage: string
+) => {
+    const message = result?.message;
+
+    if (typeof message !== "string" || !message.trim()) {
+        return fallbackMessage;
+    }
+
+    // The rating API wraps its useful error in a JSON string inside `message`.
+    const jsonStart = message.indexOf("{");
+    const jsonEnd = message.lastIndexOf("}");
+
+    if (jsonStart >= 0 && jsonEnd > jsonStart) {
+        try {
+            const nestedError = JSON.parse(
+                message.slice(jsonStart, jsonEnd + 1)
+            );
+
+            if (
+                typeof nestedError?.message === "string" &&
+                nestedError.message.trim()
+            ) {
+                return nestedError.message;
+            }
+        } catch {
+            // Fall back to the API's outer message when it is not valid JSON.
+        }
+    }
+
+    return message;
+};
+
 export const MAFDeclaration = ({
     categories,
     quoteId,
     apiUrl,
     totalPremium,
-    onPricingUpdate
+    onPricingUpdate,
+    disableLoading
 }: any) => {
 
     // =====================================
@@ -106,6 +141,8 @@ export const MAFDeclaration = ({
 
     const applyOverallLoading = async () => {
 
+        if (disableLoading) return;
+
         try {
 
             setOverallSaving(true);
@@ -144,7 +181,25 @@ export const MAFDeclaration = ({
                 percentage = -Math.abs(percentage);
             }
 
+            const resultingPolicyLoading =
+                appliedPolicyLoading + percentage;
+
             if (overallLoadingType === "discount") {
+
+                if (resultingPolicyLoading < -50) {
+
+                    const remainingDiscount = Math.max(
+                        0,
+                        50 + appliedPolicyLoading
+                    );
+
+                    await showDialog(
+                        "Invalid Discount",
+                        `The total policy discount cannot exceed 50%. You can apply a maximum additional discount of ${remainingDiscount}%.`
+                    );
+
+                    return;
+                }
 
                 const currentPremium =
                     Number(totalPremium);
@@ -257,7 +312,10 @@ export const MAFDeclaration = ({
             if (!response.ok) {
 
                 throw new Error(
-                    "Failed to apply policy loading"
+                    getApiErrorMessage(
+                        result,
+                        "Failed to apply policy loading"
+                    )
                 );
             }
 
@@ -271,7 +329,7 @@ export const MAFDeclaration = ({
             // =====================================
 
             setAppliedPolicyLoading(
-                percentage
+                resultingPolicyLoading
             );
 
             await showDialog(
@@ -284,7 +342,9 @@ export const MAFDeclaration = ({
             console.error(error);
             await showDialog(
                 "Error",
-                 "Failed to apply policy loading"
+                error instanceof Error
+                    ? error.message
+                    : "Failed to apply policy loading"
             );
 
         } finally {
@@ -300,6 +360,8 @@ export const MAFDeclaration = ({
     const applyCategoryLoading = async (
         categoryCode: string
     ) => {
+
+        if (disableLoading) return;
 
         try {
 
@@ -613,6 +675,7 @@ export const MAFDeclaration = ({
                                         : 999
                                 }
                                 value={overallValue}
+                                disabled={disableLoading}
                                 onChange={(e) =>
                                     setOverallValue(
                                         e.target.value
@@ -632,7 +695,7 @@ export const MAFDeclaration = ({
                             onClick={
                                 applyOverallLoading
                             }
-                            disabled={overallSaving}
+                            disabled={overallSaving || disableLoading}
                         >
 
                             {
@@ -727,6 +790,7 @@ export const MAFDeclaration = ({
                                                 categoryCode
                                             ] || ""
                                         }
+                                        disabled={disableLoading}
                                         onChange={(e) =>
 
                                             setCategoryValues(
@@ -761,7 +825,7 @@ export const MAFDeclaration = ({
                                     disabled={
                                         categorySaving[
                                             categoryCode
-                                        ]
+                                        ] || disableLoading
                                     }
                                 >
 

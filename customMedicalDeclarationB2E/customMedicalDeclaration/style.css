@@ -1,5 +1,8 @@
 .medical-pcf {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     font-family: Segoe UI, sans-serif;
 }
 
@@ -8,6 +11,14 @@
     justify-content: center;
     align-items: center;
     min-height: 80px;
+}
+
+.medical-pcf .questions-error {
+    padding: 10px 12px;
+    border-left: 3px solid #d13438;
+    background: #fde7e9;
+    color: #a4262c;
+    font-size: 13px;
 }
 
 /* QUESTIONS */
@@ -29,6 +40,10 @@
 
 /* GRID WRAPPER */
 .medical-pcf .grid-wrapper {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     border: 1px solid #edebe9;
     border-radius: 6px;
     padding: 10px;
@@ -48,9 +63,17 @@
 /* GRID */
 .medical-pcf .grid {
     display: grid;
-    grid-template-columns: 80px repeat(7, 1fr);
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    grid-template-columns: minmax(70px, 80px) repeat(7, minmax(0, 1fr)) 56px;
     gap: 10px;
     padding: 8px;
+}
+
+.medical-pcf .grid > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 /* HEADER */
@@ -191,6 +214,43 @@
     font-weight: 400;
     line-height: 20px;
     white-space: nowrap;
+}
+
+.medical-pcf .row-action-cell {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.medical-pcf .row-delete-btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+    color: #a4262c;
+    cursor: pointer;
+}
+
+.medical-pcf .row-delete-btn:hover:not(:disabled) {
+    border-color: #a4262c;
+    background: #fde7e9;
+}
+
+.medical-pcf .row-delete-btn:disabled {
+    color: #a19f9d;
+    cursor: default;
+}
+
+.medical-pcf .row-delete-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
 }
 
 .medical-pcf .file-view-btn:hover:not(:disabled),

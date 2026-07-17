@@ -6,4 +6,6 @@
   <data name="ApiUrl_Desc"><value>API</value></data>
   <data name="MedicalJson_Display"><value>Medical JSON</value></data>
   <data name="MedicalJson_Desc"><value>Output</value></data>
+  <data name="MemberData_Display"><value>Member Data</value></data>
+  <data name="MemberData_Desc"><value>Member list JSON used to limit medical declaration rows</value></data>
 </root>

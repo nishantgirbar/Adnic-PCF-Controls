@@ -317,12 +317,19 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
+    min-width: 0;
 }
 
 .document-left {
     display: flex;
     gap: 12px;
     align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.document-left > div:last-child {
+    min-width: 0;
 }
 
 .pdf-icon {
@@ -336,11 +343,15 @@ body {
     border-radius: 4px;
     font-size: 12px;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 .doc-name {
     font-size: 13px;
     font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .doc-date {
@@ -355,6 +366,8 @@ body {
     border-radius: 4px;
     padding: 6px 14px;
     cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 12px;
 }
 
 .member-count {

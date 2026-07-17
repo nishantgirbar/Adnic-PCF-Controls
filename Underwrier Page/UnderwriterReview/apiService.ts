@@ -1,6 +1,6 @@
 export const fetchQuoteData = async (apiUrl: string, quoteId: string, quoteNumber: string) => {
 
-    const url = `${apiUrl}/${quoteId}?isUnderwriter=true`;
+    const url = `${apiUrl}/${quoteId}?isUnderwriter=true&quoteNumber=${quoteNumber}`;
  
 
     const res = await fetch(url, {

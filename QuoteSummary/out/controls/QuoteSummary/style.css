@@ -163,6 +163,12 @@
     vertical-align: -2px;
 }
 
+.premium-calculations-title .currency-symbol {
+    width: 22px;
+    height: 22px;
+    vertical-align: -6px;
+}
+
 /* PREMIUM */
 .premium-row {
     display: grid;

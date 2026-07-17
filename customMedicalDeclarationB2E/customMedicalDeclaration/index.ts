@@ -84,6 +84,8 @@ export class MedicalControl
 
                     existingData:
                         existingData,
+                    memberData:
+                        (context.parameters as any).memberData?.raw || "",
                     pcfContext: context,
                       isDisabled:
                                 context.mode.isControlDisabled ||

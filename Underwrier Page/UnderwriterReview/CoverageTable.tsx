@@ -304,7 +304,7 @@ export const CoverageTable = ({
                 Plan Type: {
 
                     isEBP
-                        ? "EBP Plan"
+                        ? "EBP/Enhanced EBP Plan"
                         : quoteInfo?.planType ||
                             "Enhanced Plan"
 
