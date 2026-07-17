@@ -3,7 +3,7 @@
   <control 
     namespace="crmCustomB2EControl"
     constructor="ProductDetailsB2E"
-    version="2.0.8"
+    version="2.0.9"
     display-name-key="ProductDetails_DisplayName"
     description-key="ProductDetails_Description"
     control-type="standard">

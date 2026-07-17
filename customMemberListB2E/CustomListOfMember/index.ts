@@ -5,6 +5,8 @@ import "flatpickr/dist/flatpickr.min.css";
 
 export class CustomListOfMembersB2E implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
+  private readonly maximumChildAge = 24;
+
   private container!: HTMLDivElement;
   private members: any[] = [];
   private salaryOptions: string[] = [
@@ -43,7 +45,38 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private refreshPending: boolean = false;
   private uploadErrors = new WeakMap<object, string>();
   private uploadsInProgress = new Set<string>();
-  private loadedDataValidationSignature: string = "";
+  private loadedSpouseSingleValidationSignature: string = "";
+  private readonly syncDebugEnabled = true;
+  private syncDebugSequence = 0;
+
+  private summarizeMembersForDebug(members: any[]): any[] {
+    return members.map((member, index) => {
+      const attachments = this.normalizeAttachmentsFromMember(member);
+      return {
+        key: this.getMemberHydrationKey(member, index + 1),
+        serialNo: member?.serialNo ?? index + 1,
+        relation: member?.relation || "",
+        dateOfBirth: member?.dateOfBirth || "",
+        hasRemarks: String(member?.remarks || "").trim().length > 0,
+        attachmentCount: attachments.length,
+        attachments: attachments.map(attachment => ({
+          name: attachment.name || "",
+          hasAnnotationId: Boolean(attachment.annotationId),
+          hasContent: Boolean(attachment.content)
+        }))
+      };
+    });
+  }
+
+  private syncDebug(event: string, details: any): void {
+    if (!this.syncDebugEnabled) return;
+
+    this.syncDebugSequence += 1;
+    console.info(
+      `[CustomListOfMembersB2E][65+ sync][${this.enableUpload ? "65+ grid" : "main grid"}] #${this.syncDebugSequence} ${event}`,
+      details
+    );
+  }
 
   private createEmptyMember(): any {
 
@@ -82,7 +115,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private normalizeAttachmentsFromMember(member: any): any[] {
 
     if (Array.isArray(member.attachments)) {
-      return member.attachments
+      const attachments = member.attachments
         .map((attachment: any) => ({
           name: String(attachment?.name || attachment?.filename || ""),
           mimeType: String(attachment?.mimeType || attachment?.mimetype || "application/pdf"),
@@ -99,6 +132,14 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           attachment.annotationId ||
           attachment.content
         );
+
+      // In edit mode Dataverse can deserialize the newer attachments field as
+      // an empty array while the existing file is still stored in the legacy
+      // document/documentName fields. Do not let that empty array hide the
+      // saved document.
+      if (attachments.length > 0) {
+        return attachments;
+      }
     }
 
     if (member.document || member.documentName) {
@@ -137,6 +178,9 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   private hydrateMembersFromAbove65(savedAbove65Raw: string | null | undefined, members: any[]): any[] {
 
     if (!savedAbove65Raw) {
+      this.syncDebug("hydrate skipped: bound 65+ field is empty", {
+        memberCount: members.length
+      });
       return members;
     }
 
@@ -151,6 +195,9 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     if (!savedAbove65.length) {
+      this.syncDebug("hydrate skipped: bound 65+ JSON contains no rows", {
+        memberCount: members.length
+      });
       return members;
     }
 
@@ -160,12 +207,15 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       savedByKey.set(this.getMemberHydrationKey(member, index + 1), member);
     });
 
-    return members.map((member, index) => {
+    let matchedCount = 0;
+    const hydratedMembers = members.map((member, index) => {
       const savedMember = savedByKey.get(this.getMemberHydrationKey(member, index + 1));
 
       if (!savedMember) {
         return member;
       }
+
+      matchedCount += 1;
 
       const currentAttachments = this.normalizeAttachmentsFromMember(member);
       const savedAttachments = this.normalizeAttachmentsFromMember(savedMember);
@@ -191,20 +241,33 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       });
 
       const attachments = Array.from(attachmentMap.values());
-      console.log("Attachment merge", {
-        serialNo: member.serialNo,
-        current: currentAttachments.map(a => a.name),
-        saved: savedAttachments.map(a => a.name),
-        final: attachments.map(a => a.name)
-      });
       return this.normalizeMemberCategoryForSalaryType({
         ...member,
-        remarks: String(member.remarks || savedMember.remarks || ""),
+        // listOfMemberAbove65 is the value edited by the upload grid. When it
+        // contains remarks (including an intentional empty string), it must
+        // win over the older memberData copy or the main-grid instance will
+        // immediately echo the old remark back to the bound Dataverse field.
+        remarks: Object.prototype.hasOwnProperty.call(savedMember, "remarks")
+          ? String(savedMember.remarks ?? "")
+          : String(member.remarks || ""),
         attachments,
         document: "",
         documentName: attachments[0]?.name || String(member.documentName || savedMember.documentName || "")
       });
     });
+
+    this.syncDebug("main member hydration completed", {
+      mainMemberCount: members.length,
+      boundAbove65Count: savedAbove65.length,
+      matchedCount,
+      unmatchedBoundKeys: Array.from(savedByKey.keys()).filter(key =>
+        !members.some((member, index) => this.getMemberHydrationKey(member, index + 1) === key)
+      ),
+      boundAbove65Members: this.summarizeMembersForDebug(savedAbove65),
+      hydratedMembers: this.summarizeMembersForDebug(hydratedMembers)
+    });
+
+    return hydratedMembers;
   }
 
   private addNewMember(): void {
@@ -385,13 +448,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       this.hasLoadedShowEbpPlan = true;
     }
 
-    console.log(
-      "isReadOnly:",
-      this.isReadOnly,
-      "isControlDisabled:",
-      context.mode.isControlDisabled
-    );
-
     if (this.addBtn) {
       this.addBtn.style.display = this.enableUpload ? "none" : "";
     }
@@ -405,22 +461,38 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     const memberDataChanged = raw !== this.lastRaw;
     const above65DataChanged = above65Raw !== this.lastAbove65Raw;
 
-    console.log("[EBP DEBUG] updateView inputs", {
+    this.syncDebug("updateView received bound values", {
       memberDataChanged,
       above65DataChanged,
-      boundShowEbpPlan: context.parameters.adnic_adnic_showebpplan.raw,
-      internalShowEbpPlan: this.showEbpPlan,
-      memberDataLength: raw?.length ?? 0,
-      above65DataLength: above65Raw?.length ?? 0
+      memberDataIsNull: raw == null,
+      above65IsNull: above65Raw == null,
+      memberDataLength: raw?.length || 0,
+      above65Length: above65Raw?.length || 0
     });
+
+    let loadedMemberDataCorrected = false;
 
     if (memberDataChanged || above65DataChanged) {
       this.lastRaw = raw;
       this.lastAbove65Raw = above65Raw;
 
       try {
+        const hasBoundAbove65Data =
+          typeof above65Raw === "string" &&
+          above65Raw.trim() !== "";
+        const sourceRaw = this.enableUpload && hasBoundAbove65Data
+          ? above65Raw
+          : raw;
+
+        this.syncDebug("selected load source", {
+          hasBoundAbove65Data,
+          selectedSource: this.enableUpload && hasBoundAbove65Data
+            ? "listOfMemberAbove65"
+            : "memberData"
+        });
+
         // 🔥 NORMALIZE RELATION TO UPPERCASE
-        const parsedMembers = (raw ? JSON.parse(raw) : []).map((m: any) => {
+        const parsedMembers = (sourceRaw ? JSON.parse(sourceRaw) : []).map((m: any) => {
           const attachments = this.normalizeAttachmentsFromMember(m);
 
           return {
@@ -433,13 +505,25 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           };
         });
 
-        this.members = this.hydrateMembersFromAbove65(above65Raw, parsedMembers);
+        // The upload-enabled 65+ grid owns listOfMemberAbove65, so saved bound
+        // rows must be its source of truth. The main grid still hydrates its
+        // memberData rows with saved 65+ remarks and attachments.
+        this.members = this.enableUpload && hasBoundAbove65Data
+          ? parsedMembers
+          : this.hydrateMembersFromAbove65(above65Raw, parsedMembers);
+
+        this.syncDebug("grid members loaded", {
+          selectedSource: this.enableUpload && hasBoundAbove65Data
+            ? "listOfMemberAbove65"
+            : "memberData",
+          members: this.summarizeMembersForDebug(this.members)
+        });
       } catch {
-        console.warn("Invalid memberData JSON ignored.", raw);
+        console.warn("Invalid member JSON ignored.", this.enableUpload ? above65Raw : raw);
       }
 
-      if (memberDataChanged) {
-        this.validateLoadedMemberData();
+      if (!this.enableUpload && memberDataChanged) {
+        loadedMemberDataCorrected = this.validateLoadedMemberData();
       }
 
       //this.currentPage = 1;
@@ -455,7 +539,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       }
 
     }
-    console.log("updateView: members", this.members);
     const derivedOutputsChanged = this.updateDerivedOutputJsons(false);
     // listOfMemberAbove65 is derived from memberData and must not drive the
     // EBP flag. Otherwise its follow-up update can overwrite a valid true
@@ -464,15 +547,22 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       ? this.updateShowEbpPlan(true)
       : false;
 
-    console.log("[EBP DEBUG] updateView result", {
-      derivedOutputsChanged,
-      showEbpPlanChanged,
-      showEbpPlan: this.showEbpPlan,
-      notificationWillFire: derivedOutputsChanged || showEbpPlanChanged
-    });
+    // An output emitted by the upload grid is echoed back by the framework as
+    // listOfMemberAbove65.raw. Re-emitting merely because that input changed
+    // creates a second notify cycle and allows another control instance to
+    // overwrite the value. Only the main grid should publish derived outputs
+    // from updateView, and only when its source memberData actually changed.
+    const derivedChangeShouldNotify =
+      !this.enableUpload &&
+      memberDataChanged &&
+      derivedOutputsChanged;
 
-    if (derivedOutputsChanged || showEbpPlanChanged) {
-      console.log("[EBP DEBUG] notifyOutputChanged from updateView");
+    const notificationWillFire =
+      loadedMemberDataCorrected ||
+      derivedChangeShouldNotify ||
+      showEbpPlanChanged;
+
+    if (notificationWillFire) {
       this.notifyOutputChanged();
     }
 
@@ -494,19 +584,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
     const nextSignature = this.getShowEbpPlanSignature();
 
-    console.table(this.members.map((member, index) => ({
-      index,
-      relation: (member.relation || "").trim().toUpperCase(),
-      salaryType: (member.salaryType || "").trim().toUpperCase(),
-      age: this.getAge(member.dateOfBirth, this.getAgeReferenceDate()),
-      matchesEbpRule: (member.relation || "").trim().toUpperCase() === "EMPLOYEE" &&
-        this.isLsbSalaryType(member.salaryType)
-    })));
-
     if (nextSignature === this.showEbpPlanSignature) {
-      console.log("[EBP DEBUG] calculation skipped: signature unchanged", {
-        showEbpPlan: this.showEbpPlan
-      });
       return false;
     }
 
@@ -520,12 +598,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     this.showEbpPlanSignature = nextSignature;
 
     const previousShowEbpPlan = this.showEbpPlan;
-
-    console.log("[EBP DEBUG] calculated showEbpPlan", {
-      previousShowEbpPlan,
-      nextShowEbpPlan,
-      suppressUnsetFalseOutput
-    });
 
     if (nextShowEbpPlan === previousShowEbpPlan) {
       return false;
@@ -630,6 +702,66 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     );
   }
 
+  private mergeAbove65ChangesIntoMemberData(): string {
+    const rawMemberData = this.context.parameters.memberData.raw;
+    let allMembers: any[] = [];
+
+    try {
+      const parsed = rawMemberData ? JSON.parse(rawMemberData) : [];
+      allMembers = Array.isArray(parsed) ? parsed : [];
+    } catch {
+      console.warn("Invalid memberData JSON ignored while merging 65+ changes.", rawMemberData);
+      return rawMemberData || "[]";
+    }
+
+    const above65ByKey = new Map<string, any>();
+    this.members.forEach((member, index) => {
+      above65ByKey.set(this.getMemberHydrationKey(member, index + 1), member);
+    });
+
+    const matchedKeys: string[] = [];
+    const unmatchedMainKeys: string[] = [];
+    const mergedMembers = allMembers.map((member, index) => {
+      const memberKey = this.getMemberHydrationKey(member, index + 1);
+      const changedMember = above65ByKey.get(
+        memberKey
+      );
+
+      if (!changedMember) {
+        if (this.getAge(member?.dateOfBirth, this.getAgeReferenceDate()) >= 65) {
+          unmatchedMainKeys.push(memberKey);
+        }
+        return member;
+      }
+
+      matchedKeys.push(memberKey);
+
+      const attachments = this.normalizeAttachmentsFromMember(changedMember);
+
+      return {
+        ...member,
+        remarks: String(changedMember.remarks || ""),
+        attachments,
+        document: "",
+        documentName: attachments[0]?.name || ""
+      };
+    });
+
+    this.syncDebug("65+ changes merged into memberData output", {
+      mainMemberCount: allMembers.length,
+      above65MemberCount: this.members.length,
+      matchedKeys,
+      unmatchedMainKeys,
+      unmatchedAbove65Keys: Array.from(above65ByKey.keys()).filter(key =>
+        matchedKeys.indexOf(key) === -1
+      ),
+      above65Members: this.summarizeMembersForDebug(this.members),
+      mergedMembers: this.summarizeMembersForDebug(mergedMembers)
+    });
+
+    return this.serializeMembersForOutput(mergedMembers);
+  }
+
   private updateAbove65Members(): boolean {
 
     const referenceDate = this.getAgeReferenceDate();
@@ -647,16 +779,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       );
 
     const nextAbove65MembersJson = JSON.stringify(above65);
-
-    console.log("[EBP DEBUG] calculated listOfMemberAbove65", {
-      count: above65.length,
-      members: above65.map(member => ({
-        serialNo: member.serialNo,
-        relation: member.relation,
-        salaryType: member.salaryType,
-        dateOfBirth: member.dateOfBirth
-      }))
-    });
 
     if (nextAbove65MembersJson === this.above65MembersJson) {
       return false;
@@ -714,20 +836,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       xrmPage?.data?.entity?.getEntityName?.() ||
       ""
     ).toLowerCase();
-
-    const xrmPageEntityId = xrmPage?.data?.entity?.getId ? xrmPage.data.entity.getId() : undefined;
-    const xrmPageEntityName = xrmPage?.data?.entity?.getEntityName ? xrmPage.data.entity.getEntityName() : undefined;
-
-    console.debug("PCF record context debug", {
-      entityId,
-      entityTypeName,
-      pageContext: pageContext ? { entityId: pageContext.entityId, entityTypeName: pageContext.entityTypeName } : undefined,
-      modeContext: modeContext ? { entityId: modeContext.entityId, entityTypeName: modeContext.entityTypeName } : undefined,
-      xrmPageInput: xrmPageContext?.input ? { entityId: xrmPageContext.input.entityId, entityTypeName: xrmPageContext.input.entityTypeName } : undefined,
-      xrmPageEntity: xrmPage?.data?.entity ? { id: xrmPageEntityId, name: xrmPageEntityName } : undefined,
-      xrmAvailable: !!localXrm,
-      parentXrmAvailable: !!parentXrm
-    });
 
     return {
       entityId,
@@ -844,7 +952,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
   private async retrieveAnnotationContent(annotationId: string): Promise<{ fileName: string; mimeType: string; size: number; base64: string } | null> {
     const id = this.normalizeAnnotationId(annotationId);
-    console.debug("retrieveAnnotationContent: raw annotationId", annotationId, "normalized", id);
     if (!id) {
       console.warn("retrieveAnnotationContent: no valid annotation id", annotationId);
       return null;
@@ -856,8 +963,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         id,
         "?$select=documentbody,mimetype,filename,filesize"
       );
-
-      console.debug("retrieveAnnotationContent: annotation retrieved", { id, filename: annotation.filename, mimetype: annotation.mimetype, filesize: annotation.filesize });
 
       return {
         fileName: annotation.filename || "",
@@ -894,7 +999,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     }
 
     const annotationId = this.normalizeAnnotationId(attachment.annotationId || attachment.id || attachment.annotationid);
-    console.debug("getAttachmentDataUrl: attachment", attachment, "resolved annotationId", annotationId);
     if (!annotationId) {
       console.warn("getAttachmentDataUrl: no annotation id available", attachment);
       return "";
@@ -984,8 +1088,22 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       return "Employee must be at least 18 years old.";
     }
 
-    if (relation === "CHILD" && age > 24) {
-      return "Child cannot be older than 24 years.";
+    const referenceDate = this.getAgeReferenceDate();
+    const childDob = new Date(`${member.dateOfBirth}T00:00:00`);
+    const oldestAllowedChildDob = new Date(
+      referenceDate.getFullYear() - this.maximumChildAge,
+      referenceDate.getMonth(),
+      referenceDate.getDate()
+    );
+
+    // Exactly 24 years is allowed. A DOB even one day before the cutoff
+    // represents 24 years and 1 day (or older) and must be rejected.
+    if (
+      relation === "CHILD" &&
+      !isNaN(childDob.getTime()) &&
+      childDob < oldestAllowedChildDob
+    ) {
+      return `Child maximum allowed age is ${this.maximumChildAge} years. Please enter a valid Date of Birth.`;
     }
 
     return null;
@@ -1016,34 +1134,76 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     return null;
   }
 
-  private validateLoadedMemberData(): void {
-    const invalidMemberIndex = this.members.findIndex(member =>
-      this.validateMemberBusinessRules(member) !== null
-    );
+  private validateLoadedMemberData(): boolean {
+    const corrections: string[] = [];
+    const spouseSingleErrors: string[] = [];
+    const originalPayload = JSON.stringify(this.members);
 
-    if (invalidMemberIndex < 0) {
-      this.loadedDataValidationSignature = "";
-      return;
+    this.members.forEach((member, index) => {
+      const serialNo = Number(member?.serialNo) || index + 1;
+      const relation = String(member?.relation || "").trim().toUpperCase();
+      const maritalStatus = String(member?.maritalStatus || "").trim().toUpperCase();
+      const visaLocation = String(member?.visaLocation || "").trim().toUpperCase();
+      const ageError = this.validateRelationAge(member);
+
+      if (ageError) {
+        member.relation = "";
+        corrections.push(`Member ${serialNo}: Relation was cleared. ${ageError}`);
+      }
+
+      if (relation === "SPOUSE" && maritalStatus === "SINGLE") {
+        member.maritalStatus = "Married";
+        corrections.push(`Member ${serialNo}: Marital Status was changed to Married.`);
+        spouseSingleErrors.push(
+          `Member ${serialNo}: Spouse cannot have marital status 'Single'.`
+        );
+      }
+
+      if ((relation === "SPOUSE" || relation === "CHILD") && this.isLsbSalaryType(member?.salaryType)) {
+        member.salaryType = "Enhanced";
+        corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced.`);
+      } else if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB") {
+        member.salaryType = "Enhanced";
+        corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced because Visa Location is not DXB.`);
+      } else if (String(member?.salaryType || "").trim().toUpperCase() === "EBP") {
+        member.salaryType = "";
+        corrections.push(`Member ${serialNo}: Invalid Salary Type EBP was cleared.`);
+      }
+
+      if (String(member?.category || "").trim().toUpperCase() === "EBP") {
+        member.category = "";
+        corrections.push(`Member ${serialNo}: Invalid Category EBP was cleared.`);
+      }
+    });
+
+    if (this.members.length > 0 && this.members.every(member => this.isLsbSalaryType(member?.salaryType))) {
+      this.members[0].salaryType = "Enhanced";
+      const serialNo = Number(this.members[0]?.serialNo) || 1;
+      corrections.push(`Member ${serialNo}: Salary Type was changed to Enhanced so at least one Enhanced member remains.`);
     }
 
-    const message = this.validateMemberBusinessRules(this.members[invalidMemberIndex]);
-    const serialNo = Number(this.members[invalidMemberIndex]?.serialNo) || invalidMemberIndex + 1;
-    const signature = `${serialNo}|${message}|${JSON.stringify(this.members[invalidMemberIndex])}`;
-
-    // updateView can be called repeatedly for the same host update. Show one
-    // dialog per invalid payload instead of opening duplicate dialogs.
-    if (!message || signature === this.loadedDataValidationSignature) {
-      return;
+    if (corrections.length === 0) {
+      this.loadedSpouseSingleValidationSignature = "";
+      return false;
     }
 
-    this.loadedDataValidationSignature = signature;
-    void this.context.navigation.openAlertDialog(
-      {
-        text: `Member ${serialNo}: ${message}`,
-        confirmButtonLabel: "OK"
-      },
-      { width: 480, height: 200 }
-    );
+    // Initial-load corrections remain silent except for the Spouse + Single
+    // business rule, which must be brought to the user's attention.
+    if (
+      spouseSingleErrors.length > 0 &&
+      originalPayload !== this.loadedSpouseSingleValidationSignature
+    ) {
+      this.loadedSpouseSingleValidationSignature = originalPayload;
+      void this.context.navigation.openAlertDialog(
+        {
+          text: spouseSingleErrors.join("\n"),
+          confirmButtonLabel: "OK"
+        },
+        { width: 480, height: 200 }
+      );
+    }
+
+    return true;
   }
 
   private parseDisplayDate(value: string): string | null {
@@ -1122,6 +1282,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       const key = value.toUpperCase();
       if (
         value &&
+        key !== "EBP" &&
         !seen.has(key) &&
         !this.category.some(
           x => x.toUpperCase() === value.toUpperCase()
@@ -1256,14 +1417,21 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
       const currentValue = (value || "").trim();
       const normalizedCurrentValue = currentValue.toUpperCase();
-      const dropdownOptions = currentValue && !options.some(o => o.trim().toUpperCase() === normalizedCurrentValue)
-        ? [currentValue, ...options]
+      const excludesEbp = field === "salaryType" || field === "category";
+      const filteredOptions = excludesEbp
+        ? options.filter(option => option.trim().toUpperCase() !== "EBP")
         : options;
+      const canIncludeCurrentValue = currentValue &&
+        !(excludesEbp && normalizedCurrentValue === "EBP");
+      const dropdownOptions = canIncludeCurrentValue &&
+        !filteredOptions.some(o => o.trim().toUpperCase() === normalizedCurrentValue)
+        ? [currentValue, ...filteredOptions]
+        : filteredOptions;
 
       const emptyOpt = document.createElement("option");
       emptyOpt.value = "";
       emptyOpt.innerText = "";
-      emptyOpt.selected = !currentValue;
+      emptyOpt.selected = !canIncludeCurrentValue;
       select.appendChild(emptyOpt);
 
       dropdownOptions.forEach(o => {
@@ -1612,6 +1780,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
       if (age >= 65 && this.enableUpload) {
 
+        const memberSerialNo = Number(row.serialNo || idx + 1);
+        const getLiveMember = (): any =>
+          this.members.find((member, memberIndex) =>
+            Number(member?.serialNo || memberIndex + 1) === memberSerialNo
+          ) || this.members[idx] || row;
+
         const uploadRow = document.createElement("div");
         uploadRow.className = "upload-row";
 
@@ -1628,6 +1802,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         btn.disabled = this.isReadOnly;
 
         let fileSelectionHandled = false;
+        let attachmentOutputChanged = false;
 
         const attachmentsContainer = document.createElement("div");
         attachmentsContainer.className = "uploaded-files";
@@ -1655,8 +1830,13 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         remarksField.disabled = this.isReadOnly;
         remarksField.value = String(row.remarks || "");
         remarksField.onchange = () => {
+          const liveMember = getLiveMember();
+          liveMember.remarks = remarksField.value;
           row.remarks = remarksField.value;
           this.updateDerivedOutputJsons();
+          this.syncDebug("65+ remarks changed; publishing bound outputs", {
+            member: this.summarizeMembersForDebug([liveMember])[0]
+          });
 
           // Opening the native picker blurs this field. Notifying PCF at that
           // moment rebuilds the grid and detaches the file input before its
@@ -1706,9 +1886,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               </span>
               <span>View</span>`;
             viewBtn.onclick = async () => {
-              console.debug("View button clicked", attachment);
               const url = await this.getAttachmentDataUrl(attachment);
-              console.debug("View URL result", { attachment, url });
               if (!url) {
                 return;
               }
@@ -1745,9 +1923,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               </span>
               <span>Download</span>`;
             downloadBtn.onclick = async () => {
-              console.debug("Download button clicked", attachment);
               const url = await this.getAttachmentDataUrl(attachment);
-              console.debug("Download URL result", { attachment, url });
               if (!url) {
                 return;
               }
@@ -1791,6 +1967,10 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
                 row.document = "";
                 row.documentName = "";
               }
+              this.syncDebug("65+ attachment deleted; publishing bound outputs", {
+                deletedFileName: attachment.name || "",
+                member: this.summarizeMembersForDebug([row])[0]
+              });
               this.updateDerivedOutputJsons();
               this.notifyOutputChanged();
               renderAttachments();
@@ -1814,6 +1994,13 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         const addAttachments = async (): Promise<void> => {
           const files = Array.from(fileInput.files || []);
           if (!files.length) return;
+
+          // The Web API call below is asynchronous. PCF can invoke updateView
+          // while it is running and replace this.members with freshly parsed
+          // objects, making the row captured by renderGrid stale. Keep a
+          // stable identity so upload completion updates the live member that
+          // getOutputs will serialize.
+          const uploadMemberSerialNo = memberSerialNo;
 
           setUploadError("");
 
@@ -1901,21 +2088,36 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               files.map(file => this.createAttachmentFromFile(file))
             );
 
-            if (!row.serialNo) {
-              row.serialNo = idx + 1;
+            const liveMember = getLiveMember();
+
+            if (!liveMember.serialNo) {
+              liveMember.serialNo = uploadMemberSerialNo;
             }
 
-
-            row.attachments = row.attachments || [];
-            row.attachments.push(...uploadedAttachments);
-            if (!row.documentName && uploadedAttachments.length) {
-              row.documentName = uploadedAttachments[0].name;
+            liveMember.attachments = Array.isArray(liveMember.attachments)
+              ? liveMember.attachments
+              : [];
+            liveMember.attachments.push(...uploadedAttachments);
+            if (!liveMember.documentName && uploadedAttachments.length) {
+              liveMember.documentName = uploadedAttachments[0].name;
             }
+
+            // Keep the currently rendered card in sync when updateView
+            // replaced the backing member during the upload.
+            row.attachments = liveMember.attachments;
+            row.documentName = liveMember.documentName;
+
+            this.syncDebug("65+ attachments uploaded", {
+              uploadedFiles: uploadedAttachments.map(uploaded => ({
+                name: uploaded.name || "",
+                hasAnnotationId: Boolean(uploaded.annotationId)
+              })),
+              member: this.summarizeMembersForDebug([liveMember])[0]
+            });
 
             setUploadError("");
             renderAttachments();
-            this.updateDerivedOutputJsons();
-            this.notifyOutputChanged();
+            attachmentOutputChanged = true;
             // this.refresh();
           } catch (error) {
             console.error("Member attachment upload failed.", error);
@@ -1939,6 +2141,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
 
           // Keep the latest remarks in the row before opening the native picker.
           // The upload flow will notify the framework after a file is selected.
+          getLiveMember().remarks = remarksField.value;
           row.remarks = remarksField.value;
           this.fileInteractionActive = true;
           fileSelectionHandled = false;
@@ -1965,6 +2168,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         btn.onpointerdown = event => {
           if (!event.isPrimary || event.button !== 0) return;
           this.fileInteractionActive = true;
+          getLiveMember().remarks = remarksField.value;
           row.remarks = remarksField.value;
         };
 
@@ -1980,6 +2184,14 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
               await addAttachments();
             } finally {
               this.completeFileInteraction();
+
+              // Publish bound outputs only after leaving file-interaction
+              // mode, so a deferred updateView cannot restore stale JSON.
+              if (attachmentOutputChanged) {
+                attachmentOutputChanged = false;
+                this.updateDerivedOutputJsons();
+                this.notifyOutputChanged();
+              }
             }
           })();
         };
@@ -2039,27 +2251,30 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
   }
 
   public getOutputs(): IOutputs {
-    const outputs: IOutputs = {
-      memberData: this.serializeMembersForOutput(this.members),
-      listOfMemberAbove65: this.above65MembersJson,
-      uniqueCategoriesJson: this.uniqueCategoriesJson
-    };
+    // The upload-grid instance publishes both its 65+ field and a merged
+    // memberData value so remarks and attachments remain synchronized.
+    const outputs: IOutputs = this.enableUpload
+      ? {
+        memberData: this.mergeAbove65ChangesIntoMemberData(),
+        listOfMemberAbove65: this.above65MembersJson
+      }
+      : {
+        memberData: this.serializeMembersForOutput(this.members),
+        listOfMemberAbove65: this.above65MembersJson,
+        uniqueCategoriesJson: this.uniqueCategoriesJson
+      };
 
-    // Only the main member grid owns this bound value. For the 65+ upload
-    // grid, omit the property completely: including it with `undefined`
-    // causes PCF to clear the shared bound field.
     if (!this.enableUpload) {
       outputs.adnic_adnic_showebpplan = this.showEbpPlan;
     }
 
-    console.log("[EBP DEBUG] getOutputs", {
-      showEbpPlan: outputs.adnic_adnic_showebpplan,
-      includesShowEbpPlan: Object.prototype.hasOwnProperty.call(
-        outputs,
-        "adnic_adnic_showebpplan"
-      ),
-      memberDataLength: outputs.memberData?.length ?? 0,
-      above65DataLength: outputs.listOfMemberAbove65?.length ?? 0
+    this.syncDebug("getOutputs returning bound values", {
+      outputNames: Object.keys(outputs),
+      memberDataLength: outputs.memberData?.length || 0,
+      above65Length: outputs.listOfMemberAbove65?.length || 0,
+      above65Members: this.summarizeMembersForDebug(this.members.filter(member =>
+        this.getAge(member?.dateOfBirth, this.getAgeReferenceDate()) >= 65
+      ))
     });
 
     return outputs;

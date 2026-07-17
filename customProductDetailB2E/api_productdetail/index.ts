@@ -502,7 +502,10 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
                     + "' /> "
                     + Number(
                         premium.currentPremium || 0
-                    ).toLocaleString()
+                    ).toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })
                     + "</div>"
                     + "<div class='premium-members'>Members "
                     + (premium.memberCount || 0)

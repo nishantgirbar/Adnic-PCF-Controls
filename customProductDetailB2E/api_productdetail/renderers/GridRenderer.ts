@@ -887,7 +887,10 @@ constructor(
                             + "' /> "
                             + Number(
                                 premium.currentPremium || 0
-                            ).toLocaleString();
+                            ).toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
                     }
 
                     if (members) {
@@ -957,7 +960,10 @@ constructor(
                         + "' /> "
                         + Number(
                             premium.currentPremium || 0
-                        ).toLocaleString()
+                        ).toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })
                         + "</div>"
                         + "<div class='premium-members'>Members "
                         + (premium.memberCount || 0)
