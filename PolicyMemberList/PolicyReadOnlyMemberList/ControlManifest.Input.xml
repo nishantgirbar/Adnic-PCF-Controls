@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control namespace="adnicPolicyQuoteControls"
+    constructor="PolicyQuoteMemberViewerV2"
+    version="1.0.8"
+    display-name-key="Policy Quote Member Viewer V2"
+    description-key="Unique API-driven, read-only quote member viewer"
+    control-type="standard">
+
+    <!--
+      Keep memberData as the first bound property. The first bound property is
+      the primary field type used by the model-driven form designer when it
+      decides which columns can use this control.
+    -->
+    <property name="memberData"
+      display-name-key="Member Data"
+      description-key="Legacy member JSON binding retained for form compatibility"
+      of-type="Multiple"
+      usage="bound"
+      required="true" />
+
+    <property
+      name="listOfMemberAbove65"
+      display-name-key="List Of Member Above 65"
+      description-key="List Of Member Above 65"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <property
+      name="uniqueCategoriesJson"
+      display-name-key="Unique Categories Json"
+      description-key="Unique Categories Json"
+      of-type="Multiple"
+      usage="bound"
+      required="false" />
+
+    <property
+      name="policy_start_date"
+      display-name-key="Policy Start Date"
+      description-key="Policy Start Date"
+      of-type="DateAndTime.DateOnly"
+      usage="bound"
+      required="false" />
+
+    <property name="enableUpload"
+      display-name-key="Enable Upload"
+      description-key="Toggle upload functionality"
+      of-type="TwoOptions"
+      usage="input"
+      required="false" />
+
+    <property name="quoteNumber"
+      display-name-key="Quote Number"
+      description-key="Quote number used to retrieve member documents"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false" />
+
+    <property name="adnic_name"
+      display-name-key="Product Type"
+      description-key="Product Type"
+      of-type="SingleLine.Text"
+      usage="bound"
+      required="false" />
+
+    <property name="adnic_adnic_showebpplan"
+      display-name-key="Show EBP Plan"
+      description-key="Show EBP Plan when a non-employee member exists or an employee has LSB salary"
+      of-type="TwoOptions"
+      usage="bound"
+      required="false" />
+
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="1" />
+    </resources>
+
+    <feature-usage>
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
+
+
+  </control>
+</manifest>

@@ -1,0 +1,24 @@
+# JavaScript dependencies
+**/node_modules/
+
+# PCF/.NET build artifacts
+**/bin/
+**/obj/
+**/out/
+**/dist/
+**/build/
+
+# PCF generated typings
+**/generated/
+
+# Logs and local caches
+*.log
+*.binlog
+*.cache
+*.user
+*.suo
+.vs/
+.vscode/
+coverage/
+*.tsbuildinfo
+
