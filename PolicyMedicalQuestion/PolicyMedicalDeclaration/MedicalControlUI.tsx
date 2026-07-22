@@ -1,263 +1,89 @@
 import * as React from "react";
-import {
-    Stack,
-    Text,
-    Toggle,
-    PrimaryButton,
-    DefaultButton,
-    TextField
-} from "@fluentui/react";
+import { MessageBar, MessageBarType, Spinner, Stack, Text, Toggle } from "@fluentui/react";
 import "./style.css";
 
-interface Member {
-    id: number;
-    serialNo?: number;
-    relation: string;
-    gender: string;
-    dob: string;
-    salary: string;
-    visa: string;
-    category: string;
-    marital: string;
-    comments?: string;
-    fileName?: string;
-    error?: string;
+export interface Member {
+    id: string; serialNo: number; relation: string; gender: string; dob: string;
+    salary: string; visa: string; category: string; marital: string;
 }
-
-interface Question {
-    id: number;
-    question: string;
-    displayOrder?: number;
-    answer: boolean;
-    category: string;
+export interface MemberDocument {
+    entityNumber?: string | number; originalFilename?: string; fileName?: string;
+    blobUrl?: string; url?: string; comment?: string; createdAt?: string;
 }
-
+export interface Question {
+    id: number; question: string; answer: boolean; category: string;
+}
 interface Props {
-    existingData: { medicalQuestions?: any[] };
-    onChange: (data: any) => void;
+    questions: Question[]; members: Member[]; documents: MemberDocument[]; loading: boolean; error: string;
+    onQuestionsChange: (questions: Question[]) => void;
 }
 
-const MedicalControlUI: React.FC<Props> = ({ existingData, onChange }) => {
-
-    const [questions, setQuestions] = React.useState<Question[]>([]);
-    const [members, setMembers] = React.useState<Member[]>([]);
-    const fileRefs = React.useRef<Record<number, HTMLInputElement | null>>({});
-
-    // ================= LOAD QUESTIONS =================
-    React.useEffect(() => {
-        if (existingData?.medicalQuestions) {
-            const mapped = existingData.medicalQuestions.map((q: any) => ({
-                id: q.id,
-                question: q.question,
-                answer: q.answer === "Yes",
-                category: q.category || ""
-            }));
-            setQuestions(mapped);
-            emitOutput(mapped);
-        }
-    }, [existingData]);
-
-    const emitOutput = (qs: Question[]) => {
-        onChange({
-            medicalQuestions: qs.map(q => ({
-                id: q.id,
-                question: q.question,
-                answer: q.answer ? "Yes" : "No",
-                category: q.category
-            }))
-        });
-    };
-
-    const handleToggle = (id: number, checked?: boolean) => {
-        const updated = questions.map(q =>
-            q.id === id ? { ...q, answer: !!checked } : q
-        );
-        setQuestions(updated);
-        emitOutput(updated);
-    };
-
-    // ================= ADD ROW =================
-    const addRow = () => {
-        setMembers(prev => [...prev, {
-            id: Date.now(),
-            relation: "",
-            gender: "",
-            dob: "",
-            salary: "",
-            visa: "",
-            category: "",
-            marital: ""
-        }]);
-    };
-
-    // ================= SERIAL FIX =================
-    const handleSerialChange = (id: number, value?: string) => {
-
-        const serial = Number(value);
-        let list: any[] = [];
-
+const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, loading, error, onQuestionsChange }) => {
+    const handleToggle = (id: number, checked?: boolean) =>
+        onQuestionsChange(questions.map(q => q.id === id ? { ...q, answer: !!checked } : q));
+    const showDeclaredMembers = questions.some(q => q.answer) && members.length > 0;
+    const viewDocument = async (doc: MemberDocument) => {
+        const sourceUrl = doc.blobUrl || doc.url;
+        if (!sourceUrl) return;
+        const previewWindow = window.open("", "_blank");
         try {
-            const raw = (window as any)?.Xrm?.Page
-                ?.getAttribute("adnic_memberdata")
-                ?.getValue();
-
-            let parsed: any = raw;
-
-            if (typeof raw === "string") {
-                parsed = JSON.parse(raw);
-            }
-
-            // ✅ supports both {members:[]} and []
-            list = Array.isArray(parsed) ? parsed : parsed?.members || [];
-
+            const response = await fetch(sourceUrl);
+            if (!response.ok) throw new Error(`Unable to load document (${response.status})`);
+            const blob = await response.blob();
+            const previewUrl = URL.createObjectURL(blob);
+            if (previewWindow) previewWindow.location.href = previewUrl;
+            else window.open(previewUrl, "_blank");
+            window.setTimeout(() => URL.revokeObjectURL(previewUrl), 60000);
         } catch (e) {
-            console.error("Parse error:", e);
-            list = [];
+            previewWindow?.close();
+            console.error("Failed to preview medical document", e);
         }
-
-        setMembers(prev =>
-            prev.map(m => {
-
-                if (m.id !== id) return m;
-
-                if (!value) {
-                    return { ...m, serialNo: undefined, relation: "", gender: "", dob: "", salary: "", visa: "", category: "", marital: "", error: "" };
-                }
-
-                if (isNaN(serial) || serial <= 0) {
-                    return { ...m, error: "Enter valid serial number" };
-                }
-
-                if (serial > list.length) {
-                    return { ...m, error: "Serial number not found" };
-                }
-
-                const matched = list[serial - 1] || {};
-
-                return {
-                    ...m,
-                    serialNo: serial,
-
-                    // ✅ SAFE NESTED MAPPING
-                    relation: matched?.relation?.displayName || matched?.relation?.code || "",
-                    gender: matched?.gender || "",
-                    dob: matched?.dateOfBirth || "",
-                    salary: matched?.salaryType || "",
-                    visa: matched?.visaLocation || "",
-                    category: matched?.category || "",
-                    marital: matched?.maritalStatus || "",
-                    error: ""
-                };
-            })
-        );
     };
-
-    const updateComments = (id: number, val?: string) => {
-        setMembers(prev =>
-            prev.map(m => m.id === id ? { ...m, comments: val } : m)
-        );
-    };
-
-    const handleUpload = (id: number, file: File) => {
-        setMembers(prev =>
-            prev.map(m => m.id === id ? { ...m, fileName: file.name } : m)
-        );
-    };
-
-    const anyYes = questions.some(q => q.answer);
 
     return (
         <div className="medical-pcf">
-
-            <Stack tokens={{ childrenGap: 15 }}>
-
-                {questions.map(q => (
-                    <div key={q.id}>
-                        <div className="question-row">
-                            <Text>{q.question}</Text>
-                            <Toggle
-                                checked={q.answer}
-                                onChange={(e, c) => handleToggle(q.id, c)}
-                                onText="Yes"
-                                offText="No"
-                            />
-                        </div>
-                    </div>
-                ))}
-
-                {anyYes && (
-                    <div className="grid-wrapper">
-
-                        <div className="grid-header">
-                            <Text variant="mediumPlus">Medical Declared Members</Text>
-                            <PrimaryButton text="Add Row" onClick={addRow} />
-                        </div>
-
-                        <div className="row header grid">
-                            <div>Serial</div>
-                            <div>Relation</div>
-                            <div>Gender</div>
-                            <div>DOB</div>
-                            <div>Salary</div>
-                            <div>Visa</div>
-                            <div>Category</div>
-                            <div>Marital</div>
-                        </div>
-
-                        {members.map(m => (
-                            <div key={m.id} className="member-block">
-
-                                <div className="row grid">
-
-                                    <TextField
-                                        value={m.serialNo?.toString()}
-                                        errorMessage={m.error}
-                                        onChange={(e, val) => handleSerialChange(m.id, val)}
-                                    />
-
-                                    <div>{m.relation}</div>
-                                    <div>{m.gender}</div>
-                                    <div>{m.dob}</div>
-                                    <div>{m.salary}</div>
-                                    <div>{m.visa}</div>
-                                    <div>{m.category}</div>
-                                    <div>{m.marital}</div>
-
-                                </div>
-
-                                <div className="row-details">
-
-                                    <TextField
-                                        placeholder="Comments"
-                                        value={m.comments}
-                                        onChange={(e, val) => updateComments(m.id, val)}
-                                    />
-
-                                    <input
-                                        type="file"
-                                        style={{ display: "none" }}
-                                        ref={(el) => { fileRefs.current[m.id] = el; }}
-                                        onChange={(e) => {
-                                            const f = e.target.files?.[0];
-                                            if (f) handleUpload(m.id, f);
-                                        }}
-                                    />
-
-                                    <DefaultButton
-                                        text={m.fileName || "Upload"}
-                                        onClick={() => fileRefs.current[m.id]?.click()}
-                                    />
-
-                                </div>
+            {loading && <Spinner label="Loading medical details..." />}
+            {!!error && <MessageBar messageBarType={MessageBarType.error}>{error}</MessageBar>}
+            {!loading && !error && (
+                <Stack tokens={{ childrenGap: 15 }}>
+                    {questions.map(q => (
+                        <div className="question-row" key={q.id}>
+                            <div>
+                                <Text>{q.question}</Text>
+                                {!!q.category && <Text className="question-category">{q.category}</Text>}
                             </div>
-                        ))}
-
-                    </div>
-                )}
-
-            </Stack>
+                            <Toggle checked={q.answer} onChange={(_e, checked) => handleToggle(q.id, checked)}
+                                onText="Yes" offText="No" />
+                        </div>
+                    ))}
+                    {showDeclaredMembers && (
+                        <div className="grid-wrapper">
+                            <div className="grid-header"><Text variant="mediumPlus">Medical Declared Members</Text></div>
+                            <div className="row header grid">
+                                <div>Serial</div><div>Relation</div><div>Gender</div><div>DOB</div>
+                                <div>Salary</div><div>Visa</div><div>Category</div><div>Marital</div>
+                            </div>
+                            {members.map(m => {
+                                const memberDocuments = documents.filter(d => Number(d.entityNumber) === Number(m.id));
+                                return <React.Fragment key={m.id}>
+                                <div className="row grid member-block">
+                                    <div>{m.serialNo}</div><div>{m.relation}</div><div>{m.gender}</div><div>{m.dob}</div>
+                                    <div>{m.salary}</div><div>{m.visa}</div><div>{m.category}</div><div>{m.marital}</div>
+                                </div>
+                                {memberDocuments.length > 0 && <div className="member-documents">
+                                    {memberDocuments.map((doc, i) => <div className="member-document" key={`${m.id}-${i}`}>
+                                        <span>{doc.originalFilename || doc.fileName || "Document"}</span>
+                                        {!!doc.comment && <span className="document-comment">Remarks: {doc.comment}</span>}
+                                        <button type="button" onClick={() => void viewDocument(doc)}>View</button>
+                                    </div>)}
+                                </div>}
+                                </React.Fragment>;
+                            })}
+                        </div>
+                    )}
+                </Stack>
+            )}
         </div>
     );
 };
-
 export default MedicalControlUI;

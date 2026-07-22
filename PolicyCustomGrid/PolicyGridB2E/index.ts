@@ -39,6 +39,11 @@ export class CustomGridB2E
     this.context = context;
 
     this.container = container;
+    this.container.style.width = "100%";
+    this.container.style.minWidth = "0";
+    this.container.style.overflow = "visible";
+
+    context.mode.trackContainerResize(true);
 
     this.root = ReactDOM.createRoot(container);
 
@@ -269,7 +274,10 @@ export class CustomGridB2E
     );
   }
 
-  public updateView(): void {}
+  public updateView(context: ComponentFramework.Context<IInputs>): void {
+
+    this.context = context;
+  }
 
   public getOutputs(): Record<string, never> {
 

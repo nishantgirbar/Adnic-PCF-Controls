@@ -43,6 +43,9 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
 
         this.context = context;
         this.container = container;
+        // PCF styles are injected into the form page. Namespace this instance so
+        // generic grid/card rules cannot change controls or sections in other tabs.
+        this.container.classList.add("adnic-product-detail");
         this.productType = (context.parameters.adnic_name?.raw || "").toUpperCase();
 
         this.notifyOutputChanged = notifyOutputChanged;

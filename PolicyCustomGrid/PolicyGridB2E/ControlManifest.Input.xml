@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="PolicyCustomGrid"
            constructor="CustomGridB2E"
-           version="1.4.4"
+           version="2.1.0"
            display-name-key="PolicyGrid"
            description-key="Policy Grid Control"
            control-type="standard">

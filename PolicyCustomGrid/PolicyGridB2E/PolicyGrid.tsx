@@ -37,6 +37,16 @@ const statusTranslations: Record<string, string> = {
   DRAFT: "Draft"
 };
 
+const getXrm = (): any => {
+  const currentWindow = window as any;
+
+  if (currentWindow.Xrm) return currentWindow.Xrm;
+  if (currentWindow.parent?.Xrm) return currentWindow.parent.Xrm;
+  if (currentWindow.top?.Xrm) return currentWindow.top.Xrm;
+
+  throw new Error("This control must be opened inside Dynamics 365.");
+};
+
 export const PolicyGrid = ({
   data,
   pageSize,
@@ -217,10 +227,23 @@ const getStatusStyle = (status: string): React.CSSProperties => {
         return alert("Quote not found");
       }
 
-      (window.top as any).Xrm.Navigation.openForm({
+      const normalizedStatus = (item.status || "")
+        .toString()
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, "_");
+
+      const formId = normalizedStatus.includes("UW_REVIEW_IN_PROGRESS")
+        ? "3abb9f29-a347-f111-bec6-70a8a522d03b"
+        : normalizedStatus.includes("QUOTE_IN_PROGRESS")
+          ? "b80c4b15-3f4f-f111-bec6-7ced8dac4d08"
+          : "9a954027-cc2c-f111-8342-6045bd150384";
+
+      await getXrm().Navigation.openForm({
         entityName: "adnic_quote",
         entityId: id,
-        formId: ((item.status || "").toString().includes("QUOTE_IN_PROGRESS")) ? "b80c4b15-3f4f-f111-bec6-7ced8dac4d08" : "9a954027-cc2c-f111-8342-6045bd150384"
+        formId,
+        openInNewWindow: false
       });
       
 
@@ -750,9 +773,10 @@ const openQuoteViewDialog = async (item: any) => {
             isAvailable &&
            ((item.status || "")
               .toUpperCase()
-              .includes("GENERATED") || (item.status || "")
+              .includes("GENERATED") ||
+              (item.status || "")
               .toUpperCase()
-              .includes("DRAFT"));
+              .includes("REVIEW"));
 
           return (
 
@@ -844,6 +868,180 @@ const openQuoteViewDialog = async (item: any) => {
       }
   ];
 
+  const referenceColumns: IColumn[] = [
+    {
+      key: "quote",
+      name: "QUOTE NO",
+      fieldName: "quoteNumber",
+      minWidth: 130,
+      maxWidth: 170,
+      isResizable: true,
+      onRender: (item: any) => {
+        const isAvailable = item.isAvailableInCRM;
+        return (
+          <span
+            className={isAvailable ? "pcf-quote-link" : "pcf-quote-link-disabled"}
+            onClick={() => isAvailable && openMainQuoteForm(item)}
+          >
+            {item.quoteNumber}
+          </span>
+        );
+      }
+    },
+    {
+      key: "name",
+      name: "NAME",
+      fieldName: "companyName",
+      minWidth: 140,
+      maxWidth: 200,
+      isMultiline: true,
+      isResizable: true
+    },
+    {
+      key: "status",
+      name: "STATUS",
+      minWidth: 150,
+      maxWidth: 210,
+      isResizable: true,
+      onRender: (item: any) => (
+        <span style={getStatusStyle(item.status)}>
+          {getStatusText(item.status)}
+        </span>
+      )
+    },
+    {
+      key: "product",
+      name: "PRODUCT",
+      fieldName: "sourceOfBusiness",
+      minWidth: 85,
+      maxWidth: 120,
+      isResizable: true
+    },
+    {
+      key: "quoteDate",
+      name: "QUOTE DATE",
+      minWidth: 105,
+      maxWidth: 130,
+      isResizable: true,
+      onRender: (item: any) => {
+        const value = item.createdAt || item.updatedAt;
+        return value ? new Date(value).toLocaleDateString() : "-";
+      }
+    },
+    {
+      key: "uploadSignedQuote",
+      name: "UPLOAD SIGNED QUOTE",
+      minWidth: 130,
+      maxWidth: 150,
+      onRender: (item: any) => {
+        const canUpload = (item.status || "").toUpperCase().includes("GENERATED");
+        return (
+          <div className="pcf-icon-cell">
+            <IconButton
+              iconProps={{ iconName: "CloudUpload" }}
+              disabled={!canUpload || Boolean(loadingRow[item.id])}
+              title={canUpload ? "Upload signed quote" : "Available for generated quotes"}
+              ariaLabel="Upload signed quote"
+              onClick={() => {
+                if (canUpload && !loadingRow[item.id]) {
+                  fileRefs.current[item.id]?.click();
+                }
+              }}
+            />
+            <input
+              type="file"
+              ref={(element) => {
+                fileRefs.current[item.id] = element;
+              }}
+              className="pcf-hidden-file-input"
+              onChange={(event) => {
+                handleFileUpload(item.id, item, event);
+                event.currentTarget.value = "";
+              }}
+            />
+          </div>
+        );
+      }
+    },
+    {
+      key: "viewSignedQuote",
+      name: "VIEW SIGNED QUOTE",
+      minWidth: 125,
+      maxWidth: 145,
+      onRender: (item: any) => (
+        <div className="pcf-icon-cell">
+          <IconButton
+            iconProps={{ iconName: "TextDocument" }}
+            disabled={!item.isAvailableInCRM}
+            title={item.isAvailableInCRM ? "View signed quote" : "Quote not available in CRM"}
+            ariaLabel="View signed quote"
+            onClick={() => item.isAvailableInCRM && openQuoteViewDialog(item)}
+          />
+        </div>
+      )
+    },
+    {
+      key: "iterateQuotes",
+      name: "ITERATE QUOTES",
+      minWidth: 115,
+      maxWidth: 135,
+      onRender: (item: any) => {
+        const status = (item.status || "").toUpperCase();
+        const canIterate =
+          item.isAvailableInCRM &&
+          (status.includes("GENERATED") || status.includes("REVIEW"));
+        return (
+          <div className="pcf-icon-cell">
+            <IconButton
+              iconProps={{ iconName: "Refresh" }}
+              disabled={!canIterate}
+              title={canIterate ? "Iterate quote" : "Iteration is not available"}
+              ariaLabel="Iterate quote"
+              onClick={() => canIterate && openQuoteEdit(item)}
+            />
+          </div>
+        );
+      }
+    },
+    {
+      key: "actions",
+      name: "ACTIONS",
+      minWidth: 85,
+      maxWidth: 100,
+      onRender: (item: any) => {
+        const canProceed = item.status === "CUS_APPROVED";
+        return (
+          <div className="pcf-icon-cell">
+            <IconButton
+              iconProps={{ iconName: "ChevronRightMed" }}
+              disabled={!canProceed}
+              title={canProceed ? "Proceed" : "Available after customer approval"}
+              ariaLabel="Proceed"
+              onClick={() => canProceed && navigateToPolicy(item)}
+            />
+          </div>
+        );
+      }
+    },
+    {
+      key: "activityLog",
+      name: "ACTIVITY LOG",
+      minWidth: 95,
+      maxWidth: 115,
+      onRender: (item: any) => (
+        <div className="pcf-icon-cell">
+          <IconButton
+            iconProps={{ iconName: "History" }}
+            disabled={!item.isAvailableInCRM}
+            title={item.isAvailableInCRM ? "Open quote activity" : "Quote not available in CRM"}
+            ariaLabel="Activity log"
+            onClick={() => item.isAvailableInCRM && openMainQuoteForm(item)}
+          />
+        </div>
+      )
+    }
+  ];
+
   const getSearchKey = (query: string, status: string) =>
     `${(query || "").trim()}|${status || ""}`;
 
@@ -869,7 +1067,7 @@ const openQuoteViewDialog = async (item: any) => {
 
   return (
 
-    <Stack style={{ height: "100%" }}>
+    <Stack className="pcf-policy-grid">
 
       {/* 🔥 SEARCH */}
 
@@ -910,9 +1108,8 @@ const openQuoteViewDialog = async (item: any) => {
       {/* 🔥 GRID */}
 
       <Stack
+        className="pcf-grid-region"
         style={{
-          flexGrow: 1,
-          overflowY: "auto",
           position: "relative"
         }}
       >
@@ -942,23 +1139,23 @@ const openQuoteViewDialog = async (item: any) => {
           </div>
         )}
 
-        <DetailsList
-          className="pcf-crm-grid"
-          items={items}
-          columns={columns}
-          getKey={(item) => String(item.key)}
-          selectionMode={SelectionMode.none}
-          layoutMode={DetailsListLayoutMode.justified}
-          constrainMode={ConstrainMode.unconstrained}
-          compact={true}
-          styles={{
-            root: {
-              border: "1px solid #d2d2d2",
-              borderRadius: 4,
-              background: "#fff"
-            }
-          }}
-          onRenderRow={(props) => {
+        <div className="pcf-crm-grid">
+          <DetailsList
+            items={items}
+            columns={referenceColumns}
+            getKey={(item) => String(item.key)}
+            selectionMode={SelectionMode.none}
+            layoutMode={DetailsListLayoutMode.justified}
+            constrainMode={ConstrainMode.unconstrained}
+            compact={true}
+            styles={{
+              root: {
+                border: "1px solid #d2d2d2",
+                borderRadius: 4,
+                background: "#fff"
+              }
+            }}
+            onRenderRow={(props) => {
 
             if (!props) return null;
 
@@ -1032,13 +1229,15 @@ const openQuoteViewDialog = async (item: any) => {
             }
 
             return <DetailsRow {...props} />;
-          }}
-        />
+            }}
+          />
+        </div>
       </Stack>
 
       {/* 🔥 FOOTER */}
 
       <Stack
+        className="pcf-grid-footer"
         horizontal
         horizontalAlign="space-between"
         style={{ padding: 10 }}

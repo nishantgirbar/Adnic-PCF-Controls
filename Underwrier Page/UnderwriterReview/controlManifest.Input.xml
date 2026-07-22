@@ -4,7 +4,7 @@
   <control
     namespace="UWDetails"
     constructor="QuoteDetailsPCF"
-    version="2.3.7"
+    version="2.4.0"
     display-name-key="UW detail"
     description-key="UW Detail desc"
     control-type="standard">
@@ -38,7 +38,7 @@
       <css path="styles.css" order="2" />
       <resx path="strings/QuoteDetailsPCF.1033.resx" version="1.0.0" />
     </resources>
-
+    
   <feature-usage>
     <uses-feature
       name="WebAPI"

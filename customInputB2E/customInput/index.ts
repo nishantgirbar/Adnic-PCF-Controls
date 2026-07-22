@@ -9,7 +9,45 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
     private isDisabled: boolean = false;
     private maxLength?: number;
 
-    private value: string = "";
+    private value: string | Date | undefined = "";
+    private isDateField = false;
+    private isDateTimeField = false;
+
+    private twoDigits(value: number): string {
+        return value < 10 ? `0${value}` : String(value);
+    }
+
+    private formatDateForInput(value: string | Date | null | undefined): string {
+        if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
+            return typeof value === "string" ? value : "";
+        }
+
+        const year = value.getFullYear();
+        const month = this.twoDigits(value.getMonth() + 1);
+        const day = this.twoDigits(value.getDate());
+        const date = `${year}-${month}-${day}`;
+
+        if (!this.isDateTimeField) {
+            return date;
+        }
+
+        const hours = this.twoDigits(value.getHours());
+        const minutes = this.twoDigits(value.getMinutes());
+        return `${date}T${hours}:${minutes}`;
+    }
+
+    private parseDateInput(value: string): Date | undefined {
+        if (!value) {
+            return undefined;
+        }
+
+        if (this.isDateTimeField) {
+            return new Date(value);
+        }
+
+        const parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
 
     private onInputChange = (e: Event): void => {
         const target = e.target as HTMLInputElement;
@@ -21,7 +59,9 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
             target.value = target.value.slice(0, this.maxLength);
         }
 
-        this.value = target.value;
+        this.value = this.isDateField
+            ? this.parseDateInput(target.value)
+            : target.value;
 
         this.notifyOutputChanged();
     };
@@ -47,7 +87,7 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
         this.container.appendChild(this.inputElement);
 
         this.value = context.parameters.value.raw || "";
-        this.inputElement.value = this.value;
+        this.inputElement.value = this.formatDateForInput(context.parameters.value.raw);
     }
 
     public updateView(
@@ -57,17 +97,22 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
         const configuredType =
             (context.parameters.inputType.raw || "text").toLowerCase();
 
+        const mappedFieldType = context.parameters.value.type.toLowerCase();
+        this.isDateTimeField = mappedFieldType === "datetime.dateandtime";
+        this.isDateField =
+            mappedFieldType === "datetime.dateonly" || this.isDateTimeField;
+
         const supportedTypes = [
             "text",
             "number",
-            "date",
             "email",
             "tel",
             "password"
         ];
 
-        this.inputElement.type =
-            supportedTypes.indexOf(configuredType) > -1
+        this.inputElement.type = this.isDateField
+            ? (this.isDateTimeField ? "datetime-local" : "date")
+            : supportedTypes.indexOf(configuredType) > -1
                 ? configuredType
                 : "text";
 
@@ -86,7 +131,8 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
             this.inputElement.maxLength = this.maxLength;
         }
 
-        const crmValue = context.parameters.value.raw ?? "";
+        const rawCrmValue = context.parameters.value.raw ?? "";
+        const crmValue = this.formatDateForInput(rawCrmValue);
 
     // Disable when CRM field/form is disabled
         const isDisabled =
@@ -102,7 +148,7 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
             this.inputElement.value !== crmValue
         ) {
             this.inputElement.value = crmValue;
-            this.value = crmValue;
+            this.value = rawCrmValue;
         }
     }
 

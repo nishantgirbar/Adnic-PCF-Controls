@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
     "jsx": "react",
-    "moduleResolution": "node",
+    "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "types": ["powerapps-component-framework"]
   }
 }

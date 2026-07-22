@@ -1025,7 +1025,11 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                 <div class="section">
 
                     <div class="section-title blue">
-                       ${data.productType === "EBP" ? " Plan Type : EBP/Enhanced EBP Plan " : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
+                       ${data.productType === "EBP"
+                           ? " Plan Type : EBP/Enhanced EBP Plan "
+                           : data.productType === "SME" && String(plan.category).toUpperCase().includes("EBP")
+                               ? "EBP Plan"
+                               : "Enhanced Plan"} - ${this.getPlanDisplayLabel(plan.category)} 
                     </div>
 
                     <div class="plan-grid">

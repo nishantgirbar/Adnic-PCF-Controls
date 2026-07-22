@@ -1,5 +1,5 @@
 {
-  "name": "crm-mda-pcf",
+ "name": "policy-medical-declaration-pcf",
   "version": "1.0.0",
   "scripts": {
     "build": "pcf-scripts build",

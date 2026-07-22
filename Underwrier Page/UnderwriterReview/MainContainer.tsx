@@ -108,7 +108,7 @@ export const MainContainer = ({
 
             fetchMemberDocuments(
                 documentApiUrl,
-                quoteId
+                quoteNumber
             )
 
         ])
@@ -296,6 +296,8 @@ export const MainContainer = ({
 
     const medicalDocuments = documents.filter(
         (doc: any) =>
+            doc?.documentType ===
+                "MEDICAL_DECLARATION" &&
             Number(doc?.entityNumber) ===
             Number(
                 getMemberKey(
@@ -306,6 +308,8 @@ export const MainContainer = ({
 
     const overAgeDocuments = documents.filter(
         (doc: any) =>
+            doc?.documentType ===
+                "OVERAGE_DOCUMENT" &&
             Number(doc?.entityNumber) ===
             Number(
                 getMemberKey(

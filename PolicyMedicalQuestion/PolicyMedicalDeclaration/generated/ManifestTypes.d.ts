@@ -5,6 +5,8 @@
 // Define IInputs and IOutputs Type. They should match with ControlManifest.
 export interface IInputs {
     medicalJson: ComponentFramework.PropertyTypes.StringProperty;
+    memberData: ComponentFramework.PropertyTypes.StringProperty;
+    quoteNumber: ComponentFramework.PropertyTypes.StringProperty;
 }
 export interface IOutputs {
     medicalJson?: string;

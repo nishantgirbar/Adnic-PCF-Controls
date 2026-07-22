@@ -1,3 +1,10 @@
+.pcf-policy-grid {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+}
+
 .pcf-search-container {
     display: flex;
     align-items: center;
@@ -21,13 +28,27 @@
 }
 
 .pcf-crm-grid {
+    display: block;
     width: 100%;
     min-width: 0;
-    overflow-x: auto;
+    max-width: 100%;
+    height: 410px;
+    max-height: 410px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
 }
 
 .pcf-crm-grid .ms-DetailsList {
-    min-width: 980px;
+    width: max-content;
+    min-width: max(100%, 980px);
+}
+
+.pcf-grid-region {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .pcf-crm-grid .ms-DetailsHeader-cellName,
@@ -41,6 +62,54 @@
     align-items: center;
 }
 
+.pcf-crm-grid .ms-DetailsHeader {
+    background: #eef1f4;
+}
+
+.pcf-crm-grid .ms-DetailsHeader-cellTitle {
+    justify-content: center;
+}
+
+.pcf-crm-grid .ms-DetailsHeader-cellName {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25px;
+    text-align: center;
+}
+
+.pcf-icon-cell {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.pcf-icon-cell .ms-Button {
+    border-radius: 50%;
+}
+
+.pcf-hidden-file-input {
+    display: none;
+}
+
+.pcf-quote-link {
+    color: #0f6cbd;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.pcf-quote-link-disabled {
+    color: #a19f9d;
+    cursor: default;
+    opacity: 0.6;
+}
+
+.pcf-grid-footer {
+    box-sizing: border-box;
+    gap: 10px;
+}
+
 @media (max-width: 640px) {
     .pcf-search-container {
         align-items: stretch;
@@ -52,6 +121,30 @@
         flex-basis: 100%;
         max-width: none;
         min-width: 0;
+    }
+
+    .pcf-search-container > .ms-Button {
+        width: 100%;
+    }
+
+    .pcf-grid-footer {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pcf-grid-footer > * {
+        flex: 1 1 auto;
+    }
+
+    .pcf-grid-footer > .ms-Stack {
+        order: -1;
+        flex-basis: 100%;
+        justify-content: center;
+    }
+
+    .pcf-crm-grid {
+        height: 410px;
+        max-height: 410px;
     }
 }
 

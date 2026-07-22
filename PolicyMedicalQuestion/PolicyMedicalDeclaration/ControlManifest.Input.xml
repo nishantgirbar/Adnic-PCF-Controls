@@ -2,11 +2,11 @@
 <manifest>
 
   <control
-    namespace="B2EControl"
-    constructor="PolicyMedicalControl"
-    version="1.0.0"
-    display-name-key="Policy MedicalControl Display"
-    description-key="Policy MedicalControl Desc"
+    namespace="adnicPolicyControls"
+    constructor="PolicyMedicalQuestionControl"
+    version="1.2.1"
+    display-name-key="Policy MedicalQuestionControl Display"
+    description-key="Policy MedicalQuestionControl Desc"
     control-type="standard">
 
     <property
@@ -17,10 +17,30 @@
       usage="bound"
       required="false" />
 
+    <property
+      name="memberData"
+      display-name-key="MemberData_Display"
+      description-key="MemberData_Desc"
+      of-type="Multiple"
+      usage="input"
+      required="false" />
+
+    <property
+      name="quoteNumber"
+      display-name-key="QuoteNumber_Display"
+      description-key="Quote number used to retrieve member documents"
+      of-type="SingleLine.Text"
+      usage="input"
+      required="false" />
+
     <resources>
       <code path="index.ts" order="1"/>
       <resx path="strings/MedicalControl.1033.resx" version="1.0.0" />
     </resources>
+
+    <feature-usage>
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
 
   </control>
 
