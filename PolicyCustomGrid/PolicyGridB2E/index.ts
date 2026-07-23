@@ -25,8 +25,6 @@ export class CustomGridB2E
 
   private quoteStatus: string = "";
 
-  // 🔥 ENV BASE URL
-
   private apiBaseUrl: string = "";
 
   public init(

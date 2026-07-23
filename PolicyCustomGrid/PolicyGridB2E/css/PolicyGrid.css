@@ -148,8 +148,6 @@
     }
 }
 
-/* 🔥 Hide OOB Dynamics Search */
-
 div[data-id="data-set-quickFind-container"] {
     display: none !important;
 }

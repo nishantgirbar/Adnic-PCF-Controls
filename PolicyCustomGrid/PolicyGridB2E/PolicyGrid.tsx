@@ -698,6 +698,8 @@ const openQuoteViewDialog = async (item: any) => {
       maxWidth: 190,
       isResizable: true,
 
+
+      
       onRender: (item: any) =>
 
         item.isUpload
