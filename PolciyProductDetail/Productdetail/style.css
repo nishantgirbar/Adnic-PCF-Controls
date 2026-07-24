@@ -55,17 +55,80 @@
 .row-odd { background: #fafafa; }
 .readonly-grid { opacity: .8; }
 
-.premium-footer {
-    display: grid;
-    margin-top: 12px;
-    border-top: 1px solid #d9d9d9;
-    background: #fafafa;
+.premium-summary-section {
+    margin-top: 20px;
+    border: 1px solid #edebe9;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
-.premium-cell { padding: 12px; border-left: 1px solid #e5e5e5; }
-.premium-title { margin-bottom: 4px; color: #1f3563; font-size: 12px; font-weight: 600; }
-.premium-amount { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; color: #000; font-size: 18px; font-weight: 700; }
-.premium-members { color: #666; font-size: 12px; }
+.premium-summary-title {
+    padding: 12px 16px;
+    background: #1f4e79;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.premium-title-symbol {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    vertical-align: -6px;
+    filter: brightness(0) invert(1);
+}
+
+.premium-summary-table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    background: #f3f2f1;
+}
+
+.premium-summary-header,
+.premium-summary-row {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.2fr) repeat(var(--category-count, 1), minmax(128px, 2fr));
+    align-items: center;
+    min-width: fit-content;
+}
+
+.premium-summary-header {
+    background: #1f4e79;
+    color: #fff;
+    font-weight: 700;
+}
+
+.premium-summary-header > div,
+.premium-summary-row > div {
+    min-width: 0;
+    padding: 12px 14px;
+    border-bottom: 1px solid #edebe9;
+    overflow-wrap: anywhere;
+}
+
+.premium-summary-row:nth-child(odd) { background: #faf9f8; }
+.premium-summary-label { color: #323130; font-weight: 600; }
+.premium-summary-total,
+.premium-summary-grand-total {
+    display: inline-flex;
+    align-items: center;
+    color: #d13438;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.premium-summary-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    min-width: max-content;
+    padding: 16px;
+    background: #f3f2f1;
+}
+
+.premium-summary-grand-total { font-size: 18px; }
 .dirham-icon { width: 16px; height: 16px; }
 .premium-tob { display: flex; align-items: center; gap: 2px; margin-top: 4px; }
 .tob-selected-plan { color: #444; font-size: 12px; word-break: break-word; }
@@ -73,4 +136,8 @@
 
 @media (max-width: 800px) {
     .policy-header-grid { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+    .premium-summary-header,
+    .premium-summary-row {
+        grid-template-columns: minmax(200px, 1fr) repeat(var(--category-count, 1), minmax(112px, 2fr));
+    }
 }

@@ -53,7 +53,7 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                 {!!q.category && <Text className="question-category">{q.category}</Text>}
                             </div>
                             <Toggle checked={q.answer} onChange={(_e, checked) => handleToggle(q.id, checked)}
-                                onText="Yes" offText="No" />
+                                onText="Yes" offText="No" disabled />
                         </div>
                     ))}
                     {showDeclaredMembers && (

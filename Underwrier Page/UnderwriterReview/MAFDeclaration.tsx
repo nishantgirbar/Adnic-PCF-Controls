@@ -1,4 +1,5 @@
 import * as React from "react";
+import { roundToTwoDecimals } from "./numberUtils";
 
 const showDialog = async (
     title: string,
@@ -148,7 +149,7 @@ export const MAFDeclaration = ({
             setOverallSaving(true);
 
             const enteredPercentage =
-                Number(
+                roundToTwoDecimals(
                     overallInputRef.current?.value ??
                     overallValue
                 );
@@ -182,15 +183,19 @@ export const MAFDeclaration = ({
             }
 
             const resultingPolicyLoading =
-                appliedPolicyLoading + percentage;
+                roundToTwoDecimals(
+                    appliedPolicyLoading + percentage
+                );
 
             if (overallLoadingType === "discount") {
 
                 if (resultingPolicyLoading < -50) {
 
-                    const remainingDiscount = Math.max(
-                        0,
-                        50 + appliedPolicyLoading
+                    const remainingDiscount = roundToTwoDecimals(
+                        Math.max(
+                            0,
+                            50 + appliedPolicyLoading
+                        )
                     );
 
                     await showDialog(
@@ -205,8 +210,10 @@ export const MAFDeclaration = ({
                     Number(totalPremium);
 
                 const premiumAfterDiscount =
-                    currentPremium *
-                    (1 - enteredPercentage / 100);
+                    roundToTwoDecimals(
+                        currentPremium *
+                        (1 - enteredPercentage / 100)
+                    );
 
                 if (
                     !Number.isFinite(currentPremium) ||
@@ -375,7 +382,7 @@ export const MAFDeclaration = ({
             );
 
             const percentage =
-                Number(
+                roundToTwoDecimals(
                     categoryInputRefs.current[
                         categoryCode
                     ]?.value ??
@@ -669,6 +676,7 @@ export const MAFDeclaration = ({
                                 ref={overallInputRef}
                                 type="number"
                                 min="0"
+                                step="0.01"
                                 max={
                                     overallLoadingType === "discount"
                                         ? 50
@@ -784,6 +792,7 @@ export const MAFDeclaration = ({
                                         }}
                                         type="number"
                                         min="0"
+                                        step="0.01"
                                         max="999"
                                         value={
                                             categoryValues[

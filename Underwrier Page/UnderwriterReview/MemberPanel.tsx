@@ -1,4 +1,8 @@
 import * as React from "react";
+import {
+    formatDecimalValue,
+    roundToTwoDecimals
+} from "./numberUtils";
 
 export const MemberPanel = ({ member }: any) => {
 
@@ -8,12 +12,19 @@ export const MemberPanel = ({ member }: any) => {
         <div className="panel">
 
             <h3>{member.relation}</h3>
-            <div>Premium: {member.premium}</div>
+            <div>
+                Premium: {formatDecimalValue(member.premium)}
+            </div>
 
             <input
                 type="number"
+                step="0.01"
                 value={loading}
-                onChange={(e) => setLoading(Number(e.target.value))}
+                onChange={(e) =>
+                    setLoading(
+                        roundToTwoDecimals(e.target.value)
+                    )
+                }
             />
 
             <button>Apply</button>

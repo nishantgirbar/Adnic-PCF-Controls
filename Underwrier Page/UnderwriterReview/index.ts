@@ -8,6 +8,7 @@ import {
 } from "react-dom/client";
 
 import { MainContainer } from "./MainContainer";
+import { roundToTwoDecimals } from "./numberUtils";
 
 import "./styles.css";
 
@@ -62,7 +63,7 @@ implements ComponentFramework.StandardControl<IInputs, IOutputs> {
         pricingResponse: any
     ): Promise<void> => {
 
-        const totalPremium = Number(
+        const totalPremium = roundToTwoDecimals(
             pricingResponse?.totalFinalPremium ??
             pricingResponse?.currentTotalPremium
         );

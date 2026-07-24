@@ -114,7 +114,7 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
         });
 
         container.appendChild(grid);
-        this.renderPremiumFooter(container, categories);
+        this.renderPremiumSummary(container, categories);
     }
 
     private buildRows(categories: any[]): string[] {
@@ -150,37 +150,102 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
         return value === undefined || value === null || value === "" ? "-" : String(value);
     }
 
-    private renderPremiumFooter(container: HTMLDivElement, categories: any[]): void {
+    private renderPremiumSummary(container: HTMLDivElement, categories: any[]): void {
         if (!this.categoryPremiums.length) return;
 
-        const footer = document.createElement("div");
-        footer.className = "premium-footer";
-        footer.style.gridTemplateColumns = `40px 220px repeat(${categories.length}, minmax(160px, 1fr))`;
-        footer.appendChild(document.createElement("div"));
-        footer.appendChild(document.createElement("div"));
-
-        categories.forEach((category) => {
+        const items = categories.map((category) => {
             const code = this.categoryCode(category);
             const premium = this.categoryPremiums.find((item: any) => {
                 const premiumCode = String(item?.categoryName || item?.categoryCode || "")
                     .replace(/^CAT-/i, "").replace(/^Category\s+/i, "");
-                return premiumCode === code;
+                return premiumCode.toUpperCase() === code.toUpperCase();
             });
-            const cell = document.createElement("div");
-            cell.className = "premium-cell";
-            if (premium) {
-                const amount = Number(premium.currentPremium || 0).toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-                cell.innerHTML = `<div class="premium-title">Category ${this.escape(code)} Premiums</div>`
-                    + `<div class="premium-amount"><img class="dirham-icon" src="${this.symbolUrl}" alt="AED" /> ${amount}</div>`
-                    + `<div class="premium-members">Members ${Number(premium.memberCount || 0)}</div>`;
-                this.renderTobLink(cell, category);
-            }
-            footer.appendChild(cell);
+            const selection = category?.productSelection || category;
+            return {
+                code,
+                memberCount: Number(premium?.memberCount || 0),
+                network: selection?.networkTypeName || selection?.network?.name ||
+                    selection?.plan || selection?.networkType || "-",
+                premium: Number(premium?.currentPremium || 0)
+            };
         });
-        container.appendChild(footer);
+
+        const section = document.createElement("div");
+        section.className = "premium-summary-section";
+
+        const title = document.createElement("div");
+        title.className = "premium-summary-title";
+        title.appendChild(document.createTextNode("Premium Calculations (in "));
+        title.appendChild(this.currencySymbol("premium-title-symbol"));
+        title.appendChild(document.createTextNode(")"));
+        section.appendChild(title);
+
+        const table = document.createElement("div");
+        table.className = "premium-summary-table";
+        table.style.setProperty("--category-count", String(Math.max(items.length, 1)));
+
+        const header = document.createElement("div");
+        header.className = "premium-summary-header";
+        header.appendChild(this.element("div", "", "#"));
+        items.forEach((item) =>
+            header.appendChild(this.element("div", "", `Category ${item.code}`)));
+        table.appendChild(header);
+
+        const appendRow = (label: string, values: Array<string | HTMLElement>, className = ""): void => {
+            const row = document.createElement("div");
+            row.className = "premium-summary-row";
+            row.appendChild(this.element("div", "premium-summary-label", label));
+            values.forEach((value) => {
+                const cell = document.createElement("div");
+                cell.className = className;
+                if (value instanceof HTMLElement) cell.appendChild(value);
+                else cell.innerText = value;
+                row.appendChild(cell);
+            });
+            table.appendChild(row);
+        };
+
+        appendRow("No. Of Members", items.map((item) => String(item.memberCount)));
+        appendRow("Network", items.map((item) => item.network));
+        appendRow(
+            "Total Premium",
+            items.map((item) => this.currencyValue(item.premium)),
+            "premium-summary-total"
+        );
+
+        const rawGrandTotal = this.updatedData?.currentTotalPremium;
+        const suppliedGrandTotal = Number(rawGrandTotal);
+        const grandTotal = rawGrandTotal !== undefined && rawGrandTotal !== null &&
+            rawGrandTotal !== "" && Number.isFinite(suppliedGrandTotal)
+            ? suppliedGrandTotal
+            : items.reduce((sum, item) => sum + item.premium, 0);
+        const footer = document.createElement("div");
+        footer.className = "premium-summary-footer";
+        footer.appendChild(this.element("div", "premium-summary-label", "Grand Total"));
+        footer.appendChild(this.currencyValue(grandTotal, "premium-summary-grand-total"));
+        table.appendChild(footer);
+
+        section.appendChild(table);
+        container.appendChild(section);
+    }
+
+    private currencySymbol(className: string): HTMLImageElement {
+        const symbol = document.createElement("img");
+        symbol.className = className;
+        symbol.src = this.symbolUrl;
+        symbol.alt = "AED";
+        return symbol;
+    }
+
+    private currencyValue(amount: number, className = ""): HTMLSpanElement {
+        const value = document.createElement("span");
+        value.className = className;
+        value.appendChild(this.currencySymbol("dirham-icon"));
+        value.appendChild(document.createTextNode(` ${amount.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`));
+        return value;
     }
 
     private renderTobLink(cell: HTMLDivElement, category: any): void {

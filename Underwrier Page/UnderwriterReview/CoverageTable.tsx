@@ -3,6 +3,7 @@ import {
     buildJsonProductDetailMap,
     isEbpProduct
 } from "./EbpProductDetails";
+import { formatDecimalValue } from "./numberUtils";
 
 export const CoverageTable = ({
     categories,
@@ -285,8 +286,12 @@ export const CoverageTable = ({
                     <div className="product-info-value">
 
                         {
-                            quoteInfo?.commission + "%" ||
-                            "10%"
+                            quoteInfo?.commission !== null &&
+                            quoteInfo?.commission !== undefined
+                                ? `${formatDecimalValue(
+                                    quoteInfo.commission
+                                )}%`
+                                : "10%"
                         }
 
                     </div>
@@ -378,9 +383,11 @@ export const CoverageTable = ({
                                             <td key={c}>
 
                                                 {
-                                                    detailMap[
-                                                        name
-                                                    ][c] ?? "-"
+                                                    formatDecimalValue(
+                                                        detailMap[
+                                                            name
+                                                        ][c] ?? "-"
+                                                    )
                                                 }
 
                                             </td>

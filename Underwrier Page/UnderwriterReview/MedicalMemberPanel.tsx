@@ -1,4 +1,5 @@
 import * as React from "react";
+import { roundToTwoDecimals } from "./numberUtils";
 
 const showDialog = async (
     title: string,
@@ -57,7 +58,7 @@ export const MedicalMemberPanel = ({
         member?.memberId;
 
     const currentLoading =
-        Number(
+        roundToTwoDecimals(
             savedLoading ?? existingLoading
         );
 
@@ -119,7 +120,7 @@ export const MedicalMemberPanel = ({
             setIsSaving(true);
 
             const amount =
-                Number(
+                roundToTwoDecimals(
                     inputRef.current?.value ??
                     inputValue
                 );
@@ -435,6 +436,7 @@ export const MedicalMemberPanel = ({
                         ref={inputRef}
                         type="number"
                         min="0"
+                        step="0.01"
                         className="loading-input"
                         placeholder="100"
                         value={inputValue}
