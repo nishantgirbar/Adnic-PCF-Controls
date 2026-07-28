@@ -1,5 +1,6 @@
 import * as React from "react";
 import { roundToTwoDecimals } from "./numberUtils";
+import { getApiErrorMessage } from "./apiErrorUtils";
 
 const showDialog = async (
     title: string,
@@ -237,7 +238,10 @@ export const MedicalMemberPanel = ({
             if (!response.ok) {
 
                 throw new Error(
-                    "Failed to apply loading"
+                    getApiErrorMessage(
+                        result,
+                        "Failed to apply loading"
+                    )
                 );
             }
 
@@ -269,7 +273,9 @@ export const MedicalMemberPanel = ({
 
             await showDialog(
                 "Error",
-                 "Failed to apply loading"
+                error instanceof Error
+                    ? error.message
+                    : "Failed to apply loading"
             );
 
 
@@ -493,7 +499,7 @@ export const MedicalMemberPanel = ({
                     ) => (
 
                         <div>
-                            <div className="doc-name">
+                            <div className="document-remarks">
                                 Remarks :  { doc?.comment }
                             </div>
 

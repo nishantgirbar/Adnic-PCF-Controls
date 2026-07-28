@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control namespace="ADNIC.Controls"
+           constructor="AuditTrailControl"
+           version="1.0.3"
+           display-name-key="Audit Trail"
+           description-key="Displays quote audit activities loaded from the Audit Trail API."
+           control-type="standard">
+    <property name="quoteId"
+              display-name-key="Quote ID"
+              description-key="Dataverse column containing the numeric quote ID. This bound property also hosts the control on a model-driven form."
+              of-type="SingleLine.Text"
+              usage="bound"
+              required="true" />
+    <property name="bearerToken"
+              display-name-key="Bearer Token"
+              description-key="JWT used in the Authorization header. The Bearer prefix is optional."
+              of-type="Multiple"
+              usage="input"
+              required="false" />
+    <property name="refreshTrigger"
+              display-name-key="Refresh Trigger"
+              description-key="Change this value to reload audit events."
+              of-type="SingleLine.Text"
+              usage="input"
+              required="false" />
+    <feature-usage>
+      <uses-feature name="WebAPI" required="true" />
+    </feature-usage>
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="css/AuditTrailControl.css" order="1" />
+    </resources>
+  </control>
+</manifest>

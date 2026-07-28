@@ -1,5 +1,6 @@
 import * as React from "react";
 import { roundToTwoDecimals } from "./numberUtils";
+import { getApiErrorMessage } from "./apiErrorUtils";
 
 const showDialog = async (
     title: string,
@@ -20,40 +21,6 @@ const showDialog = async (
     }
 
     alert(message);
-};
-
-const getApiErrorMessage = (
-    result: any,
-    fallbackMessage: string
-) => {
-    const message = result?.message;
-
-    if (typeof message !== "string" || !message.trim()) {
-        return fallbackMessage;
-    }
-
-    // The rating API wraps its useful error in a JSON string inside `message`.
-    const jsonStart = message.indexOf("{");
-    const jsonEnd = message.lastIndexOf("}");
-
-    if (jsonStart >= 0 && jsonEnd > jsonStart) {
-        try {
-            const nestedError = JSON.parse(
-                message.slice(jsonStart, jsonEnd + 1)
-            );
-
-            if (
-                typeof nestedError?.message === "string" &&
-                nestedError.message.trim()
-            ) {
-                return nestedError.message;
-            }
-        } catch {
-            // Fall back to the API's outer message when it is not valid JSON.
-        }
-    }
-
-    return message;
 };
 
 export const MAFDeclaration = ({
@@ -500,7 +467,10 @@ export const MAFDeclaration = ({
             if (!response.ok) {
 
                 throw new Error(
-                    "Failed to apply category loading"
+                    getApiErrorMessage(
+                        result,
+                        "Failed to apply category loading"
+                    )
                 );
             }
 
@@ -531,7 +501,9 @@ export const MAFDeclaration = ({
             console.error(error);
             await showDialog(
                 "Error",
-                 "Failed to apply policy loading"
+                error instanceof Error
+                    ? error.message
+                    : "Failed to apply category loading"
             );
 
         } finally {

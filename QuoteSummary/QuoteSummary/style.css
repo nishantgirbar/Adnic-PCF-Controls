@@ -156,14 +156,15 @@
     font-weight: 700;
 }
 
-.currency-symbol {
+.quote-wrapper .currency-symbol {
+    display: inline-block;
     width: 14px;
     height: 14px;
     object-fit: contain;
     vertical-align: -2px;
 }
 
-.premium-calculations-title .currency-symbol {
+.quote-wrapper .premium-calculations-title .currency-symbol {
     width: 22px;
     height: 22px;
     vertical-align: -6px;

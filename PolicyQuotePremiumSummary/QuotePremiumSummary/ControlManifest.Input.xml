@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <control namespace="AdnicControls"
+           constructor="PolicyQuotePremiumSummary"
+           version="1.0.0"
+           display-name-key="Policy Quote Premium Summary"
+           description-key="Displays premium calculations from a Quote API response supplied as JSON"
+           control-type="standard">
+           
+    <property name="quoteApiResponse"
+              display-name-key="Quote API Response"
+              description-key="Complete Get Quote API response as JSON"
+              of-type="Multiple"
+              usage="bound"
+              required="true" />
+    <property name="showPlanDetails"
+              display-name-key="Show Plan Details"
+              description-key="Show or hide the detailed plan sections"
+              of-type="TwoOptions"
+              usage="input"
+              required="false"
+              default-value="false" />
+    <resources>
+      <code path="index.ts" order="1" />
+      <css path="style.css" order="1" />
+    </resources>
+  </control>
+</manifest>

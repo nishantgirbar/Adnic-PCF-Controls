@@ -472,7 +472,7 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
     this.context = context;
     this.enableUpload = context.parameters.enableUpload.raw ?? false;
     this.productType = (context.parameters.adnic_name?.raw || "").toUpperCase();
-    const quoteNumber = String(context.parameters.quoteNumber?.raw || "");
+    const quoteNumber = this.getQuoteNumber();
     if (quoteNumber !== this.lastQuoteNumber) {
       this.lastQuoteNumber = quoteNumber;
       void this.loadMemberDocuments();
@@ -540,7 +540,10 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
         ? member.documents
         : [];
     const apiDocuments = this.memberDocuments
-      .filter(document => Number(document?.entityNumber) === Number(member?.id ?? member?.memberId))
+      .filter(document =>
+        document?.documentType === "OVERAGE_DOCUMENT" &&
+        Number(document?.entityNumber) === Number(member?.id ?? member?.memberId)
+      )
       .map(document => ({
         name: String(document?.originalFilename || document?.fileName || "Document"),
         mimeType: String(document?.mimeType || "application/pdf"),
@@ -590,14 +593,39 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
     return String(values.entities[0]?.value || "");
   }
 
+  private getQuoteNumber(): string {
+    const boundQuoteNumber = String(this.context.parameters.quoteNumber?.raw || "").trim();
+    if (boundQuoteNumber) return boundQuoteNumber;
+
+    try {
+      const formContext = (window as any).Xrm?.Page;
+      return String(
+        formContext?.getAttribute("adnic_quotenumber")?.getValue() ||
+        formContext?.getAttribute("adnic_name")?.getValue() ||
+        ""
+      ).trim();
+    } catch (error) {
+      console.warn("Unable to read quote number from the form.", error);
+      return "";
+    }
+  }
+
   private async loadDocumentApiUrl(): Promise<void> {
     try {
       const [baseUrl, environmentName] = await Promise.all([
         this.getEnvironmentVariableValue("adnic_BaseServiceUrl"),
         this.getEnvironmentVariableValue("adnic_EnvironmentName")
       ]);
-      if (!baseUrl || !environmentName) return;
-      this.documentApiUrl = `${baseUrl.replace(/\/$/, "")}/${environmentName.replace(/^\//, "")}/document-service/api/v1/documents`;
+      if (!baseUrl || !environmentName) {
+        console.error("Document service configuration is missing.", {
+          hasBaseUrl: !!baseUrl,
+          hasEnvironmentName: !!environmentName
+        });
+        return;
+      }
+      this.documentApiUrl =
+        `${baseUrl.trim().replace(/\/$/, "")}/${environmentName.trim().replace(/^\/|\/$/g, "")}` +
+        "/document-service/api/v1/documents";
       await this.loadMemberDocuments();
     } catch (error) {
       console.error("Failed to load document service configuration", error);
@@ -605,12 +633,28 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
   }
 
   private async loadMemberDocuments(): Promise<void> {
-    if (!this.documentApiUrl || !this.lastQuoteNumber) {
+    if (!this.documentApiUrl) {
+      console.debug("Overage document service call is waiting for API configuration.");
+      return;
+    }
+
+    const quoteNumber = this.getQuoteNumber();
+    if (!quoteNumber) {
+      console.error(
+        "Overage document service call skipped because quoteNumber is empty. " +
+        "Bind the quoteNumber input or ensure adnic_quotenumber/adnic_name exists on the form."
+      );
       this.memberDocuments = [];
       return;
     }
+
+    this.lastQuoteNumber = quoteNumber;
+
     try {
-      const response = await fetch(`${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(this.lastQuoteNumber)}`);
+      const requestUrl =
+        `${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(quoteNumber)}`;
+      console.debug("Loading overage member documents.", { requestUrl, quoteNumber });
+      const response = await fetch(requestUrl);
       if (!response.ok) throw new Error(`Failed to load documents (${response.status})`);
       const result = await response.json();
       this.memberDocuments = Array.isArray(result) ? result : [];
@@ -1951,12 +1995,23 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
             checkMark.className = "file-check";
             checkMark.innerText = "✓";
 
-            const fileName = document.createElement("span");
+            const fileDetails = document.createElement("div");
+
+            const fileName = document.createElement("div");
             fileName.className = "uploaded-file-name";
             fileName.innerText = attachment.name || `File ${attachmentIndex + 1}`;
 
             fileLeft.appendChild(checkMark);
-            fileLeft.appendChild(fileName);
+            fileDetails.appendChild(fileName);
+
+            if (attachment.comment) {
+              const documentComment = document.createElement("div");
+              documentComment.className = "document-comment";
+              documentComment.innerText = `Remarks: ${attachment.comment}`;
+              fileDetails.appendChild(documentComment);
+            }
+
+            fileLeft.appendChild(fileDetails);
 
             const actionGroup = document.createElement("div");
             actionGroup.className = "uploaded-file-actions";

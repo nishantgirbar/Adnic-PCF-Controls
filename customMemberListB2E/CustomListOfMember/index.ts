@@ -1163,8 +1163,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         member.salaryType = "Enhanced";
         corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced.`);
       } else if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB") {
-        member.salaryType = "Enhanced";
-        corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced because Visa Location is not DXB.`);
+        member.visaLocation = "DXB";
+        corrections.push(`Member ${serialNo}: Visa Location was changed to DXB because Salary Type is LSB.`);
       } else if (String(member?.salaryType || "").trim().toUpperCase() === "EBP") {
         member.salaryType = "";
         corrections.push(`Member ${serialNo}: Invalid Salary Type EBP was cleared.`);
@@ -1478,19 +1478,6 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           }
         }
 
-        // If Salary Type is LSB, Visa must be DXB
-        if (field === "salaryType" && this.isLsbSalaryType(newValue) && String(currentVisa || "").toUpperCase() !== "DXB") {
-          select.value = previousValue;
-          await this.context.navigation.openAlertDialog(
-            {
-              text: "Salary Type 'LSB' requires Visa Location 'DXB'. Please set Visa Location to DXB first.",
-              confirmButtonLabel: "OK"
-            },
-            { width: 460, height: 180 }
-          );
-          return;
-        }
-
         // If Visa is being set to a non-DXB value, ensure Salary Type is not LSB
         if (field === "visaLocation" && String(newValue || "").toUpperCase() !== "DXB" && this.isLsbSalaryType(currentSalary)) {
           select.value = previousValue;
@@ -1520,6 +1507,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         this.members[idx][field] = newValue;
 
         if (field === "salaryType" && this.isLsbSalaryType(newValue)) {
+          this.members[idx].visaLocation = "DXB";
           this.members[idx].category = "";
         }
 

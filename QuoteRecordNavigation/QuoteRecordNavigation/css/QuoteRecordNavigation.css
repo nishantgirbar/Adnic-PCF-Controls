@@ -1,0 +1,62 @@
+.adnic-record-navigation {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 32px;
+    overflow: hidden;
+}
+
+.adnic-record-navigation__link {
+    background: transparent;
+    border: 0;
+    color: #0f6cbd;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 2px;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.adnic-record-navigation__link:hover,
+.adnic-record-navigation__link:focus-visible {
+    color: #004578;
+    text-decoration: underline;
+}
+
+.adnic-record-navigation__link:focus-visible {
+    border-radius: 2px;
+    outline: 2px solid #0f6cbd;
+    outline-offset: 1px;
+}
+
+.adnic-record-navigation__link:disabled {
+    color: #605e5c;
+    cursor: default;
+    text-decoration: none;
+}
+
+.adnic-record-navigation__link[aria-busy="true"] {
+    cursor: progress;
+    opacity: 0.65;
+}
+
+.adnic-record-navigation__link.adnic-record-navigation__error {
+    color: #a4262c;
+}
+
+.adnic-record-navigation__separator {
+    color: #605e5c;
+    flex: 0 0 auto;
+    padding: 0 1px;
+}
+
+.adnic-record-navigation__empty {
+    color: #605e5c;
+}

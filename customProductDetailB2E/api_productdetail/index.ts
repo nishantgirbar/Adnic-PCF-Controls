@@ -83,6 +83,9 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
         const productDetailsRaw =
             context.parameters.adnic_productdetails?.raw || "";
 
+        const productDetailsChanged =
+            this.lastProductDetailsRaw !== productDetailsRaw;
+
         const memberListRaw =
             this.productType === "EBP"
                 ? context.parameters.adnic_memberlistjson?.raw || ""
@@ -110,13 +113,19 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
             return;
         }
 
+        if (productDetailsChanged) {
+            this.lastProductDetailsRaw = productDetailsRaw;
+            this.syncSelectedValuesFromProductDetails(productDetailsRaw);
+        }
+
       
         if (!categoryRaw) return;
 
        if (
                 this.lastCategoryRaw === categoryRaw &&
                 this.lastCategoryPremiumRaw === this.premiumRaw &&
-                this.lastMemberListRaw === memberListRaw
+                this.lastMemberListRaw === memberListRaw &&
+                !productDetailsChanged
             ) {
                 return;
             }
@@ -221,6 +230,96 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
                     renderer.render(wrapper);
             }
         });
+    }
+
+    private syncSelectedValuesFromProductDetails(
+        productDetailsRaw: string
+    ): void {
+
+        const details =
+            this.parseProductDetails(productDetailsRaw);
+
+        const nextSelectedValues: Record<string, any> = {};
+
+        details.forEach((item: any) => {
+
+            const categoryCode =
+                String(item?.categoryCode || "").trim();
+
+            if (!categoryCode) {
+                return;
+            }
+
+            const provider =
+                item?.networkProvider?.name ||
+                item?.networkProviderName ||
+                (typeof item?.networkProvider === "string"
+                    ? item.networkProvider
+                    : "");
+
+            if (provider) {
+                nextSelectedValues["Network Provider"] = {
+                    ALL: provider
+                };
+            }
+
+            const network =
+                item?.network?.name ||
+                item?.plan ||
+                item?.networkTypeName ||
+                item?.networkType;
+
+            if (network) {
+
+                const networkKey =
+                    this.productType === "EBP"
+                        ? "Plan"
+                        : "Network Type";
+
+                if (!nextSelectedValues[networkKey]) {
+                    nextSelectedValues[networkKey] = {};
+                }
+
+                nextSelectedValues[networkKey][categoryCode] =
+                    network;
+            }
+
+            const benefits =
+                Array.isArray(item?.benefits)
+                    ? item.benefits
+                    : Array.isArray(item?.benefits?.benefits)
+                        ? item.benefits.benefits
+                        : [];
+
+            benefits.forEach((benefit: any) => {
+
+                const name =
+                    benefit?.name ||
+                    benefit?.benefitName ||
+                    benefit?.code;
+
+                const value =
+                    benefit?.value ??
+                    benefit?.benefitValue;
+
+                if (
+                    !name ||
+                    value === undefined ||
+                    value === null
+                ) {
+                    return;
+                }
+
+                if (!nextSelectedValues[name]) {
+                    nextSelectedValues[name] = {};
+                }
+
+                nextSelectedValues[name][categoryCode] =
+                    value;
+            });
+        });
+
+        this.selectedValues = nextSelectedValues;
     }
 
         // ================= OUTPUT =================

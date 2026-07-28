@@ -4,7 +4,7 @@
   <control
     namespace="adnicPolicyControls"
     constructor="PolicyMedicalQuestionControl"
-    version="1.2.2"
+    version="1.2.4"
     display-name-key="Policy MedicalQuestionControl Display"
     description-key="Policy MedicalQuestionControl Desc"
     control-type="standard">

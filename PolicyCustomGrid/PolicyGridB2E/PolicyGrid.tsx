@@ -259,6 +259,34 @@ const getStatusStyle = (status: string): React.CSSProperties => {
     }
   };
 
+  const openQuoteActivityForm = async (item: any) => {
+    try {
+      setIsLoading(true);
+
+      const quoteId = String(item.id ?? "").trim();
+
+      if (!quoteId) {
+        alert("Quote ID not found");
+        return;
+      }
+
+      const activityFormUrl =
+        `main.aspx?pagetype=entityrecord` +
+        `&etc=10862` +
+        `&formid=a3cefcd0-d989-f111-8077-70a8a51fd60b` +
+        `&extraqs=${encodeURIComponent(`quoteId=${quoteId}`)}`;
+
+      await getXrm().Navigation.openUrl(activityFormUrl, {
+        openInNewWindow: false
+      });
+    } catch (e) {
+      console.error(e);
+      alert("Unable to open quote activity");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const checkQuoteExists = async (
   quoteNumber: string
 ): Promise<boolean> => {
@@ -1037,7 +1065,7 @@ const openQuoteViewDialog = async (item: any) => {
             disabled={!item.isAvailableInCRM}
             title={item.isAvailableInCRM ? "Open quote activity" : "Quote not available in CRM"}
             ariaLabel="Activity log"
-            onClick={() => item.isAvailableInCRM && openMainQuoteForm(item)}
+            onClick={() => item.isAvailableInCRM && openQuoteActivityForm(item)}
           />
         </div>
       )

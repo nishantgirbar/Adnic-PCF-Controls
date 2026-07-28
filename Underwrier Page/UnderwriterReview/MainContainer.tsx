@@ -23,7 +23,6 @@ export const MainContainer = ({
     apiUrl,
     documentApiUrl,
     quoteNumber,
-    quoteStatus,
     onPremiumUpdated
 }: any) => {
 
@@ -213,30 +212,11 @@ export const MainContainer = ({
     const containsLockedStatus = (value: any): boolean =>
         /APPROVED|GENERATED/i.test(String(value));
 
-    const hasLockedStatus = (
-        value: any,
-        parentKey = "",
-        visited = new Set<any>()
-    ): boolean => {
-
-        if (value === null || value === undefined) return false;
-
-        if (typeof value !== "object") {
-            return /status|stage/i.test(parentKey) &&
-                containsLockedStatus(value);
-        }
-
-        if (visited.has(value)) return false;
-        visited.add(value);
-
-        return Object.keys(value).some((key) =>
-            hasLockedStatus(value[key], key, visited)
-        );
-    };
-
+    // Only the quote-level status returned by the quote API controls whether
+    // underwriter editing is locked. Nested member/document/workflow statuses
+    // must not disable every loading control.
     const disableLoading =
-        containsLockedStatus(quoteStatus) ||
-        hasLockedStatus(data);
+        containsLockedStatus(data?.status);
 
    
     const rawCategories =

@@ -490,6 +490,13 @@
     cursor: not-allowed !important;
 }
 
+.b2e-members-root .document-comment {
+    margin-top: 2px;
+    color: #605e5c;
+    font-size: 12px;
+    word-break: break-word;
+}
+
 /* This control is display-only. Prevent host/theme styles from making a
    disabled native select look or behave like an editable dropdown. */
 .b2e-members-root select:disabled {

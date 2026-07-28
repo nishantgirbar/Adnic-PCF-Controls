@@ -15,7 +15,6 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
     private context!: ComponentFramework.Context<IInputs>;
     private documents: MemberDocument[] = [];
     private documentApiUrl = "";
-    private lastQuoteNumber = "";
 
     public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void,
         _state: ComponentFramework.Dictionary, container: HTMLDivElement): void {
@@ -38,11 +37,7 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
             this.lastMemberData = incomingMemberData;
             this.readMembers(incomingMemberData);
         }
-        const quoteNumber = String(context.parameters.quoteNumber.raw || "");
-        if (quoteNumber !== this.lastQuoteNumber) {
-            this.lastQuoteNumber = quoteNumber;
-            void this.loadDocuments();
-        }
+        void this.loadDocuments();
         this.render();
     }
 
@@ -79,22 +74,61 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
                 this.getEnvironmentVariableValue("adnic_BaseServiceUrl"),
                 this.getEnvironmentVariableValue("adnic_EnvironmentName")
             ]);
-            if (!baseUrl || !environmentName) return;
-            this.documentApiUrl = `${baseUrl.replace(/\/$/, "")}/${environmentName.replace(/^\//, "")}/document-service/api/v1/documents`;
+            if (!baseUrl || !environmentName) {
+                console.error("Document service configuration is missing.", {
+                    hasBaseUrl: !!baseUrl,
+                    hasEnvironmentName: !!environmentName
+                });
+                return;
+            }
+            this.documentApiUrl =
+                `${baseUrl.trim().replace(/\/$/, "")}/${environmentName.trim().replace(/^\/|\/$/g, "")}` +
+                "/document-service/api/v1/documents";
             await this.loadDocuments();
         } catch (e) {
             console.error("Failed to load document service configuration", e);
         }
     }
 
+    private getQuoteNumber(): string {
+        const boundQuoteNumber = String(this.context.parameters.quoteNumber.raw || "").trim();
+        if (boundQuoteNumber) return boundQuoteNumber;
+
+        try {
+            const formContext = (window as any).Xrm?.Page;
+            return String(
+                formContext?.getAttribute("adnic_quotenumber")?.getValue() ||
+                formContext?.getAttribute("adnic_name")?.getValue() ||
+                ""
+            ).trim();
+        } catch (error) {
+            console.warn("Unable to read quote number from the form.", error);
+            return "";
+        }
+    }
+
     private async loadDocuments(): Promise<void> {
-        if (!this.documentApiUrl || !this.lastQuoteNumber) {
+        if (!this.documentApiUrl) {
+            console.debug("Document service call is waiting for API configuration.");
+            return;
+        }
+
+        const quoteNumber = this.getQuoteNumber();
+        if (!quoteNumber) {
+            console.error(
+                "Document service call skipped because quoteNumber is empty. " +
+                "Bind the quoteNumber input or ensure adnic_quotenumber/adnic_name exists on the form."
+            );
             this.documents = [];
             this.render();
             return;
         }
+
         try {
-            const response = await fetch(`${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(this.lastQuoteNumber)}`);
+            const requestUrl =
+                `${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(quoteNumber)}`;
+            console.debug("Loading medical documents.", { requestUrl, quoteNumber });
+            const response = await fetch(requestUrl);
             if (!response.ok) throw new Error(`Failed to load documents (${response.status})`);
             const result = await response.json();
             this.documents = Array.isArray(result) ? result : [];

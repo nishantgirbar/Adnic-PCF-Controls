@@ -8,7 +8,7 @@ export interface Member {
 }
 export interface MemberDocument {
     entityNumber?: string | number; originalFilename?: string; fileName?: string;
-    blobUrl?: string; url?: string; comment?: string; createdAt?: string;
+    blobUrl?: string; url?: string; comment?: string; createdAt?: string; documentType?: string;
 }
 export interface Question {
     id: number; question: string; answer: boolean; category: string;
@@ -22,14 +22,22 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
     const handleToggle = (id: number, checked?: boolean) =>
         onQuestionsChange(questions.map(q => q.id === id ? { ...q, answer: !!checked } : q));
     const showDeclaredMembers = questions.some(q => q.answer) && members.length > 0;
-    const viewDocument = async (doc: MemberDocument) => {
+    const getDocumentBlob = async (doc: MemberDocument): Promise<Blob | null> => {
         const sourceUrl = doc.blobUrl || doc.url;
-        if (!sourceUrl) return;
+        if (!sourceUrl) return null;
+
+        const response = await fetch(sourceUrl);
+        if (!response.ok) throw new Error(`Unable to load document (${response.status})`);
+        return response.blob();
+    };
+    const viewDocument = async (doc: MemberDocument) => {
         const previewWindow = window.open("", "_blank");
         try {
-            const response = await fetch(sourceUrl);
-            if (!response.ok) throw new Error(`Unable to load document (${response.status})`);
-            const blob = await response.blob();
+            const blob = await getDocumentBlob(doc);
+            if (!blob) {
+                previewWindow?.close();
+                return;
+            }
             const previewUrl = URL.createObjectURL(blob);
             if (previewWindow) previewWindow.location.href = previewUrl;
             else window.open(previewUrl, "_blank");
@@ -37,6 +45,23 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
         } catch (e) {
             previewWindow?.close();
             console.error("Failed to preview medical document", e);
+        }
+    };
+    const downloadDocument = async (doc: MemberDocument) => {
+        try {
+            const blob = await getDocumentBlob(doc);
+            if (!blob) return;
+
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.download = doc.originalFilename || doc.fileName || "medical-document";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        } catch (e) {
+            console.error("Failed to download medical document", e);
         }
     };
 
@@ -50,7 +75,6 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                         <div className="question-row" key={q.id}>
                             <div>
                                 <Text>{q.question}</Text>
-                                {!!q.category && <Text className="question-category">{q.category}</Text>}
                             </div>
                             <Toggle checked={q.answer} onChange={(_e, checked) => handleToggle(q.id, checked)}
                                 onText="Yes" offText="No" disabled />
@@ -64,17 +88,31 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                 <div>Salary</div><div>Visa</div><div>Category</div><div>Marital</div>
                             </div>
                             {members.map(m => {
-                                const memberDocuments = documents.filter(d => Number(d.entityNumber) === Number(m.id));
+                                const memberDocuments = documents.filter(d =>
+                                    d.documentType === "MEDICAL_DECLARATION" &&
+                                    Number(d.entityNumber) === Number(m.id));
                                 return <React.Fragment key={m.id}>
                                 <div className="row grid member-block">
                                     <div>{m.serialNo}</div><div>{m.relation}</div><div>{m.gender}</div><div>{m.dob}</div>
                                     <div>{m.salary}</div><div>{m.visa}</div><div>{m.category}</div><div>{m.marital}</div>
                                 </div>
-                                {memberDocuments.length > 0 && <div className="member-documents">
-                                    {memberDocuments.map((doc, i) => <div className="member-document" key={`${m.id}-${i}`}>
-                                        <span>{doc.originalFilename || doc.fileName || "Document"}</span>
-                                        {!!doc.comment && <span className="document-comment">Remarks: {doc.comment}</span>}
-                                        <button type="button" onClick={() => void viewDocument(doc)}>View</button>
+                                {memberDocuments.length > 0 && <div className="uploaded-files">
+                                    {memberDocuments.map((doc, i) => <div className="uploaded-file-card" key={`${m.id}-${i}`}>
+                                        <div className="uploaded-file-left">
+                                            <span className="file-check" aria-hidden="true">✓</span>
+                                            <div>
+                                                <div className="uploaded-file-name">
+                                                    {doc.originalFilename || doc.fileName || "Document"}
+                                                </div>
+                                                {!!doc.comment && <div className="document-comment">Remarks: {doc.comment}</div>}
+                                            </div>
+                                        </div>
+                                        <div className="uploaded-file-actions">
+                                            <button type="button" className="file-view-btn"
+                                                onClick={() => void viewDocument(doc)}>View</button>
+                                            <button type="button" className="file-download-btn"
+                                                onClick={() => void downloadDocument(doc)}>Download</button>
+                                        </div>
                                     </div>)}
                                 </div>}
                                 </React.Fragment>;

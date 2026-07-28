@@ -29,32 +29,6 @@ implements ComponentFramework.StandardControl<IInputs, IOutputs> {
 
     private documentApiUrl: string = "";
 
-    private getQuoteStatus = (): string => {
-
-        try {
-
-            const xrm = (window as any)?.Xrm;
-            const formContext =
-                xrm?.Page ??
-                (window.parent as any)?.Xrm?.Page;
-
-            const statusAttribute =
-                formContext?.getAttribute?.("statuscode") ??
-                formContext?.getAttribute?.("adnic_status");
-
-            return String(
-                statusAttribute?.getText?.() ??
-                statusAttribute?.getValue?.() ??
-                ""
-            );
-
-        } catch (error) {
-
-            console.warn("Unable to read quote status from the form", error);
-            return "";
-        }
-    };
-
     // =====================================
     // UPDATE CRM QUOTE PREMIUM
     // =====================================
@@ -435,8 +409,6 @@ implements ComponentFramework.StandardControl<IInputs, IOutputs> {
                         context.parameters
                             .quoteNumber
                             .raw || "",
-                    quoteStatus:
-                        this.getQuoteStatus(),
                     onPremiumUpdated:
                         this.updateQuotePremium
                 }
