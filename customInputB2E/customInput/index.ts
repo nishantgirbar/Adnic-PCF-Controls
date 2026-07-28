@@ -8,6 +8,7 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
     private inputElement!: HTMLInputElement;
     private isDisabled: boolean = false;
     private maxLength?: number;
+    private alphabetsOnly = false;
 
     private value: string | Date | undefined = "";
     private isDateField = false;
@@ -51,6 +52,10 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
 
     private onInputChange = (e: Event): void => {
         const target = e.target as HTMLInputElement;
+
+        if (this.alphabetsOnly && !this.isDateField) {
+            target.value = target.value.replace(/[^a-zA-Z ]/g, "");
+        }
 
         if (
             this.maxLength !== undefined &&
@@ -101,6 +106,7 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
         this.isDateTimeField = mappedFieldType === "datetime.dateandtime";
         this.isDateField =
             mappedFieldType === "datetime.dateonly" || this.isDateTimeField;
+        this.alphabetsOnly = context.parameters.alphabetsOnly.raw === true;
 
         const supportedTypes = [
             "text",
@@ -112,7 +118,9 @@ export class InputPCF implements ComponentFramework.StandardControl<IInputs, IOu
 
         this.inputElement.type = this.isDateField
             ? (this.isDateTimeField ? "datetime-local" : "date")
-            : supportedTypes.indexOf(configuredType) > -1
+            : this.alphabetsOnly
+                ? "text"
+                : supportedTypes.indexOf(configuredType) > -1
                 ? configuredType
                 : "text";
 

@@ -3,7 +3,7 @@
   <control 
     namespace="crmInput"
     constructor="InputPCF"
-    version="1.3.0"
+    version="1.6.0"
     display-name-key="InputControl"
     description-key="Input control"
     control-type="standard">
@@ -28,6 +28,13 @@
       display-name-key="Maximum Length"
       description-key="Optional maximum number of characters. Leave blank for no limit."
       of-type="Whole.None"
+      usage="input" />
+
+    <property
+      name="alphabetsOnly"
+      display-name-key="Alphabets Only"
+      description-key="When enabled, allows only English alphabet characters and spaces."
+      of-type="TwoOptions"
       usage="input" />
 
     <type-group name="inputValueTypes">

@@ -3,7 +3,7 @@
   <control
     namespace="EbpControlPcf"
     constructor="EbpControlPcf"
-    version="2.1.3"
+    version="2.2.0"
     display-name-key="Plan Summary Control"
     description-key="Conditional Plan Summary UI"
     control-type="standard">

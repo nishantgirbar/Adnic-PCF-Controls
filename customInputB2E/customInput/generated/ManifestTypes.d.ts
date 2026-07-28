@@ -7,6 +7,7 @@ export interface IInputs {
     inputType: ComponentFramework.PropertyTypes.StringProperty;
     placeholder: ComponentFramework.PropertyTypes.StringProperty;
     maxLength: ComponentFramework.PropertyTypes.WholeNumberProperty;
+    alphabetsOnly: ComponentFramework.PropertyTypes.TwoOptionsProperty;
     value: ComponentFramework.PropertyTypes.Property;
 }
 export interface IOutputs {
