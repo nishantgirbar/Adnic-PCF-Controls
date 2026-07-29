@@ -716,7 +716,10 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
         const groups: Record<string, {
             count: number;
             premium: number;
+            ageBandStart: number;
+            insertionOrder: number;
         }> = {};
+        let nextInsertionOrder = 0;
 
         employeeMembers.forEach((m: any) => {
 
@@ -770,7 +773,9 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
 
                 groups[key] = {
                     count: 0,
-                    premium: 0
+                    premium: 0,
+                    ageBandStart: Number.parseInt(ageBand, 10),
+                    insertionOrder: nextInsertionOrder++
                 };
             }
 
@@ -778,7 +783,21 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             groups[key].premium += premium;
         });
 
-        return Object.keys(groups).map(key => {
+        return Object.keys(groups)
+            .sort((firstKey, secondKey) => {
+                const firstGroup = groups[firstKey];
+                const secondGroup = groups[secondKey];
+                const firstAge = Number.isNaN(firstGroup.ageBandStart)
+                    ? Number.MAX_SAFE_INTEGER
+                    : firstGroup.ageBandStart;
+                const secondAge = Number.isNaN(secondGroup.ageBandStart)
+                    ? Number.MAX_SAFE_INTEGER
+                    : secondGroup.ageBandStart;
+
+                return firstAge - secondAge ||
+                    firstGroup.insertionOrder - secondGroup.insertionOrder;
+            })
+            .map(key => {
 
             const group = groups[key];
 
@@ -789,7 +808,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                     maximumFractionDigits: 2
                 }
             )}`;
-        });
+            });
     }
 
     private getAgeBand(age: number, productType: string): string {

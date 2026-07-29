@@ -59,8 +59,7 @@
         minmax(125px, 1fr)
         minmax(90px, 0.8fr)
         minmax(65px, 0.55fr)
-        minmax(100px, 0.9fr)
-        minmax(120px, 1fr);
+        minmax(100px, 0.9fr);
     row-gap: 6px;
     width: 100%;
     max-width: 100%;

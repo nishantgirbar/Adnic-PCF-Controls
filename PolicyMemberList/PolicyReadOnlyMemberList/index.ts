@@ -1489,7 +1489,7 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
     // Determine if current page contains only 65+ members (when upload mode is enabled)
     const start = (this.currentPage - 1) * this.pageSize;
     const rows = this.members.slice(start, start + this.pageSize);
-    const headers = ["#", "Relation", "Gender", "DOB", "Salary", "Visa", "Category", "Marital", "Premium"];
+    const headers = ["#", "Relation", "Gender", "DOB", "Salary", "Visa", "Category", "Marital"];
 
     headers.forEach(h => {
       const d = document.createElement("div");
@@ -1513,17 +1513,6 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
         if (normalizedValue === "F" || normalizedValue === "FEMALE") return "Female";
 
         return (value || "").trim();
-      };
-
-      const getPremiumDisplayValue = (premium: any): string => {
-        if (premium === null || premium === undefined) return "";
-        if (typeof premium !== "object") return String(premium);
-
-        const amount = premium.finalPremium ??
-          premium.currentPremium ??
-          premium.basePremium;
-
-        return amount === null || amount === undefined ? "" : String(amount);
       };
 
     const createDropdown = (
@@ -1906,7 +1895,6 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
         )
       );
       grid.appendChild(cell(createDropdown(["Single", "Married"], row.maritalStatus, "maritalStatus", idx)));
-      grid.appendChild(cell(createReadOnlyValue(getPremiumDisplayValue(row.premium))));
 
       if (row.overaged === true && this.enableUpload) {
 

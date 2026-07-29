@@ -3,7 +3,7 @@
 
   <control namespace="B2EControl"
            constructor="PolicyProductDetail"
-           version="1.1.8"
+           version="1.2.0"
            display-name-key="Policy Product"
            description-key="Policy Product Detail Description"
            control-type="standard">
