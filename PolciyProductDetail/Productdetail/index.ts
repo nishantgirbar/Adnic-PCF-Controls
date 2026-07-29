@@ -83,8 +83,7 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
         const fields = [
             ["Policy Start", data?.policyStartDate],
             ["Source of Business", data?.sourceOfBusiness],
-            ["Commission", data?.commission === undefined || data?.commission === null ? "-" : `${data.commission}%`],
-            ["Plan Type", data?.planType]
+            ["Commission", data?.commission === undefined || data?.commission === null ? "-" : `${data.commission}%`]
         ];
 
         if (!fields.some((field) => field[1] && field[1] !== "-")) return;
