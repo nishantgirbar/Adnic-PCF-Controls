@@ -1162,7 +1162,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       if ((relation === "SPOUSE" || relation === "CHILD") && this.isLsbSalaryType(member?.salaryType)) {
         member.salaryType = "Enhanced";
         corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced.`);
-      } else if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB") {
+      } else if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB" && visaLocation !== "NE") {
         member.visaLocation = "DXB";
         corrections.push(`Member ${serialNo}: Visa Location was changed to DXB because Salary Type is LSB.`);
       } else if (String(member?.salaryType || "").trim().toUpperCase() === "EBP") {

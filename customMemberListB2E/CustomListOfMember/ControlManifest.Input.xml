@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="crmCustomB2EControl"
     constructor="CustomListOfMembersB2E"
-    version="3.1.0"
+    version="3.1.1"
     display-name-key="B2E List Of Members"
     description-key="Excel Driven Members Grid for B2E"
     control-type="standard">
