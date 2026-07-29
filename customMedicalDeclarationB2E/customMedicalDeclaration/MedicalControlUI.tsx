@@ -1288,7 +1288,7 @@ const downloadFile = async (file: any) => {
                                 <div className="row-details">
 
                                     <TextField
-                                        disabled={isDisabled}
+                                        readOnly={isDisabled}
                                         placeholder="Enter comments..."
                                         multiline
                                         rows={2}

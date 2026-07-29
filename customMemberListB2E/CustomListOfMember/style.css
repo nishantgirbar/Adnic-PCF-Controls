@@ -148,7 +148,7 @@
     background: #fff;
     color: #323130;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .b2e-members-root .uploaded-files {
@@ -437,6 +437,7 @@
 .b2e-members-root select:disabled,
 .b2e-members-root button:disabled,
 .b2e-members-root textarea:disabled,
+.b2e-members-root textarea:read-only,
 .b2e-members-root .flatpickr-input:disabled {
     background: #f3f2f1 !important;
     color: #605e5c !important;

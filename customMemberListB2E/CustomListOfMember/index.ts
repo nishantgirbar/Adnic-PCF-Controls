@@ -1815,7 +1815,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
         const remarksField = document.createElement("textarea");
         remarksField.className = "remarks-input";
         remarksField.placeholder = "Enter remarks";
-        remarksField.disabled = this.isReadOnly;
+        remarksField.readOnly = this.isReadOnly;
         remarksField.value = String(row.remarks || "");
         remarksField.onchange = () => {
           const liveMember = getLiveMember();

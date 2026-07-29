@@ -120,6 +120,15 @@
     width: 100%;
 }
 
+.medical-pcf textarea {
+    overflow: auto;
+}
+
+.medical-pcf textarea:read-only {
+    background: #f3f2f1;
+    color: #605e5c;
+}
+
 /* DOWNLOAD TEMPLATE */
 .medical-pcf .download-template {
     color: #0078d4;
