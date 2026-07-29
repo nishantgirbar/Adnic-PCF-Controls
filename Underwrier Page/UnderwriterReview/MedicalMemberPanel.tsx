@@ -331,6 +331,10 @@ export const MedicalMemberPanel = ({
         }
     };
 
+    const memberRemarks = (documents || [])
+        .map((doc: any) => String(doc?.comment || "").trim())
+        .find((comment: string) => comment.length > 0);
+
     return (
 
         <div className="medical-panel">
@@ -492,20 +496,21 @@ export const MedicalMemberPanel = ({
                     )
                 }
 
+                {memberRemarks && (
+                    <div className="document-remarks">
+                        Remarks : {memberRemarks}
+                    </div>
+                )}
+
                 {(documents || []).map(
                     (
                         doc: any,
                         i: number
                     ) => (
 
-                        <div>
-                            <div className="document-remarks">
-                                Remarks :  { doc?.comment }
-                            </div>
-
                         <div
                             className="document-card"
-                            key={i}
+                            key={doc?.id || doc?.documentId || i}
                         >
                             <div className="document-left">
 
@@ -553,7 +558,6 @@ export const MedicalMemberPanel = ({
                                 View
                             </button>
 
-                        </div>
                         </div>
 
                     )
