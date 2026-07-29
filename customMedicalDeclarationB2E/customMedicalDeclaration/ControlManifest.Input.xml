@@ -4,7 +4,7 @@
   <control
     namespace="MedicalControl"
     constructor="MedicalControl"
-    version="2.0.1"
+    version="2.0.6"
     display-name-key="MedicalControl_Display"
     description-key="MedicalControl_Desc"
     control-type="standard">
