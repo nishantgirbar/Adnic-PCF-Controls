@@ -2,14 +2,14 @@
 <manifest>
   <control namespace="ADNIC.Controls"
            constructor="QuoteRecordNavigation"
-           version="1.0.2"
+           version="1.2.0"
            display-name-key="Quote record navigation"
            description-key="Displays quote references as links that open Dataverse forms."
            control-type="standard">
            
-    <property name="recordReferences"
-              display-name-key="Record references"
-              description-key="Pipe-separated quote numbers, for example QA2121 | Q3443 | QT434343."
+    <property name="quoteNumber"
+              display-name-key="Quote number"
+              description-key="The current quote number."
               of-type="SingleLine.Text"
               usage="bound"
               required="true" />
@@ -17,6 +17,13 @@
       name="quoteId"
       display-name-key="quoteId_Display"
       description-key="quoteId_Desc"
+      of-type="Whole.None"
+      usage="bound"
+      required="true" />
+    <property
+      name="quoteIterationNumber"
+      display-name-key="Quote iteration number"
+      description-key="The highest iteration number available for this quote."
       of-type="Whole.None"
       usage="bound"
       required="true" />

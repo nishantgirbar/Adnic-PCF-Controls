@@ -24,6 +24,14 @@
     white-space: nowrap;
 }
 
+.adnic-record-navigation__current {
+    color: #323130;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 2px;
+    white-space: nowrap;
+}
+
 .adnic-record-navigation__link:hover,
 .adnic-record-navigation__link:focus-visible {
     color: #004578;

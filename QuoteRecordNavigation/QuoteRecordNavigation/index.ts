@@ -50,8 +50,6 @@ interface ApiQuoteResponse {
 
 export class QuoteRecordNavigation implements ComponentFramework.StandardControl<IInputs, IOutputs> {
     private static readonly entityName = "adnic_quote";
-    private static readonly quoteNumberColumn = "adnic_quotenumber";
-    private static readonly idColumn = "adnic_quoteid";
     private static readonly formId = "093b4a5c-b226-f111-8341-70a8a522d03b";
     private container!: HTMLDivElement;
     private context!: ComponentFramework.Context<IInputs>;
@@ -73,8 +71,9 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         this.context = context;
 
         const renderKey = [
-            context.parameters.recordReferences.raw ?? "",
+            context.parameters.quoteNumber.raw ?? "",
             context.parameters.quoteId.raw ?? "",
+            context.parameters.quoteIterationNumber.raw ?? "",
             context.mode.isControlDisabled ? "disabled" : "enabled"
         ].join("\u001f");
 
@@ -97,8 +96,12 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
     private render(): void {
         this.container.replaceChildren();
 
-        const quoteNumbers = this.parseQuoteNumbers(
-            this.context.parameters.recordReferences.raw ?? ""
+        const currentQuoteNumber = String(
+            this.context.parameters.quoteNumber.raw ?? ""
+        ).trim();
+        const quoteNumbers = this.generateQuoteNumbers(
+            currentQuoteNumber,
+            this.context.parameters.quoteIterationNumber.raw
         );
 
         if (quoteNumbers.length === 0) {
@@ -110,14 +113,22 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         }
 
         quoteNumbers.forEach((quoteNumber, index) => {
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "adnic-record-navigation__link";
-            button.textContent = quoteNumber;
-            button.title = `Open quote ${quoteNumber}`;
-            button.disabled = this.context.mode.isControlDisabled;
-            button.addEventListener("click", () => void this.openQuote(quoteNumber, button));
-            this.container.appendChild(button);
+            if (quoteNumber === currentQuoteNumber) {
+                const current = document.createElement("span");
+                current.className = "adnic-record-navigation__current";
+                current.textContent = quoteNumber;
+                current.setAttribute("aria-current", "page");
+                this.container.appendChild(current);
+            } else {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "adnic-record-navigation__link";
+                button.textContent = quoteNumber;
+                button.title = `Open quote ${quoteNumber}`;
+                button.disabled = this.context.mode.isControlDisabled;
+                button.addEventListener("click", () => void this.openQuote(quoteNumber, button));
+                this.container.appendChild(button);
+            }
 
             if (index < quoteNumbers.length - 1) {
                 const separator = document.createElement("span");
@@ -129,23 +140,36 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         });
     }
 
-    private parseQuoteNumbers(raw: string): string[] {
-        return raw
-            .split("|")
-            .map(quoteNumber => quoteNumber.trim())
-            .filter(Boolean);
+    private generateQuoteNumbers(
+        currentQuoteNumber: string,
+        rawIterationNumber: number | null
+    ): string[] {
+        if (!currentQuoteNumber) {
+            return [];
+        }
+
+        const iterationNumber = Math.max(0, Math.trunc(rawIterationNumber ?? 0));
+
+        if (iterationNumber === 0) {
+            return [currentQuoteNumber];
+        }
+
+        const baseQuoteNumber = currentQuoteNumber.replace(/-\d+$/, "");
+        return Array.from(
+            { length: iterationNumber + 1 },
+            (_value, index) => index === 0
+                ? baseQuoteNumber
+                : `${baseQuoteNumber}-${index}`
+        );
     }
 
     private async openQuote(quoteNumber: string, button: HTMLButtonElement): Promise<void> {
         button.classList.remove("adnic-record-navigation__error");
         button.setAttribute("aria-busy", "true");
+        button.disabled = true;
 
         try {
-            let quoteId = await this.resolveQuoteId(quoteNumber);
-
-            if (!quoteId) {
-                quoteId = await this.importQuote(quoteNumber);
-            }
+            const quoteId = await this.importQuote(quoteNumber);
 
             await this.context.navigation.openForm({
                 entityName: QuoteRecordNavigation.entityName,
@@ -159,31 +183,12 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
             await this.context.navigation.openAlertDialog({ text: message });
         } finally {
             button.removeAttribute("aria-busy");
+            button.disabled = this.context.mode.isControlDisabled;
         }
-    }
-
-    private async resolveQuoteId(quoteNumber: string): Promise<string | undefined> {
-        const escapedQuoteNumber = quoteNumber.replace(/'/g, "''");
-        const query =
-            `?$select=${QuoteRecordNavigation.idColumn}` +
-            `&$filter=${QuoteRecordNavigation.quoteNumberColumn} eq '${escapedQuoteNumber}'&$top=2`;
-        const result = await this.context.webAPI.retrieveMultipleRecords(
-            QuoteRecordNavigation.entityName,
-            query
-        );
-
-        if (result.entities.length > 1) {
-            throw new Error(`More than one quote record matches "${quoteNumber}".`);
-        }
-
-        const quoteId = result.entities[0]?.[QuoteRecordNavigation.idColumn];
-        return typeof quoteId === "string"
-            ? this.cleanGuid(quoteId)
-            : undefined;
     }
 
     private async importQuote(requestedQuoteNumber: string): Promise<string> {
-        const quoteId = await this.getPopulatedQuoteId();
+          const quoteId = String(this.context.parameters.quoteId.raw ?? "").trim();
 
         if (!quoteId) {
             throw new Error(
@@ -194,9 +199,9 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         const apiUrl = await this.getQuoteApiUrl();
         const url =
             `${apiUrl}/${encodeURIComponent(quoteId)}` +
-            `&quoteNumber=${encodeURIComponent(requestedQuoteNumber)}`;
+            `?quoteNumber=${encodeURIComponent(requestedQuoteNumber)}`;
         const response = await fetch(url, {
-            method: "POST",
+            method: "GET",
             headers: { "Content-Type": "application/json" }
         });
 
@@ -262,28 +267,7 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
 
         return this.cleanGuid(createResponse.id);
     }
-
-    private async getPopulatedQuoteId(): Promise<string> {
-        const attempts = 20;
-        const delayMilliseconds = 250;
-
-        for (let attempt = 0; attempt < attempts; attempt += 1) {
-            const quoteId = String(this.context.parameters.quoteId.raw ?? "").trim();
-
-            if (quoteId) {
-                return quoteId;
-            }
-
-            if (attempt < attempts - 1) {
-                await new Promise<void>(resolve => {
-                    window.setTimeout(resolve, delayMilliseconds);
-                });
-            }
-        }
-
-        return "";
-    }
-
+    
     private async getQuoteApiUrl(): Promise<string> {
         if (this.apiUrl) {
             return this.apiUrl;
