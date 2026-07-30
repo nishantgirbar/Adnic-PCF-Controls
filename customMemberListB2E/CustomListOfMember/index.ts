@@ -100,6 +100,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
     return (value || "").trim().toUpperCase() === "LSB";
   }
 
+  private isAllowedLsbVisaLocation(value: string | null | undefined): boolean {
+
+    const visaLocation = (value || "").trim().toUpperCase();
+    return visaLocation === "DXB" || visaLocation === "NE";
+  }
+
   private normalizeMemberCategoryForSalaryType(member: any): any {
 
     if (this.isLsbSalaryType(member.salaryType)) {
@@ -1127,8 +1133,8 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       return "Spouse and Child cannot have Salary Type 'LSB'. Please choose a different Salary Type.";
     }
 
-    if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB") {
-      return "Salary Type 'LSB' requires Visa Location 'DXB'.";
+    if (this.isLsbSalaryType(member?.salaryType) && !this.isAllowedLsbVisaLocation(visaLocation)) {
+      return "Salary Type 'LSB' requires Visa Location 'DXB' or 'NE'.";
     }
 
     return null;
@@ -1162,7 +1168,7 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
       if ((relation === "SPOUSE" || relation === "CHILD") && this.isLsbSalaryType(member?.salaryType)) {
         member.salaryType = "Enhanced";
         corrections.push(`Member ${serialNo}: Salary Type was changed from LSB to Enhanced.`);
-      } else if (this.isLsbSalaryType(member?.salaryType) && visaLocation !== "DXB" && visaLocation !== "NE") {
+      } else if (this.isLsbSalaryType(member?.salaryType) && !this.isAllowedLsbVisaLocation(visaLocation)) {
         member.visaLocation = "DXB";
         corrections.push(`Member ${serialNo}: Visa Location was changed to DXB because Salary Type is LSB.`);
       } else if (String(member?.salaryType || "").trim().toUpperCase() === "EBP") {
@@ -1478,12 +1484,12 @@ export class CustomListOfMembersB2E implements ComponentFramework.StandardContro
           }
         }
 
-        // If Visa is being set to a non-DXB value, ensure Salary Type is not LSB
-        if (field === "visaLocation" && String(newValue || "").toUpperCase() !== "DXB" && this.isLsbSalaryType(currentSalary)) {
+        // LSB salary permits only DXB and NE visa locations.
+        if (field === "visaLocation" && !this.isAllowedLsbVisaLocation(newValue) && this.isLsbSalaryType(currentSalary)) {
           select.value = previousValue;
           await this.context.navigation.openAlertDialog(
             {
-              text: "Salary Type 'LSB' allows only Visa Location 'DXB'. Please change Salary Type before modifying Visa Location.",
+              text: "Salary Type 'LSB' allows only Visa Location 'DXB' or 'NE'. Please change Salary Type before modifying Visa Location.",
               confirmButtonLabel: "OK"
             },
             { width: 460, height: 180 }

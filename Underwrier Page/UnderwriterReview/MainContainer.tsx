@@ -260,12 +260,19 @@ export const MainContainer = ({
     // FILTERED MEMBERS
     // =====================================
 
-    const medicalDeclaredMembers = members.filter(
+    const membersWithSerialNumber = members.map(
+        (member: any, index: number) => ({
+            ...member,
+            serialNumber: index + 1
+        })
+    );
+
+    const medicalDeclaredMembers = membersWithSerialNumber.filter(
         (m: any) =>
             m?.medicalDeclared === true
     );
 
-    const overAgeMembers = members.filter(
+    const overAgeMembers = membersWithSerialNumber.filter(
         (m: any) =>
             m?.overaged === true
     );

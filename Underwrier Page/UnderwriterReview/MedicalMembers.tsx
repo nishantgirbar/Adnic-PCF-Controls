@@ -55,16 +55,9 @@ export const MedicalMembers = ({
 
         setSelectedIndex(index);
 
-        const updatedMember = {
-
-            ...member,
-
-            serialNumber: index + 1
-        };
-
         // SEND TO PARENT
 
-        onSelect(updatedMember);
+        onSelect(member);
     };
 
     return (
@@ -133,7 +126,10 @@ export const MedicalMembers = ({
                                 >
 
                                     <td>
-                                        {i + 1}
+                                        {
+                                            m?.serialNumber ??
+                                            i + 1
+                                        }
                                     </td>
 
                                     <td>
