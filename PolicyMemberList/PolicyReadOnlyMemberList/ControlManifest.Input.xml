@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="adnicPolicyQuoteControls"
     constructor="PolicyQuoteMemberViewerV2"
-    version="1.1.3"
+    version="1.1.4"
     display-name-key="Policy Quote Member Viewer V2"
     description-key="Unique API-driven, read-only quote member viewer"
     control-type="standard">

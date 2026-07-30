@@ -53,6 +53,15 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
   private documentApiUrl = "";
   private lastQuoteNumber = "";
   private memberDocuments: any[] = [];
+  private documentDebugSequence = 0;
+
+  private documentDebug(event: string, details: Record<string, unknown> = {}): void {
+    this.documentDebugSequence += 1;
+    console.info(
+      `[PolicyMemberList][65+ documents] #${this.documentDebugSequence} ${event}`,
+      details
+    );
+  }
 
   private summarizeMembersForDebug(members: any[]): any[] {
     return members.map((member, index) => {
@@ -473,6 +482,14 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
     this.enableUpload = context.parameters.enableUpload.raw ?? false;
     this.productType = (context.parameters.adnic_name?.raw || "").toUpperCase();
     const quoteNumber = this.getQuoteNumber();
+    this.documentDebug("updateView", {
+      is65PlusGrid: this.enableUpload,
+      hasBoundQuoteNumber: Boolean(context.parameters.quoteNumber?.raw),
+      resolvedQuoteNumber: quoteNumber || "(empty)",
+      hasDocumentApiUrl: Boolean(this.documentApiUrl),
+      loadedDocumentCount: this.memberDocuments.length,
+      quoteNumberChanged: quoteNumber !== this.lastQuoteNumber
+    });
     if (quoteNumber !== this.lastQuoteNumber) {
       this.lastQuoteNumber = quoteNumber;
       void this.loadMemberDocuments();
@@ -514,6 +531,18 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
         this.members = this.enableUpload
           ? mappedMembers.filter(member => member.overaged === true)
           : mappedMembers;
+        this.documentDebug("member grid mapped", {
+          sourceMemberCount: sourceMembers.length,
+          mappedMemberCount: mappedMembers.length,
+          displayedMemberCount: this.members.length,
+          overagedMemberCount: mappedMembers.filter(member => member.overaged === true).length,
+          memberDocumentMatches: mappedMembers.map(member => ({
+            memberId: member?.id || member?.memberId || "(empty)",
+            serialNo: member?.serialNo,
+            overaged: member?.overaged === true,
+            attachmentCount: Array.isArray(member?.attachments) ? member.attachments.length : 0
+          }))
+        });
         this.currentPage = 1;
         this.memberDataError = "";
       } catch {
@@ -553,6 +582,20 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
         sourceUrl: document?.blobUrl || document?.url || "",
         comment: document?.comment || ""
       }));
+    if (this.enableUpload && this.toBoolean(member?.overaged)) {
+      this.documentDebug("matching documents for 65+ member", {
+        memberId: member?.id ?? member?.memberId ?? "(empty)",
+        memberIdAsNumber: Number(member?.id ?? member?.memberId),
+        sourceAttachmentCount: sourceAttachments.length,
+        matchedApiDocumentCount: apiDocuments.length,
+        availableApiDocuments: this.memberDocuments.map(document => ({
+          documentType: document?.documentType || "(empty)",
+          entityNumber: document?.entityNumber ?? "(empty)",
+          entityNumberAsNumber: Number(document?.entityNumber),
+          hasSourceUrl: Boolean(document?.blobUrl || document?.url)
+        }))
+      });
+    }
     const attachments = this.normalizeAttachmentsFromMember({
       ...member,
       attachments: [...sourceAttachments, ...apiDocuments]
@@ -580,30 +623,51 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
   }
 
   private async getEnvironmentVariableValue(schemaName: string): Promise<string> {
+    this.documentDebug("loading environment variable definition", { schemaName });
     const definitions = await this.context.webAPI.retrieveMultipleRecords(
       "environmentvariabledefinition",
       `?$select=environmentvariabledefinitionid&$filter=schemaname eq '${schemaName}'`
     );
-    if (!definitions.entities.length) return "";
+    if (!definitions.entities.length) {
+      this.documentDebug("environment variable definition not found", { schemaName });
+      return "";
+    }
     const definitionId = definitions.entities[0].environmentvariabledefinitionid;
     const values = await this.context.webAPI.retrieveMultipleRecords(
       "environmentvariablevalue",
       `?$select=value&$filter=_environmentvariabledefinitionid_value eq '${definitionId}'`
     );
-    return String(values.entities[0]?.value || "");
+    const value = String(values.entities[0]?.value || "");
+    this.documentDebug("environment variable resolved", {
+      schemaName,
+      definitionId,
+      valueRecordCount: values.entities.length,
+      hasCurrentValue: Boolean(value)
+    });
+    return value;
   }
 
   private getQuoteNumber(): string {
     const boundQuoteNumber = String(this.context.parameters.quoteNumber?.raw || "").trim();
-    if (boundQuoteNumber) return boundQuoteNumber;
+    if (boundQuoteNumber) {
+      this.documentDebug("quote number resolved from bound input", {
+        quoteNumber: boundQuoteNumber
+      });
+      return boundQuoteNumber;
+    }
 
     try {
       const formContext = (window as any).Xrm?.Page;
-      return String(
-        formContext?.getAttribute("adnic_quotenumber")?.getValue() ||
-        formContext?.getAttribute("adnic_name")?.getValue() ||
-        ""
-      ).trim();
+      const quoteNumberAttribute = formContext?.getAttribute("adnic_quotenumber")?.getValue();
+      const nameAttribute = formContext?.getAttribute("adnic_name")?.getValue();
+      const resolvedQuoteNumber = String(quoteNumberAttribute || nameAttribute || "").trim();
+      this.documentDebug("quote number fallback evaluated", {
+        hasXrmPage: Boolean(formContext),
+        hasQuoteNumberAttribute: Boolean(quoteNumberAttribute),
+        hasNameAttribute: Boolean(nameAttribute),
+        resolvedQuoteNumber: resolvedQuoteNumber || "(empty)"
+      });
+      return resolvedQuoteNumber;
     } catch (error) {
       console.warn("Unable to read quote number from the form.", error);
       return "";
@@ -611,6 +675,7 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
   }
 
   private async loadDocumentApiUrl(): Promise<void> {
+    this.documentDebug("document service configuration load started");
     try {
       const [baseUrl, environmentName] = await Promise.all([
         this.getEnvironmentVariableValue("adnic_BaseServiceUrl"),
@@ -626,6 +691,9 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
       this.documentApiUrl =
         `${baseUrl.trim().replace(/\/$/, "")}/${environmentName.trim().replace(/^\/|\/$/g, "")}` +
         "/document-service/api/v1/documents";
+      this.documentDebug("document service configuration ready", {
+        documentApiUrl: this.documentApiUrl
+      });
       await this.loadMemberDocuments();
     } catch (error) {
       console.error("Failed to load document service configuration", error);
@@ -633,6 +701,11 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
   }
 
   private async loadMemberDocuments(): Promise<void> {
+    this.documentDebug("document load requested", {
+      hasDocumentApiUrl: Boolean(this.documentApiUrl),
+      is65PlusGrid: this.enableUpload,
+      currentDocumentCount: this.memberDocuments.length
+    });
     if (!this.documentApiUrl) {
       console.debug("Overage document service call is waiting for API configuration.");
       return;
@@ -653,11 +726,29 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
     try {
       const requestUrl =
         `${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(quoteNumber)}`;
-      console.debug("Loading overage member documents.", { requestUrl, quoteNumber });
+      this.documentDebug("calling document service", { requestUrl, quoteNumber });
       const response = await fetch(requestUrl);
+      this.documentDebug("document service response received", {
+        status: response.status,
+        ok: response.ok,
+        contentType: response.headers.get("content-type") || "(missing)"
+      });
       if (!response.ok) throw new Error(`Failed to load documents (${response.status})`);
       const result = await response.json();
       this.memberDocuments = Array.isArray(result) ? result : [];
+      this.documentDebug("document response parsed", {
+        responseIsArray: Array.isArray(result),
+        responseKeys: result && typeof result === "object" && !Array.isArray(result)
+          ? Object.keys(result)
+          : [],
+        loadedDocumentCount: this.memberDocuments.length,
+        documents: this.memberDocuments.map(document => ({
+          documentType: document?.documentType || "(empty)",
+          entityNumber: document?.entityNumber ?? "(empty)",
+          hasSourceUrl: Boolean(document?.blobUrl || document?.url),
+          hasFilename: Boolean(document?.originalFilename || document?.fileName)
+        }))
+      });
       this.lastRaw = null;
       this.updateView(this.context);
     } catch (error) {
