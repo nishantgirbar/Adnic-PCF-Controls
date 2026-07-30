@@ -131,6 +131,14 @@
     font-size: 12px;
 }
 
+.medical-pcf .member-comment {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+    color: #605e5c;
+    font-size: 12px;
+}
+
 .medical-pcf .uploaded-file-actions {
     display: flex;
     gap: 8px;

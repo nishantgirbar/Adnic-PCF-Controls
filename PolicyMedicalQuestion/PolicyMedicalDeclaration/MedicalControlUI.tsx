@@ -4,11 +4,12 @@ import "./style.css";
 
 export interface Member {
     id: string; serialNo: number; relation: string; gender: string; dob: string;
-    salary: string; visa: string; category: string; marital: string;
+    salary: string; visa: string; category: string; marital: string; comments: string;
 }
 export interface MemberDocument {
     entityNumber?: string | number; originalFilename?: string; fileName?: string;
-    blobUrl?: string; url?: string; comment?: string; createdAt?: string; documentType?: string;
+    blobUrl?: string; url?: string; comment?: string; comments?: string; remarks?: string;
+    createdAt?: string; documentType?: string;
 }
 export interface Question {
     id: number; question: string; answer: boolean; category: string;
@@ -89,13 +90,14 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                             </div>
                             {members.map(m => {
                                 const memberDocuments = documents.filter(d =>
-                                    d.documentType === "MEDICAL_DECLARATION" &&
+                                    String(d.documentType || "").trim().toUpperCase() === "MEDICAL_DECLARATION" &&
                                     Number(d.entityNumber) === Number(m.id));
                                 return <React.Fragment key={m.id}>
                                 <div className="row grid member-block">
                                     <div>{m.serialNo}</div><div>{m.relation}</div><div>{m.gender}</div><div>{m.dob}</div>
                                     <div>{m.salary}</div><div>{m.visa}</div><div>{m.category}</div><div>{m.marital}</div>
                                 </div>
+                                {!!m.comments && <div className="member-comment">Remarks: {m.comments}</div>}
                                 {memberDocuments.length > 0 && <div className="uploaded-files">
                                     {memberDocuments.map((doc, i) => <div className="uploaded-file-card" key={`${m.id}-${i}`}>
                                         <div className="uploaded-file-left">
@@ -104,7 +106,10 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                                 <div className="uploaded-file-name">
                                                     {doc.originalFilename || doc.fileName || "Document"}
                                                 </div>
-                                                {!!doc.comment && <div className="document-comment">Remarks: {doc.comment}</div>}
+                                                {!!(doc.comment || doc.comments || doc.remarks) &&
+                                                    <div className="document-comment">
+                                                        Remarks: {doc.comment || doc.comments || doc.remarks}
+                                                    </div>}
                                             </div>
                                         </div>
                                         <div className="uploaded-file-actions">

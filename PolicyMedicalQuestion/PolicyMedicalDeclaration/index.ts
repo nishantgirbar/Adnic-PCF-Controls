@@ -15,6 +15,9 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
     private context!: ComponentFramework.Context<IInputs>;
     private documents: MemberDocument[] = [];
     private documentApiUrl = "";
+    private lastRequestedQuoteNumber = "";
+    private documentRequestSequence = 0;
+    private documentsLoading = false;
 
     public init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged: () => void,
         _state: ComponentFramework.Dictionary, container: HTMLDivElement): void {
@@ -37,13 +40,17 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
             this.lastMemberData = incomingMemberData;
             this.readMembers(incomingMemberData);
         }
-        void this.loadDocuments();
+        const quoteNumber = this.getQuoteNumber();
+        if (this.documentApiUrl && quoteNumber !== this.lastRequestedQuoteNumber) {
+            void this.loadDocuments(quoteNumber);
+        }
         this.render();
     }
 
     private render(): void {
         this.root.render(React.createElement(MedicalControlUI, {
-            questions: this.questions, members: this.members, documents: this.documents, loading: false,
+            questions: this.questions, members: this.members, documents: this.documents,
+            loading: this.documentsLoading,
             error: [this.error, this.memberError].filter(Boolean).join(" "),
             onQuestionsChange: (questions: Question[]) => {
                 this.questions = questions;
@@ -84,14 +91,14 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
             this.documentApiUrl =
                 `${baseUrl.trim().replace(/\/$/, "")}/${environmentName.trim().replace(/^\/|\/$/g, "")}` +
                 "/document-service/api/v1/documents";
-            await this.loadDocuments();
+            await this.loadDocuments(this.getQuoteNumber());
         } catch (e) {
             console.error("Failed to load document service configuration", e);
         }
     }
 
     private getQuoteNumber(): string {
-        const boundQuoteNumber = String(this.context.parameters.quoteNumber.raw || "").trim();
+        const boundQuoteNumber = String(this.context.parameters.quoteNumber?.raw || "").trim();
         if (boundQuoteNumber) return boundQuoteNumber;
 
         try {
@@ -107,36 +114,65 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
         }
     }
 
-    private async loadDocuments(): Promise<void> {
+    private async loadDocuments(requestedQuoteNumber?: string): Promise<void> {
         if (!this.documentApiUrl) {
             console.debug("Document service call is waiting for API configuration.");
             return;
         }
 
-        const quoteNumber = this.getQuoteNumber();
+        const quoteNumber = String(requestedQuoteNumber || this.getQuoteNumber()).trim();
         if (!quoteNumber) {
             console.error(
                 "Document service call skipped because quoteNumber is empty. " +
                 "Bind the quoteNumber input or ensure adnic_quotenumber/adnic_name exists on the form."
             );
             this.documents = [];
+            this.lastRequestedQuoteNumber = "";
             this.render();
             return;
         }
 
+        if (quoteNumber === this.lastRequestedQuoteNumber && this.documentsLoading) return;
+
+        this.lastRequestedQuoteNumber = quoteNumber;
+        const requestSequence = ++this.documentRequestSequence;
+        this.documentsLoading = true;
+        this.render();
+
         try {
             const requestUrl =
                 `${this.documentApiUrl}?referenceType=QUOTE&referenceId=${encodeURIComponent(quoteNumber)}`;
-            console.debug("Loading medical documents.", { requestUrl, quoteNumber });
+            console.info("[PolicyMedicalQuestion] Calling document service.", { requestUrl, quoteNumber });
             const response = await fetch(requestUrl);
             if (!response.ok) throw new Error(`Failed to load documents (${response.status})`);
             const result = await response.json();
-            this.documents = Array.isArray(result) ? result : [];
+            if (requestSequence !== this.documentRequestSequence) return;
+
+            const responseDocuments = Array.isArray(result)
+                ? result
+                : Array.isArray(result?.documents)
+                    ? result.documents
+                    : Array.isArray(result?.data)
+                        ? result.data
+                        : [];
+            this.documents = responseDocuments.map((document: any) => ({
+                ...document,
+                comment: String(document?.comment ?? document?.comments ?? document?.remarks ?? "")
+            }));
+            console.info("[PolicyMedicalQuestion] Document service response loaded.", {
+                quoteNumber,
+                documentCount: this.documents.length
+            });
         } catch (e) {
+            if (requestSequence !== this.documentRequestSequence) return;
             console.error("Failed to load medical member documents", e);
             this.documents = [];
+        } finally {
+            if (requestSequence === this.documentRequestSequence) {
+                this.documentsLoading = false;
+                this.render();
+            }
         }
-        this.render();
     }
 
     private readMembers(json: string): void {
@@ -163,7 +199,8 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
                     salary: String(item?.salaryType ?? item?.salary ?? ""),
                     visa: String(item?.visaLocation ?? item?.visa ?? ""),
                     category: String(item?.category ?? ""),
-                    marital: String(item?.maritalStatus ?? item?.marital ?? "")
+                    marital: String(item?.maritalStatus ?? item?.marital ?? ""),
+                    comments: String(item?.comments ?? item?.comment ?? item?.remarks ?? "")
                 }));
         } catch (error) {
             console.error("Policy member JSON is invalid.", error);
