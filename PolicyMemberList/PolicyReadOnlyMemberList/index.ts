@@ -600,6 +600,9 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
       ...member,
       attachments: [...sourceAttachments, ...apiDocuments]
     });
+    const documentRemarks = apiDocuments
+      .map(document => String(document.comment || "").trim())
+      .find(comment => comment.length > 0) || "";
 
     return {
       ...member,
@@ -615,7 +618,10 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
       medicalDeclared: this.toBoolean(member?.medicalDeclared),
       overaged: this.toBoolean(member?.overaged),
       premium: member?.premium || {},
-      remarks: String(member?.remarks || ""),
+      // In policy view the saved document-service comment is the source of
+      // truth for the read-only Remarks field. Retain member JSON as a
+      // fallback for records that do not yet have a service document.
+      remarks: documentRemarks || String(member?.remarks || ""),
       attachments,
       document: "",
       documentName: attachments[0]?.name || String(member?.documentName || "")
@@ -735,7 +741,17 @@ export class PolicyQuoteMemberViewerV2 implements ComponentFramework.StandardCon
       });
       if (!response.ok) throw new Error(`Failed to load documents (${response.status})`);
       const result = await response.json();
-      this.memberDocuments = Array.isArray(result) ? result : [];
+      const responseDocuments = Array.isArray(result)
+        ? result
+        : Array.isArray(result?.documents)
+          ? result.documents
+          : Array.isArray(result?.data)
+            ? result.data
+            : [];
+      this.memberDocuments = responseDocuments.map((document: any) => ({
+        ...document,
+        comment: String(document?.comment ?? "")
+      }));
       this.documentDebug("document response parsed", {
         responseIsArray: Array.isArray(result),
         responseKeys: result && typeof result === "object" && !Array.isArray(result)

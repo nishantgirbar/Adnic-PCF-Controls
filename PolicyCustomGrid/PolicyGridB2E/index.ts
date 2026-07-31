@@ -2,7 +2,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { PolicyGrid } from "./PolicyGrid";
 
-interface IInputs {}
+interface IInputs {
+  RoleType: ComponentFramework.PropertyTypes.StringProperty;
+}
 
 export class CustomGridB2E
   implements ComponentFramework.StandardControl<IInputs, Record<string, never>> {
@@ -27,6 +29,8 @@ export class CustomGridB2E
 
   private apiBaseUrl: string = "";
 
+  private roleType: string = "";
+
   public init(
     context: ComponentFramework.Context<IInputs>,
     notifyOutputChanged: () => void,
@@ -35,6 +39,7 @@ export class CustomGridB2E
   ): void {
 
     this.context = context;
+    this.roleType = context.parameters.RoleType?.raw || "";
 
     this.container = container;
     this.container.style.width = "100%";
@@ -156,6 +161,18 @@ export class CustomGridB2E
           `&status=${encodeURIComponent(this.quoteStatus.trim())}`;
       }
 
+      if (this.roleType.trim()) {
+        const parameters = new URLSearchParams({
+          bdUserId: "42",
+          status: this.quoteStatus.trim(),
+          search: this.searchText.trim(),
+          page: String(this.page),
+          size: String(this.size)
+        });
+
+        url = `${this.apiBaseUrl}/policy-command/api/v1/policies/bd-dashboard?${parameters.toString()}`;
+      }
+
       console.log(
         "API URL:",
         url
@@ -267,14 +284,31 @@ export class CustomGridB2E
 
         context: this.context,
 
-        apiBaseUrl: this.apiBaseUrl
+        apiBaseUrl: this.apiBaseUrl,
+
+        roleType: this.context.parameters.RoleType?.raw || ""
       })
     );
   }
 
   public updateView(context: ComponentFramework.Context<IInputs>): void {
 
+    const nextRoleType = context.parameters.RoleType?.raw || "";
+    const roleChanged = nextRoleType !== this.roleType;
+
     this.context = context;
+    this.roleType = nextRoleType;
+
+    if (roleChanged) {
+      this.page = 0;
+      this.data = null;
+      void this.loadData();
+      return;
+    }
+
+    if (this.data) {
+      this.renderControl();
+    }
   }
 
   public getOutputs(): Record<string, never> {

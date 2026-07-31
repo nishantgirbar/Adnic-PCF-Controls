@@ -92,12 +92,16 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                 const memberDocuments = documents.filter(d =>
                                     String(d.documentType || "").trim().toUpperCase() === "MEDICAL_DECLARATION" &&
                                     Number(d.entityNumber) === Number(m.id));
-                                return <React.Fragment key={m.id}>
+                                const documentRemarks = memberDocuments
+                                    .map(doc => String(doc.comment || "").trim())
+                                    .find(comment => comment.length > 0);
+                                return <div className="member-section" key={m.id}>
                                 <div className="row grid member-block">
                                     <div>{m.serialNo}</div><div>{m.relation}</div><div>{m.gender}</div><div>{m.dob}</div>
                                     <div>{m.salary}</div><div>{m.visa}</div><div>{m.category}</div><div>{m.marital}</div>
                                 </div>
-                                {!!m.comments && <div className="member-comment">Remarks: {m.comments}</div>}
+                                {!!(documentRemarks || m.comments) &&
+                                    <div className="member-comment">Remarks: {documentRemarks || m.comments}</div>}
                                 {memberDocuments.length > 0 && <div className="uploaded-files">
                                     {memberDocuments.map((doc, i) => <div className="uploaded-file-card" key={`${m.id}-${i}`}>
                                         <div className="uploaded-file-left">
@@ -114,13 +118,27 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                         </div>
                                         <div className="uploaded-file-actions">
                                             <button type="button" className="file-view-btn"
-                                                onClick={() => void viewDocument(doc)}>View</button>
+                                                onClick={() => void viewDocument(doc)}>
+                                                <span className="file-action-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 16 16" focusable="false">
+                                                        <path d="M8 3c3.3 0 5.8 2.8 6.7 4.1a1.5 1.5 0 0 1 0 1.8C13.8 10.2 11.3 13 8 13s-5.8-2.8-6.7-4.1a1.5 1.5 0 0 1 0-1.8C2.2 5.8 4.7 3 8 3Zm0 1C5.2 4 3 6.5 2.1 7.7a.5.5 0 0 0 0 .6C3 9.5 5.2 12 8 12s5-2.5 5.9-3.7a.5.5 0 0 0 0-.6C13 6.5 10.8 4 8 4Zm0 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5Zm0 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" />
+                                                    </svg>
+                                                </span>
+                                                <span>View</span>
+                                            </button>
                                             <button type="button" className="file-download-btn"
-                                                onClick={() => void downloadDocument(doc)}>Download</button>
+                                                onClick={() => void downloadDocument(doc)}>
+                                                <span className="file-action-icon" aria-hidden="true">
+                                                    <svg viewBox="0 0 16 16" focusable="false">
+                                                        <path d="M7.5 1a.5.5 0 0 1 1 0v8.3l2.15-2.15a.5.5 0 0 1 .7.7l-3 3a.5.5 0 0 1-.7 0l-3-3a.5.5 0 1 1 .7-.7L7.5 9.3V1ZM2 12.5a.5.5 0 0 1 .5.5v1h11v-1a.5.5 0 0 1 1 0v1.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V13a.5.5 0 0 1 .5-.5Z" />
+                                                    </svg>
+                                                </span>
+                                                <span>Download</span>
+                                            </button>
                                         </div>
                                     </div>)}
                                 </div>}
-                                </React.Fragment>;
+                                </div>;
                             })}
                         </div>
                     )}

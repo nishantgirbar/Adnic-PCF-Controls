@@ -92,6 +92,11 @@
     display: none;
 }
 
+.pcf-action-dropdown {
+    width: 100%;
+    min-width: 100px;
+}
+
 .pcf-quote-link {
     color: #0f6cbd;
     cursor: pointer;

@@ -55,7 +55,8 @@ export const PolicyGrid = ({
   onPageSizeChange,
   onSearch,
   context,
-  apiBaseUrl
+  apiBaseUrl,
+  roleType
 }: any) => {
 
   const [expanded, setExpanded] = React.useState<{ [key: number]: boolean }>({});
@@ -1072,6 +1073,171 @@ const openQuoteViewDialog = async (item: any) => {
     }
   ];
 
+  const normalizedRoleType = String(roleType || "").trim().toUpperCase();
+
+  const getFirstValue = (item: any, fieldNames: string[], fallback = "-") => {
+    for (const fieldName of fieldNames) {
+      const value = item?.[fieldName];
+      if (value !== undefined && value !== null && String(value).trim() !== "") {
+        return value;
+      }
+    }
+    return fallback;
+  };
+
+  const formatDate = (value: any) => {
+    if (!value) return "-";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString();
+  };
+
+  const formatPremium = (item: any) => {
+    const value = getFirstValue(
+      item,
+      ["premium", "totalPremium", "grossPremium", "netPremium"],
+      "-"
+    );
+    if (value === "-") return value;
+
+    const numericValue =
+      typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
+    if (Number.isNaN(numericValue)) return String(value);
+
+    const currency = getFirstValue(item, ["currency", "currencyCode"], "");
+    const formattedValue = numericValue.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return currency ? `${currency} ${formattedValue}` : formattedValue;
+  };
+
+  const policyColumns: IColumn[] = [
+    {
+      key: "policyQuote",
+      name: "QUOTE NO",
+      fieldName: "quoteNumber",
+      minWidth: 125,
+      maxWidth: 155,
+      isResizable: true,
+      onRender: (item: any) => (
+        <span
+          className={item.isAvailableInCRM ? "pcf-quote-link" : "pcf-quote-link-disabled"}
+          onClick={() => item.isAvailableInCRM && openMainQuoteForm(item)}
+        >
+          {item.quoteNumber}
+        </span>
+      )
+    },
+    {
+      key: "clientName",
+      name: "CLIENT NAME",
+      minWidth: 130,
+      maxWidth: 190,
+      isResizable: true,
+      onRender: (item: any) =>
+        getFirstValue(item, ["clientName", "companyName", "customerName"])
+    },
+    {
+      key: "policyStatus",
+      name: "STATUS",
+      minWidth: 145,
+      maxWidth: 190,
+      isResizable: true,
+      onRender: (item: any) => (
+        <span style={getStatusStyle(item.status)}>{getStatusText(item.status)}</span>
+      )
+    },
+    {
+      key: "broker",
+      name: "BROKER",
+      minWidth: 135,
+      maxWidth: 190,
+      isResizable: true,
+      onRender: (item: any) =>
+        getFirstValue(item, ["brokerName", "broker", "brokerCompanyName"])
+    },
+    {
+      key: "policyType",
+      name: "POLICY TYPE",
+      minWidth: 100,
+      maxWidth: 135,
+      isResizable: true,
+      onRender: (item: any) =>
+        getFirstValue(item, ["policyType", "productType", "sourceOfBusiness"])
+    },
+    {
+      key: "kycApproval",
+      name: "KYC APPROVAL",
+      minWidth: 105,
+      maxWidth: 130,
+      isResizable: true,
+      onRender: (item: any) =>
+        getFirstValue(item, ["kycApproval", "kycApproved", "isKycApproved"])
+    },
+    {
+      key: "expApproval",
+      name: "EXP APPR",
+      minWidth: 90,
+      maxWidth: 115,
+      isResizable: true,
+      onRender: (item: any) =>
+        getFirstValue(item, [
+          "expApproval",
+          "exceptionApproval",
+          "exceptionApproved",
+          "isExceptionApproved"
+        ])
+    },
+    {
+      key: "policyAction",
+      name: "ACTION",
+      minWidth: 110,
+      maxWidth: 130,
+      onRender: (item: any) => {
+        const canProceed = (item.status || "").toUpperCase() === "CUS_APPROVED";
+        const actionOptions: IDropdownOption[] = [
+          { key: "view", text: "View" },
+          { key: "proceed", text: "Proceed", disabled: !canProceed }
+        ];
+
+        return (
+          <Dropdown
+            className="pcf-action-dropdown"
+            placeholder="Select"
+            selectedKey={null}
+            options={actionOptions}
+            ariaLabel={`Actions for ${item.quoteNumber || "quote"}`}
+            onChange={(_, option) => {
+              if (option && (option.key === "view" || option.key === "proceed")) {
+                navigateToPolicy(item);
+              }
+            }}
+          />
+        );
+      }
+    },
+    {
+      key: "policyQuoteDate",
+      name: "QUOTE DATE",
+      minWidth: 105,
+      maxWidth: 130,
+      isResizable: true,
+      onRender: (item: any) =>
+        formatDate(getFirstValue(item, ["quoteDate", "createdAt"], ""))
+    },
+    {
+      key: "premium",
+      name: "PREMIUM",
+      minWidth: 105,
+      maxWidth: 140,
+      isResizable: true,
+      onRender: formatPremium
+    }
+  ];
+
+  const displayedColumns =
+    normalizedRoleType.length > 0 ? policyColumns : referenceColumns;
+
   const getSearchKey = (query: string, status: string) =>
     `${(query || "").trim()}|${status || ""}`;
 
@@ -1172,7 +1338,7 @@ const openQuoteViewDialog = async (item: any) => {
         <div className="pcf-crm-grid">
           <DetailsList
             items={items}
-            columns={referenceColumns}
+            columns={displayedColumns}
             getKey={(item) => String(item.key)}
             selectionMode={SelectionMode.none}
             layoutMode={DetailsListLayoutMode.justified}
