@@ -3,7 +3,7 @@
   <control 
     namespace="crmInput"
     constructor="InputPCF"
-    version="1.6.0"
+    version="2.0.0"
     display-name-key="InputControl"
     description-key="Input control"
     control-type="standard">

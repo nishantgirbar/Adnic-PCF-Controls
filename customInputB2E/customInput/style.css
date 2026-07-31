@@ -1,3 +1,8 @@
+.custom-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
 .custom-input {
     width: 100%;
     min-height: 36px;
@@ -18,6 +23,157 @@
     transition:
         border-color 0.15s ease,
         box-shadow 0.15s ease;
+}
+
+.native-date-picker {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.date-display {
+    padding-right: 44px;
+    cursor: default;
+}
+
+.calendar-button {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #323130;
+    font-family: "Segoe UI Symbol", "Segoe UI", sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.crm-calendar {
+    position: fixed;
+    z-index: 100000;
+    width: 292px;
+    padding: 12px;
+    border: 1px solid #d1d1d1;
+    border-radius: 2px;
+    background: #ffffff;
+    box-shadow: 0 3.2px 7.2px rgba(0, 0, 0, 0.13),
+        0 0.6px 1.8px rgba(0, 0, 0, 0.11);
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.calendar-title {
+    color: #323130;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.month-button {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: #323130;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.month-button:hover:not(:disabled) {
+    background: #f3f2f1;
+}
+
+.month-button:disabled {
+    color: #c8c6c4;
+    cursor: default;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 36px);
+    gap: 2px;
+}
+
+.calendar-weekday {
+    height: 28px;
+    color: #605e5c;
+    font-size: 12px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.calendar-day {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: #323130;
+    font: 14px "Segoe UI", Arial, sans-serif;
+    cursor: pointer;
+}
+
+.calendar-day:hover:not(:disabled):not(.selected) {
+    background: #edebe9;
+}
+
+.calendar-day.outside-month {
+    color: #8a8886;
+}
+
+.calendar-day.today:not(.selected) {
+    border: 1px solid #0078d4;
+}
+
+.calendar-day.selected {
+    background: #0078d4;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.calendar-day:disabled {
+    color: #c8c6c4;
+    cursor: default;
+}
+
+.calendar-time {
+    width: 100%;
+    height: 34px;
+    margin-top: 10px;
+    padding: 4px 8px;
+    border: 1px solid #8a8886;
+    border-radius: 2px;
+    color: #323130;
+    font: 14px "Segoe UI", Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.calendar-button:hover {
+    background: #f3f2f1;
+}
+
+.calendar-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 .custom-input:hover {
