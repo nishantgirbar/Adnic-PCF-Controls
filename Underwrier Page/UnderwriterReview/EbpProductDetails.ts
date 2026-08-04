@@ -326,6 +326,16 @@ export const buildJsonProductDetailMap = (
             category?.annualLimit
         );
 
+        const networkType =
+            getNetworkType(provider, plan) ||
+            category?.networkType;
+
+        setDetail(
+            "Network Type",
+            categoryCode,
+            networkType
+        );
+
         setDetail(
             "Territorial Coverage",
             categoryCode,
@@ -340,13 +350,28 @@ export const buildJsonProductDetailMap = (
                     : [];
 
         benefits.forEach((benefit: any) => {
-            setDetail(
+            const benefitName = String(
                 benefit?.name ||
                 benefit?.benefitName ||
-                benefit?.code,
+                benefit?.code ||
+                ""
+            ).trim();
+            const normalizedBenefitName =
+                benefitName.toUpperCase();
+
+            setDetail(
+                normalizedBenefitName === "NETWORK" ||
+                normalizedBenefitName === "NETWORK TYPE"
+                    ? "Network Type"
+                    : benefitName,
                 categoryCode,
-                benefit?.value ||
-                benefit?.benefitValue
+                normalizedBenefitName === "NETWORK" ||
+                normalizedBenefitName === "NETWORK TYPE"
+                    ? networkType ||
+                        benefit?.value ||
+                        benefit?.benefitValue
+                    : benefit?.value ||
+                        benefit?.benefitValue
             );
         });
     });

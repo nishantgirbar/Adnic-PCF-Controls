@@ -126,13 +126,20 @@ export const PolicyGrid = ({
 
   // 🔥 STATUS TEXT
 
-  const getStatusText = (status: string) => {
+  const getStatusDisplayName = (status: any): string =>
+    String(status?.displayName || "").trim();
 
-    if (!status) return "";
+  const getNormalizedStatus = (status: any): string =>
+    getStatusDisplayName(status).toUpperCase().replace(/\s+/g, "_");
 
-    const normalizedStatus = status.trim().toUpperCase();
+  const getStatusText = (status: any) => {
 
-    return statusTranslations[normalizedStatus] || status
+    const statusText = getStatusDisplayName(status);
+    if (!statusText) return "";
+
+    const normalizedStatus = getNormalizedStatus(status);
+
+    return statusTranslations[normalizedStatus] || statusText
       .replace(/_/g, " ")
       .toLowerCase()
       .replace(/\b\w/g, c => c.toUpperCase());
@@ -140,9 +147,9 @@ export const PolicyGrid = ({
 
   // 🔥 STATUS STYLE
 
-const getStatusStyle = (status: string): React.CSSProperties => {
+const getStatusStyle = (status: any): React.CSSProperties => {
 
-  const value = (status || "").toUpperCase();
+  const value = getNormalizedStatus(status);
 
   if (value.includes("QUOT")) {
 
@@ -228,11 +235,7 @@ const getStatusStyle = (status: string): React.CSSProperties => {
         return alert("Quote not found");
       }
 
-      const normalizedStatus = (item.status || "")
-        .toString()
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "_");
+      const normalizedStatus = getNormalizedStatus(item.status);
 
       const formId = normalizedStatus.includes("UW_REVIEW_IN_PROGRESS")
         ? "3abb9f29-a347-f111-bec6-70a8a522d03b"
@@ -550,7 +553,13 @@ const openQuoteViewDialog = async (item: any) => {
       setLocalData(prev =>
         prev.map(row =>
           row.id === id
-            ? { ...row, status: "CUS_APPROVED" }
+            ? {
+                ...row,
+                status: {
+                  ...row.status,
+                  displayName: "Customer Approved"
+                }
+              }
             : row
         )
       );
@@ -601,17 +610,20 @@ const openQuoteViewDialog = async (item: any) => {
 
   localData.forEach((q: any) => {
     const id = q.id;
+    // Use the quote version only for React row identity. All API operations
+    // and row actions continue to use the quote id.
+    const rowKey = String(q.quoteVersionId);
 
     items.push({
       ...q,
-      key: id,
+      key: rowKey,
       id,
       isUpload: false
     });
 
-    if (expanded[id] && q.status !== "CUS_APPROVED") {
+    if (expanded[id] && getNormalizedStatus(q.status) !== "CUSTOMER_APPROVED") {
       items.push({
-        key: id + "_upload",
+        key: `${rowKey}_upload`,
         parentId: id,
         isUpload: true
       });
@@ -647,7 +659,7 @@ const openQuoteViewDialog = async (item: any) => {
 
       onRender: (item: any) =>
 
-        item.isUpload || !(item.status || "").toUpperCase().includes("GENERATED")
+        item.isUpload || !getNormalizedStatus(item.status).includes("GENERATED")
 
           ? null
 
@@ -802,11 +814,9 @@ const openQuoteViewDialog = async (item: any) => {
 
           const canIterate =
             isAvailable &&
-           ((item.status || "")
-              .toUpperCase()
+           (getNormalizedStatus(item.status)
               .includes("GENERATED") ||
-              (item.status || "")
-              .toUpperCase()
+              getNormalizedStatus(item.status)
               .includes("REVIEW"));
 
           return (
@@ -872,7 +882,7 @@ const openQuoteViewDialog = async (item: any) => {
 
               {/* 🔥 PROCEED */}
 
-              {item.status === "CUS_APPROVED" && (
+              {getNormalizedStatus(item.status) === "CUSTOMER_APPROVED" && (
 
                 <PrimaryButton
                   text="Proceed"
@@ -965,7 +975,7 @@ const openQuoteViewDialog = async (item: any) => {
       minWidth: 130,
       maxWidth: 150,
       onRender: (item: any) => {
-        const canUpload = (item.status || "").toUpperCase().includes("GENERATED");
+        const canUpload = getNormalizedStatus(item.status).includes("GENERATED");
         return (
           <div className="pcf-icon-cell">
             <IconButton
@@ -1017,7 +1027,7 @@ const openQuoteViewDialog = async (item: any) => {
       minWidth: 115,
       maxWidth: 135,
       onRender: (item: any) => {
-        const status = (item.status || "").toUpperCase();
+        const status = getNormalizedStatus(item.status);
         const canIterate =
           item.isAvailableInCRM &&
           (status.includes("GENERATED") || status.includes("REVIEW"));
@@ -1040,7 +1050,7 @@ const openQuoteViewDialog = async (item: any) => {
       minWidth: 85,
       maxWidth: 100,
       onRender: (item: any) => {
-        const canProceed = item.status === "CUS_APPROVED";
+        const canProceed = getNormalizedStatus(item.status) === "CUSTOMER_APPROVED";
         return (
           <div className="pcf-icon-cell">
             <IconButton
@@ -1194,7 +1204,7 @@ const openQuoteViewDialog = async (item: any) => {
       minWidth: 110,
       maxWidth: 130,
       onRender: (item: any) => {
-        const canProceed = (item.status || "").toUpperCase() === "CUS_APPROVED";
+        const canProceed = getNormalizedStatus(item.status) === "CUSTOMER_APPROVED";
         const actionOptions: IDropdownOption[] = [
           { key: "view", text: "View" },
           { key: "proceed", text: "Proceed", disabled: !canProceed }

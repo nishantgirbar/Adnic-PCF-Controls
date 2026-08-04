@@ -678,12 +678,6 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                     ? ""
                     : this.getEbpNetworkType(category) ||
                     category?.networkType
-            },
-            {
-                name: "Territorial Coverage",
-                value:
-                    this.getSuperiorSixTerritorialCoverage(category) ||
-                    category?.territorialCoverage
             }
         ].filter((benefit: any) =>
             benefit.value !== undefined &&
