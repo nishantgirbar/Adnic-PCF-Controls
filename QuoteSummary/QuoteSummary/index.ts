@@ -259,7 +259,8 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                     ? this.getBenefitsArray(customerEbpPlan)
                     : this.getDisplayBenefits(
                         planDetailsSource,
-                        useJsonProductDetails
+                        useJsonProductDetails,
+                        isEbpProduct
                     );
 
             const matchedCategoryMembers = members.filter(
@@ -589,15 +590,75 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
 
     private getDisplayBenefits(
         category: any,
-        fromProductDetailsJson: boolean
+        fromProductDetailsJson: boolean,
+        isEbpProduct: boolean
     ): any[] {
 
         const benefits =
-            this.getBenefitsArray(category);
+            this.getBenefitsArray(category).map((benefit: any) => {
 
-        if (!fromProductDetailsJson) {
+                const benefitName = String(
+                    benefit?.benefitName ||
+                    benefit?.name ||
+                    benefit?.code ||
+                    ""
+                ).trim().toUpperCase();
+
+                if (
+                    isEbpProduct &&
+                    (
+                    benefitName === "TERRITORIAL COVERAGE" ||
+                    benefitName === "TERRITORIAL_COMPREHENSIVE"
+                    )
+                ) {
+                    const territorialCoverage =
+                        this.getSuperiorSixTerritorialCoverage(category);
+
+                    if (territorialCoverage) {
+                        return {
+                            ...benefit,
+                            benefitValue: territorialCoverage,
+                            value: territorialCoverage
+                        };
+                    }
+                }
+
+                if (
+                    isEbpProduct &&
+                    (
+                    benefitName === "NETWORK TYPE" ||
+                    benefitName === "NETWORK"
+                    )
+                ) {
+                    const networkType =
+                        this.getEbpNetworkType(category);
+
+                    if (networkType) {
+                        return {
+                            ...benefit,
+                            benefitValue: networkType,
+                            value: networkType
+                        };
+                    }
+                }
+
+                return benefit;
+            });
+
+        if (!fromProductDetailsJson && !isEbpProduct) {
             return benefits;
         }
+
+        const hasNetworkTypeBenefit = benefits.some((benefit: any) => {
+            const name = String(
+                benefit?.benefitName ||
+                benefit?.name ||
+                benefit?.code ||
+                ""
+            ).trim().toUpperCase();
+
+            return name === "NETWORK TYPE" || name === "NETWORK";
+        });
 
         const topLevelBenefits = [
             {
@@ -612,8 +673,16 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                     category?.annualLimit
             },
             {
+                name: "Network Type",
+                value: hasNetworkTypeBenefit
+                    ? ""
+                    : this.getEbpNetworkType(category) ||
+                    category?.networkType
+            },
+            {
                 name: "Territorial Coverage",
                 value:
+                    this.getSuperiorSixTerritorialCoverage(category) ||
                     category?.territorialCoverage
             }
         ].filter((benefit: any) =>
@@ -626,6 +695,76 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
             ...topLevelBenefits,
             ...benefits
         ];
+    }
+
+    private getSuperiorSixTerritorialCoverage(category: any): string {
+
+        const provider = this.getNetworkProvider(category)
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+        const plan = this.getNetworkType(category)
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+        if (provider !== "FMC") {
+            return "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments. Elective IP treatment outside UAE is subject to prior approval. Emergency medical treatment within all emirates of the UAE";
+        }
+
+        return "UAE, Oman, Qatar & Indian Sub-continent & South East Asia (Excluding Hong Kong & Singapore) for Elective & Emergency Treatments";
+    }
+
+    private getEbpNetworkType(category: any): string {
+
+        const provider = this.getNetworkProvider(category)
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+        const plan = this.getNetworkType(category)
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+        if (provider === "ECARE") {
+            if (plan === "SUPERIOR1" || plan === "SUPERIOR2") {
+                return "Green";
+            }
+
+            if ([
+                "BASIC",
+                "BASICPLUS",
+                "ENHANCED1",
+                "ENHANCED2"
+            ].indexOf(plan) > -1) {
+                return "Blue";
+            }
+        }
+
+        if (provider === "FMC") {
+            if (plan === "BASICLSB" || plan === "BASICHSB") {
+                return "Basic Network";
+            }
+
+            if ([
+                "SUPERIOR3",
+                "SUPERIOR4",
+                "SUPERIOR5",
+                "SUPERIOR6"
+            ].indexOf(plan) > -1) {
+                return "Standard Network";
+            }
+
+            if ([
+                "BASICPLUS",
+                "ENHANCED1",
+                "ENHANCED2",
+                "SUPERIOR1",
+                "SUPERIOR2"
+            ].indexOf(plan) > -1) {
+                return "Network 2";
+            }
+        }
+
+        return "";
     }
 
     private mapBenefits(benefits: any[]): Array<{
@@ -1091,6 +1230,8 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                                 ${plan.memberBreakdownLabel}
                             </div>
 
+                            <div class="plan-row-colon">:</div>
+
                             <div class="value red">
 
                                 ${plan.memberBreakdown
@@ -1242,8 +1383,9 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
         return `
             <div class="plan-row">
                 <div class="label">${label}</div>
+                <div class="plan-row-colon">:</div>
                 <div class="value">
-                    : ${value || "-"}
+                    ${value || "-"}
                 </div>
             </div>
         `;

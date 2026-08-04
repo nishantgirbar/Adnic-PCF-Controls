@@ -11,12 +11,88 @@ import { CoverageTable } from "./CoverageTable";
 import { EbpPlan } from "./EbpPlan";
 import { MAFDeclaration } from "./MAFDeclaration";
 
-const getMemberKey = (member: any): string =>
-    String(
-        member?.id ??
-        member?.memberId ??
-        ""
+const getMemberKey = (member: any): string => {
+    const key = [
+        member?.id,
+        member?.memberId,
+        member?.serialNo,
+        member?.serialNumber
+    ].find((value: any) =>
+        String(value ?? "").trim() !== ""
     );
+
+    return String(key ?? "").trim();
+};
+
+const normalizeEntityKey = (value: any): string => {
+    const key = String(value ?? "").trim();
+
+    if (!key) {
+        return "";
+    }
+
+    return /^\d+$/.test(key)
+        ? String(Number(key))
+        : key.toUpperCase();
+};
+
+const getDocumentsForMember = (
+    documents: any[],
+    documentType: string,
+    member: any
+): any[] => {
+    const memberKey = normalizeEntityKey(getMemberKey(member));
+
+    if (!memberKey) {
+        return [];
+    }
+
+    const uniqueDocuments = new Map<string, any>();
+
+    (documents || [])
+        .filter((doc: any) =>
+            doc?.documentType === documentType &&
+            normalizeEntityKey(doc?.entityNumber) === memberKey
+        )
+        .forEach((doc: any, index: number) => {
+            const fileName = String(
+                doc?.originalFilename ||
+                doc?.fileName ||
+                ""
+            ).trim().toLocaleLowerCase();
+
+            const sourceUrl = String(
+                doc?.blobUrl ||
+                doc?.url ||
+                ""
+            ).trim().toLocaleLowerCase();
+
+            const documentId = String(
+                doc?.id ||
+                doc?.documentId ||
+                ""
+            ).trim().toLocaleLowerCase();
+
+            // The document service can return one record per overage-member
+            // row for the same uploaded file. Those records may have different
+            // IDs, so the filename is the logical identity used by the upload
+            // control and must take precedence when removing duplicates.
+            const documentKey =
+                fileName
+                    ? `file:${fileName}`
+                    : sourceUrl
+                        ? `url:${sourceUrl}`
+                        : documentId
+                            ? `id:${documentId}`
+                            : `unknown:${index}`;
+
+            if (!uniqueDocuments.has(documentKey)) {
+                uniqueDocuments.set(documentKey, doc);
+            }
+        });
+
+    return Array.from(uniqueDocuments.values());
+};
 
 export const MainContainer = ({
     quoteId,
@@ -281,28 +357,16 @@ export const MainContainer = ({
     // DOCUMENT FILTERING
     // =====================================
 
-    const medicalDocuments = documents.filter(
-        (doc: any) =>
-            doc?.documentType ===
-                "MEDICAL_DECLARATION" &&
-            Number(doc?.entityNumber) ===
-            Number(
-                getMemberKey(
-                    selectedMedicalMember
-                )
-            )
+    const medicalDocuments = getDocumentsForMember(
+        documents,
+        "MEDICAL_DECLARATION",
+        selectedMedicalMember
     );
 
-    const overAgeDocuments = documents.filter(
-        (doc: any) =>
-            doc?.documentType ===
-                "OVERAGE_DOCUMENT" &&
-            Number(doc?.entityNumber) ===
-            Number(
-                getMemberKey(
-                    selectedOverAgeMember
-                )
-            )
+    const overAgeDocuments = getDocumentsForMember(
+        documents,
+        "OVERAGE_DOCUMENT",
+        selectedOverAgeMember
     );
 
     return (

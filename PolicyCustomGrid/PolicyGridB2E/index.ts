@@ -165,10 +165,13 @@ export class CustomGridB2E
         const parameters = new URLSearchParams({
           bdUserId: "42",
           status: this.quoteStatus.trim(),
-          search: this.searchText.trim(),
           page: String(this.page),
           size: String(this.size)
         });
+
+        if (this.searchText?.trim()) {
+          parameters.set("search", this.searchText.trim());
+        }
 
         url = `${this.apiBaseUrl}/policy-command/api/v1/policies/bd-dashboard?${parameters.toString()}`;
       }

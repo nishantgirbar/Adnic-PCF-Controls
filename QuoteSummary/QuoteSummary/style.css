@@ -97,11 +97,17 @@
 
 .plan-row {
     display: grid;
-    grid-template-columns: minmax(130px, 190px) minmax(0, 1fr);
-    column-gap: 8px;
+    grid-template-columns: minmax(130px, 190px) 8px minmax(0, 1fr);
+    column-gap: 4px;
     margin: 12px;
     align-items: start;
     min-width: 0;
+}
+
+.plan-row-colon {
+    color: #605e5c;
+    line-height: 20px;
+    text-align: center;
 }
 
 .quote-wrapper .value {
@@ -144,8 +150,8 @@
     }
 
     .plan-row {
-        grid-template-columns: 1fr;
-        row-gap: 2px;
+        grid-template-columns: minmax(110px, 140px) 8px minmax(0, 1fr);
+        column-gap: 4px;
         margin: 10px 0;
     }
 }
