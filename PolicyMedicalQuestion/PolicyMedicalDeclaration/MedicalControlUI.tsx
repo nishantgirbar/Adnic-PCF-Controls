@@ -110,10 +110,6 @@ const MedicalControlUI: React.FC<Props> = ({ questions, members, documents, load
                                                 <div className="uploaded-file-name">
                                                     {doc.originalFilename || doc.fileName || "Document"}
                                                 </div>
-                                                {!!(doc.comment || doc.comments || doc.remarks) &&
-                                                    <div className="document-comment">
-                                                        Remarks: {doc.comment || doc.comments || doc.remarks}
-                                                    </div>}
                                             </div>
                                         </div>
                                         <div className="uploaded-file-actions">

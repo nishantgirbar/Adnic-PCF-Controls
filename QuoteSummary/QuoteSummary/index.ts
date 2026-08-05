@@ -1097,6 +1097,17 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
 
     private render(data: any): void {
 
+        const planTypeLabels = data.plans.map((plan: any) =>
+            plan.isEbp || data.productType === "EBP"
+                ? "Plan Type"
+                : "Network Type"
+        );
+        const matrixPlanTypeLabel = planTypeLabels.every(
+            (label: string) => label === planTypeLabels[0]
+        )
+            ? planTypeLabels[0] || "Network Type"
+            : "Plan Type";
+
         this.container.innerHTML = `
 
         <div class="quote-wrapper">
@@ -1146,7 +1157,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
 
                 ${this.row(
             "Insurance Company",
-            data.quotation.company,
+            "ADNIC",
             4
         )}
 
@@ -1297,7 +1308,7 @@ export class QuoteSummaryPCF implements ComponentFramework.StandardControl<IInpu
                     <div class="matrix-row">
 
                         <div class="matrix-label">
-                            Network
+                            ${matrixPlanTypeLabel}
                         </div>
 
                        ${data.plans.map((plan: any) => `

@@ -20,6 +20,8 @@ export class PolicyQuotePremiumSummary implements ComponentFramework.StandardCon
     private container!: HTMLDivElement;
     private lastInput: string | null = null;
     private lastShowPlanDetails = false;
+    private readonly symbolUrl = (window as any).Xrm?.Utility?.getGlobalContext?.().getClientUrl()
+        + "/WebResources/adnic_dirham_symbol";
 
     public init(
         context: ComponentFramework.Context<IInputs>,
@@ -517,11 +519,27 @@ export class PolicyQuotePremiumSummary implements ComponentFramework.StandardCon
         return cell;
     }
 
+    private dirhamIcon(): HTMLImageElement {
+        const image = document.createElement("img");
+        image.className = "dirham-icon";
+        image.src = this.symbolUrl;
+        image.alt = "UAE Dirham";
+        return image;
+    }
+
+    private appendTextWithDirham(container: HTMLElement, value: string): void {
+        const parts = value.split(/\bAED\b/gi);
+        parts.forEach((part, index) => {
+            if (index > 0) container.appendChild(this.dirhamIcon());
+            container.append(part);
+        });
+    }
+
     private element(tag: string, className: string, text?: string): HTMLDivElement {
         const element = document.createElement(tag) as HTMLDivElement;
         element.className = className;
         if (text !== undefined) {
-            element.textContent = text;
+            this.appendTextWithDirham(element, text);
         }
         return element;
     }

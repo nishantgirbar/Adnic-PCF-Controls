@@ -8,7 +8,14 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
     private lastRaw: string | null = null;
     private updatedData: any = null;
     private categoryPremiums: any[] = [];
-    private readonly symbolUrl = (window as any).Xrm.Utility.getGlobalContext().getClientUrl()
+    private comparisonPremiums: any[] = [];
+    private comparisonLoading = false;
+    private comparisonError = "";
+    private policyPremiumCalculated = false;
+    private lastPolicyId: string | null = null;
+    private lastShowComparison = false;
+    private requestVersion = 0;
+    private readonly symbolUrl = (window as any).Xrm?.Utility?.getGlobalContext?.().getClientUrl()
         + "/WebResources/adnic_dirham_symbol";
 
     public init(
@@ -37,9 +44,15 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
     public updateView(context: ComponentFramework.Context<IInputs>): void {
         this.context = context;
         const raw = context.parameters.productDetailsInput?.raw || "";
+        const policyId = context.parameters.policyId?.raw || null;
+        const showComparison = context.parameters.showPolicyQuotePremiumComparison?.raw === true;
 
-        if (this.lastRaw === raw) return;
+        const inputChanged = this.lastRaw !== raw;
+        const comparisonChanged = this.lastPolicyId !== policyId || this.lastShowComparison !== showComparison;
+        if (!inputChanged && !comparisonChanged) return;
         this.lastRaw = raw;
+        this.lastPolicyId = policyId;
+        this.lastShowComparison = showComparison;
 
         const header = this.container.querySelector(".top-section") as HTMLDivElement;
         const wrapper = this.container.querySelector(".grid-wrapper") as HTMLDivElement;
@@ -67,6 +80,122 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
 
         this.renderHeader(header, this.updatedData);
         this.renderGrid(wrapper, categories);
+
+        if (comparisonChanged) {
+            if (showComparison) {
+                void this.loadCalculatedPremium(policyId);
+            } else {
+                ++this.requestVersion;
+                this.comparisonPremiums = [];
+                this.comparisonLoading = false;
+                this.comparisonError = "";
+                this.policyPremiumCalculated = false;
+            }
+        }
+    }
+
+    private async loadCalculatedPremium(policyId: string | null): Promise<void> {
+        const requestVersion = ++this.requestVersion;
+        this.comparisonPremiums = [];
+        this.comparisonError = "";
+        this.policyPremiumCalculated = false;
+        this.comparisonLoading = false;
+
+        if (!policyId || !policyId.trim()) {
+            this.useQuotePremiumFallback("Policy Id is required to calculate premiums.");
+            this.rerenderPremiumSection();
+            return;
+        }
+
+        this.comparisonLoading = true;
+        this.rerenderPremiumSection();
+        try {
+            const [baseUrl, environmentName, policyManagement] = await Promise.all([
+                this.getEnvironmentVariableValue("adnic_BaseServiceUrl"),
+                this.getEnvironmentVariableValue("adnic_EnvironmentName"),
+                this.getEnvironmentVariableValue("adnic_PolicyManagement")
+            ]);
+            if (!baseUrl || !policyManagement) {
+                throw new Error("Policy premium service configuration is missing.");
+            }
+
+            const url = [
+                `${baseUrl}${environmentName}`.replace(/\/+$/, ""),
+                policyManagement.replace(/^\/+|\/+$/g, ""),
+                encodeURIComponent(policyId.trim()),
+                "calculate-premiums"
+            ].filter(Boolean).join("/");
+            const response = await fetch(url, {
+                method: "POST"
+            });
+            if (!response.ok) {
+                throw new Error(`Calculate premium service returned ${response.status}.`);
+            }
+
+            const payload = this.unwrapResponse(await response.json());
+            if (requestVersion !== this.requestVersion) return;
+            const calculatedPremiums = Array.isArray(payload?.categoryPremiumSummary)
+                ? payload.categoryPremiumSummary
+                : [];
+            if (calculatedPremiums.length) {
+                this.comparisonPremiums = calculatedPremiums;
+                this.policyPremiumCalculated = true;
+            } else {
+                this.useQuotePremiumFallback();
+            }
+        } catch (error) {
+            console.error("Calculate premium request failed.", error);
+            if (requestVersion === this.requestVersion) {
+                this.useQuotePremiumFallback(error instanceof Error
+                    ? error.message
+                    : "Unable to calculate policy premiums.");
+            }
+        } finally {
+            if (requestVersion === this.requestVersion) {
+                this.comparisonLoading = false;
+                this.rerenderPremiumSection();
+            }
+        }
+    }
+
+    private useQuotePremiumFallback(error = ""): void {
+        this.policyPremiumCalculated = false;
+        this.comparisonError = error;
+        this.comparisonPremiums = this.categoryPremiums.map((premium) => ({
+            categoryName: premium?.categoryName || premium?.categoryCode || "-",
+            quotePremium: premium?.currentPremium ?? premium?.quotePremium,
+            quoteMemberCount: premium?.memberCount ?? premium?.quoteMemberCount
+        }));
+    }
+
+    private async getEnvironmentVariableValue(schemaName: string): Promise<string> {
+        const escapedName = schemaName.replace(/'/g, "''");
+        const definitions = await this.context.webAPI.retrieveMultipleRecords(
+            "environmentvariabledefinition",
+            `?$select=defaultvalue&$filter=schemaname eq '${escapedName}'&$expand=environmentvariabledefinition_environmentvariablevalue($select=value)`
+        );
+        const definition: any = definitions.entities[0];
+        const values = definition?.environmentvariabledefinition_environmentvariablevalue;
+        return String(values?.[0]?.value ?? definition?.defaultvalue ?? "").trim();
+    }
+
+    private unwrapResponse(value: any): any {
+        let result = value;
+        for (let index = 0; index < 3 && result && typeof result === "object"; index++) {
+            const key = ["response", "data", "body", "result", "value"].find(
+                (name) => result[name] !== undefined && !Array.isArray(result[name])
+            );
+            if (!key) break;
+            result = result[key];
+            if (typeof result === "string") result = JSON.parse(result);
+        }
+        return result || {};
+    }
+
+    private rerenderPremiumSection(): void {
+        if (!this.updatedData) return;
+        const wrapper = this.container.querySelector(".grid-wrapper") as HTMLDivElement;
+        this.renderGrid(wrapper, this.getCategories(this.updatedData));
     }
 
     private getCategories(data: any): any[] {
@@ -115,7 +244,11 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
         });
 
         container.appendChild(grid);
-        this.renderPremiumFooter(container, categories);
+        if (this.lastShowComparison) {
+            this.renderPremiumComparison(container);
+        } else {
+            this.renderPremiumFooter(container, categories);
+        }
     }
 
     private buildRows(categories: any[]): string[] {
@@ -175,14 +308,114 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
-                cell.innerHTML = `<div class="premium-title">Category ${this.escape(code)} Premiums</div>`
-                    + `<div class="premium-amount"><img class="dirham-icon" src="${this.symbolUrl}" alt="AED" /> ${amount}</div>`
-                    + `<div class="premium-members">Members ${Number(premium.memberCount || 0)}</div>`;
+                cell.appendChild(this.element(
+                    "div",
+                    "premium-title",
+                    `Category ${code} Premiums`
+                ));
+                const premiumAmount = document.createElement("div");
+                premiumAmount.className = "premium-amount";
+                premiumAmount.appendChild(this.dirhamIcon());
+                premiumAmount.append(` ${amount}`);
+                cell.appendChild(premiumAmount);
+                cell.appendChild(this.element(
+                    "div",
+                    "premium-members",
+                    `Members ${Number(premium.memberCount || 0)}`
+                ));
                 this.renderTobLink(cell, category);
             }
             footer.appendChild(cell);
         });
         container.appendChild(footer);
+    }
+
+    private renderPremiumComparison(container: HTMLDivElement): void {
+        const section = document.createElement("section");
+        section.className = "premium-comparison-section";
+        section.setAttribute("aria-label", "Policy and quote level premiums");
+
+        if (this.comparisonLoading) {
+            section.appendChild(this.element("div", "premium-status", "Calculating policy premiums..."));
+            container.appendChild(section);
+            return;
+        }
+        if (this.comparisonError && !this.comparisonPremiums.length) {
+            section.appendChild(this.element("div", "premium-status premium-status-error", this.comparisonError));
+            container.appendChild(section);
+            return;
+        }
+        if (!this.comparisonPremiums.length) {
+            section.appendChild(this.element("div", "premium-status", "Policy premium detail not calculated. No quote premium was available."));
+            container.appendChild(section);
+            return;
+        }
+
+        if (!this.policyPremiumCalculated) {
+            section.appendChild(this.element(
+                "div",
+                "premium-status premium-status-warning",
+                "Policy premium detail not calculated. Showing the existing quote premium."
+            ));
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "premium-comparison-grid";
+        grid.style.gridTemplateColumns =
+            `minmax(210px, 1.15fr) repeat(${this.comparisonPremiums.length}, ${this.categoryColumnWidth})`;
+        grid.appendChild(this.element("div", "comparison-header comparison-label", ""));
+        this.comparisonPremiums.forEach((premium) => {
+            grid.appendChild(this.element(
+                "div",
+                "comparison-header",
+                `${String(premium?.categoryName || "-")} Premiums`
+            ));
+        });
+        this.appendComparisonRow(grid, "Policy Level Premium", "policyPremium", "policyMemberCount");
+        this.appendComparisonRow(grid, "Quote Level Premium", "quotePremium", "quoteMemberCount");
+        section.appendChild(grid);
+        container.appendChild(section);
+    }
+
+    private appendComparisonRow(
+        grid: HTMLDivElement,
+        label: string,
+        amountKey: "policyPremium" | "quotePremium",
+        countKey: "policyMemberCount" | "quoteMemberCount"
+    ): void {
+        grid.appendChild(this.element("div", "comparison-label", label));
+        this.comparisonPremiums.forEach((premium) => {
+            if (amountKey === "policyPremium" && !this.policyPremiumCalculated) {
+                grid.appendChild(this.element("div", "comparison-value comparison-not-calculated", "Not calculated"));
+                return;
+            }
+            const value = Number(premium?.[amountKey] || 0);
+            const cell = document.createElement("div");
+            cell.className = "comparison-value";
+            cell.title = `Difference ${Number(premium?.difference || 0).toLocaleString("en-US")}`;
+            const amount = document.createElement("div");
+            amount.className = "comparison-amount";
+            amount.appendChild(this.dirhamIcon());
+            amount.append(` ${value.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}`);
+            cell.appendChild(amount);
+            cell.appendChild(this.element(
+                "div",
+                "comparison-members",
+                `Members ${Number(premium?.[countKey] || 0)}`
+            ));
+            grid.appendChild(cell);
+        });
+    }
+
+    private dirhamIcon(): HTMLImageElement {
+        const image = document.createElement("img");
+        image.className = "dirham-icon";
+        image.src = this.symbolUrl;
+        image.alt = "UAE Dirham";
+        return image;
     }
 
     private renderTobLink(cell: HTMLDivElement, category: any): void {
@@ -220,20 +453,24 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
     }
 
     private cell(text: any, classes = ""): HTMLDivElement {
-        return this.element("div", `grid-cell ${classes}`.trim(), text ?? "-") as HTMLDivElement;
+        const cell = this.element("div", `grid-cell ${classes}`.trim(), "") as HTMLDivElement;
+        this.appendTextWithDirham(cell, String(text ?? "-"));
+        return cell;
+    }
+
+    private appendTextWithDirham(container: HTMLElement, value: string): void {
+        const parts = value.split(/\bAED\b/gi);
+        parts.forEach((part, index) => {
+            if (index > 0) container.appendChild(this.dirhamIcon());
+            container.append(part);
+        });
     }
 
     private element(tag: string, className: string, text: any): HTMLElement {
         const element = document.createElement(tag);
         element.className = className;
-        element.innerText = String(text ?? "");
+        this.appendTextWithDirham(element, String(text ?? ""));
         return element;
-    }
-
-    private escape(value: string): string {
-        const element = document.createElement("div");
-        element.innerText = value;
-        return element.innerHTML;
     }
 
     public getOutputs(): IOutputs {

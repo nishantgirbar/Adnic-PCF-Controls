@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="AdnicControls"
            constructor="PolicyQuotePremiumSummary"
-           version="1.0.0"
+           version="2.1.0"
            display-name-key="Policy Quote Premium Summary"
            description-key="Displays premium calculations from a Quote API response supplied as JSON"
            control-type="standard">

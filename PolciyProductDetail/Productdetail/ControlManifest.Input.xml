@@ -3,7 +3,7 @@
 
   <control namespace="B2EControl"
            constructor="PolicyProductDetail"
-           version="1.2.1"
+           version="1.2.8"
            display-name-key="Policy Product"
            description-key="Policy Product Detail Description"
            control-type="standard">
@@ -22,9 +22,25 @@
               usage="bound"
               required="false" />
 
+    <property name="policyId"
+              display-name-key="Policy Id"
+              description-key="Policy identifier used by the calculate premium service"
+              of-type="SingleLine.Text"
+              usage="input"
+              required="false" />
+
+    <property name="showPolicyQuotePremiumComparison"
+              display-name-key="Show Policy and Quote Premium"
+              description-key="Call calculate premium and show policy-level and quote-level premiums"
+              of-type="TwoOptions"
+              usage="input"
+              required="false"
+              default-value="false" />
+
     <!-- ================= OPTIONAL FEATURES ================= -->
     <feature-usage>
       <uses-feature name="Utility" required="false" />
+      <uses-feature name="WebAPI" required="true" />
     </feature-usage>
 
   </control>
