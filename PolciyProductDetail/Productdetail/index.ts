@@ -210,7 +210,7 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
     private renderHeader(container: HTMLDivElement, data: any): void {
         container.innerHTML = "";
         const fields = [
-            ["Policy Start", data?.policyStartDate],
+            ["Policy Start", this.formatDate(data?.policyStartDate)],
             ["Source of Business", data?.sourceOfBusiness],
             ["Commission", data?.commission === undefined || data?.commission === null ? "-" : `${data.commission}%`]
         ];
@@ -222,6 +222,26 @@ export class PolicyProductDetail implements ComponentFramework.StandardControl<I
         fields.forEach(([label]) => grid.appendChild(this.element("div", "policy-header-label", label)));
         fields.forEach(([, value]) => grid.appendChild(this.element("div", "policy-header-value", value || "-")));
         container.appendChild(grid);
+    }
+
+    private formatDate(value: unknown): string {
+        if (value === undefined || value === null || value === "") return "-";
+
+        const raw = String(value).trim();
+        const dayFirst = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
+        if (dayFirst) return raw;
+
+        // Format the date portion directly so an ISO midnight value cannot
+        // shift to the previous day when the browser applies its time zone.
+        const isoDate = /^(\d{4})-(\d{2})-(\d{2})(?:T|\s|$)/.exec(raw);
+        if (isoDate) return `${isoDate[3]}/${isoDate[2]}/${isoDate[1]}`;
+
+        const parsed = new Date(raw);
+        if (Number.isNaN(parsed.getTime())) return raw;
+
+        const day = (`0${parsed.getDate()}`).slice(-2);
+        const month = (`0${parsed.getMonth() + 1}`).slice(-2);
+        return `${day}/${month}/${parsed.getFullYear()}`;
     }
 
     private renderGrid(container: HTMLDivElement, categories: any[]): void {

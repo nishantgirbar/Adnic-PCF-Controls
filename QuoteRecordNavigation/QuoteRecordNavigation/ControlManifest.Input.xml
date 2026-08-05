@@ -2,7 +2,7 @@
 <manifest>
   <control namespace="ADNIC.Controls"
            constructor="QuoteRecordNavigation"
-           version="1.2.0"
+           version="1.2.3"
            display-name-key="Quote record navigation"
            description-key="Displays quote references as links that open Dataverse forms."
            control-type="standard">

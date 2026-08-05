@@ -37,6 +37,25 @@ constructor(
         });
     }
 
+    private applyDirhamToDropdown(
+        dropdown: HTMLSelectElement,
+        selectedValue: string
+    ): void {
+        let hasDirhamOption = false;
+
+        Array.from(dropdown.options).forEach(option => {
+            if (/\bAED\b/i.test(option.text)) {
+                hasDirhamOption = true;
+                option.text = option.text.replace(/\bAED\b\s*/gi, "");
+            }
+        });
+
+        if (hasDirhamOption && /\bAED\b/i.test(selectedValue)) {
+            dropdown.classList.add("dropdown-with-dirham");
+            dropdown.style.backgroundImage = `url("${this.symbolUrl}")`;
+        }
+    }
+
     private clearSelectionNotifications(categoryName?: string): void {
 
         if (categoryName) {
@@ -678,6 +697,14 @@ constructor(
 
                            // row.name === "Network Type" || row.name === "Plan"
                         );
+
+                    if (
+                        !isEBP &&
+                        row.name !== "Network Type" &&
+                        row.name !== "Plan"
+                    ) {
+                        this.applyDirhamToDropdown(dropdown, String(value));
+                    }
 
                     const cell =
                         document.createElement("div");

@@ -51,6 +51,13 @@
     height: 34px;
 }
 
+.adnic-product-detail .dropdown.dropdown-with-dirham {
+    padding-left: 30px;
+    background-repeat: no-repeat;
+    background-position: 9px center;
+    background-size: 16px 16px;
+}
+
 /* CARD */
 .adnic-product-detail .card {
     background: white;

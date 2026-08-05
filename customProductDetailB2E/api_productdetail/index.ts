@@ -534,10 +534,25 @@ export class ProductDetailsB2E implements ComponentFramework.StandardControl<IIn
             + " "
             + (extraClass || "");
 
-        cell.innerText =
-            String(text);
+        this.appendTextWithDirham(cell, String(text));
 
         return cell;
+    }
+
+    private appendTextWithDirham(container: HTMLElement, value: string): void {
+        const parts = value.split(/\bAED\b/gi);
+
+        parts.forEach((part, index) => {
+            if (index > 0) {
+                const image = document.createElement("img");
+                image.className = "dirham-icon";
+                image.src = this.symbolUrl;
+                image.alt = "UAE Dirham";
+                container.appendChild(image);
+            }
+
+            container.append(part);
+        });
     }
 
     private renderJsonPremiumFooter(

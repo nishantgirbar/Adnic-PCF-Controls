@@ -105,10 +105,6 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         );
 
         if (quoteNumbers.length === 0) {
-            const empty = document.createElement("span");
-            empty.className = "adnic-record-navigation__empty";
-            empty.textContent = "\u2014";
-            this.container.appendChild(empty);
             return;
         }
 
@@ -149,10 +145,6 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
         }
 
         const iterationNumber = Math.max(0, Math.trunc(rawIterationNumber ?? 0));
-
-        if (iterationNumber === 0) {
-            return [currentQuoteNumber];
-        }
 
         const baseQuoteNumber = currentQuoteNumber.replace(/-\d+$/, "");
         return Array.from(
@@ -245,7 +237,7 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
             adnic_location: this.nullableValue(result.location),
             adnic_contactnumber: this.nullableValue(result.contactNumber),
             adnic_quotetype: this.nullableValue(result.businessType),
-            adnic_status: this.nullableValue(result.status),
+            adnic_status: this.codeValue(result.status),
             adnic_totalpremium: this.numberValue(result.totalPremium),
             adnic_totalmembers: this.stringValue(result.totalMembers) || null,
             adnic_adnic_quoteid: this.stringValue(result.id) || null,
@@ -332,6 +324,16 @@ export class QuoteRecordNavigation implements ComponentFramework.StandardControl
 
     private nullableValue(value: unknown): ComponentFramework.WebApi.Entity[string] {
         return value === undefined ? null : value as ComponentFramework.WebApi.Entity[string];
+    }
+
+    private codeValue(value: unknown): ComponentFramework.WebApi.Entity[string] {
+        if (value !== null && typeof value === "object") {
+            return "code" in value
+                ? this.nullableValue((value as CodeValue).code)
+                : null;
+        }
+
+        return this.nullableValue(value);
     }
 
     private stringValue(value: unknown): string {
