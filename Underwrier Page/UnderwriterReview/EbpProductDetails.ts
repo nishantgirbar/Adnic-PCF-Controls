@@ -5,6 +5,24 @@ const normalize = (value: any): string =>
         .replace(/^(CATEGORY|CAT)[\s-]*/i, "")
         .replace(/[^A-Z0-9]/g, "");
 
+const getDisplayValue = (value: any): string => {
+    if (value === undefined || value === null) {
+        return "";
+    }
+
+    if (typeof value === "object") {
+        return String(
+            value?.displayName ||
+            value?.name ||
+            value?.label ||
+            value?.code ||
+            ""
+        );
+    }
+
+    return String(value);
+};
+
 const getProvider = (category: any): string =>
     String(
         category?.productSelection?.networkProviderName ||
@@ -15,14 +33,34 @@ const getProvider = (category: any): string =>
     );
 
 const getPlan = (category: any): string =>
-    String(
+    getDisplayValue(
         category?.productSelection?.networkTypeName ||
-        category?.productSelection?.planName ||
         category?.network?.name ||
-        category?.planName ||
+        category?.networkTypeName ||
+        category?.networkType ||
         category?.plan ||
         ""
     );
+
+const getBenefitsArray = (category: any): any[] => {
+    if (Array.isArray(category?.benefits)) {
+        return category.benefits;
+    }
+
+    if (Array.isArray(category?.benefits?.benefits)) {
+        return category.benefits.benefits;
+    }
+
+    if (Array.isArray(category?.details)) {
+        return category.details;
+    }
+
+    if (Array.isArray(category?.planDetails)) {
+        return category.planDetails;
+    }
+
+    return [];
+};
 
 const getMemberCategory = (member: any): string =>
     normalize(
@@ -328,7 +366,13 @@ export const buildJsonProductDetailMap = (
 
         const networkType =
             getNetworkType(provider, plan) ||
-            category?.networkType;
+            getDisplayValue(
+                category?.productSelection?.networkTypeName ||
+                category?.network?.name ||
+                category?.networkTypeName ||
+                category?.networkType ||
+                category?.plan
+            );
 
         setDetail(
             "Network Type",
@@ -342,12 +386,7 @@ export const buildJsonProductDetailMap = (
             category?.territorialCoverage
         );
 
-        const benefits =
-            Array.isArray(category?.benefits)
-                ? category.benefits
-                : Array.isArray(category?.benefits?.benefits)
-                    ? category.benefits.benefits
-                    : [];
+        const benefits = getBenefitsArray(category);
 
         benefits.forEach((benefit: any) => {
             const benefitName = String(

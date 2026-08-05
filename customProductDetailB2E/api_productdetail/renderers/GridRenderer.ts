@@ -21,6 +21,22 @@ constructor(
     private notifyOutputChanged: () => void
 ) {}
 
+    private appendTextWithDirham(container: HTMLElement, value: string): void {
+        const parts = value.split(/\bAED\b/gi);
+
+        parts.forEach((part, index) => {
+            if (index > 0) {
+                const image = document.createElement("img");
+                image.className = "dirham-icon";
+                image.src = this.symbolUrl;
+                image.alt = "UAE Dirham";
+                container.appendChild(image);
+            }
+
+            container.append(part);
+        });
+    }
+
     private clearSelectionNotifications(categoryName?: string): void {
 
         if (categoryName) {
@@ -365,8 +381,10 @@ constructor(
                             errorDiv.className =
                                 "validation-error";
 
-                            errorDiv.innerText =
-                                validationMessage;
+                            this.appendTextWithDirham(
+                                errorDiv,
+                                validationMessage
+                            );
 
                             cell.appendChild(errorDiv);
                         }
@@ -461,11 +479,13 @@ constructor(
                                 break;
 
                             case "Annual Limit":
-                                cell.innerText =
-                                   EbpRuleService.getAnnualLimit(
+                                this.appendTextWithDirham(
+                                    cell,
+                                    EbpRuleService.getAnnualLimit(
                                         provider,
                                         plan
-                                    );
+                                    )
+                                );
                                 break;
 
                             case "Network Type":
@@ -687,8 +707,10 @@ constructor(
                             errorDiv.className =
                                 "validation-error";
 
-                            errorDiv.innerText =
-                                validationMessage;
+                            this.appendTextWithDirham(
+                                errorDiv,
+                                validationMessage
+                            );
 
                             cell.appendChild(errorDiv);
                         }

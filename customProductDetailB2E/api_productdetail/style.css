@@ -145,8 +145,11 @@
 }
 
 .adnic-product-detail .dirham-icon {
+    display: inline-block;
     width: 16px;
     height: 16px;
+    object-fit: contain;
+    vertical-align: -2px;
 }
 
 .adnic-product-detail .readonly-grid {

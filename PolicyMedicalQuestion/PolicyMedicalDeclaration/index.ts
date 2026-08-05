@@ -188,11 +188,12 @@ export class PolicyMedicalQuestionControl implements ComponentFramework.Standard
                 : value && typeof value === "object" ? [value] : [];
 
             this.members = items
-                .filter((item: any) => item?.medicalDeclared === true ||
+                .map((item: any, index: number) => ({ item, originalIndex: index }))
+                .filter(({ item }) => item?.medicalDeclared === true ||
                     String(item?.medicalDeclared ?? "").trim().toLowerCase() === "true")
-                .map((item: any, index: number) => ({
-                    id: String(item?.id ?? item?.memberId ?? index + 1),
-                    serialNo: Number(item?.serialNo) || index + 1,
+                .map(({ item, originalIndex }) => ({
+                    id: String(item?.id ?? item?.memberId ?? originalIndex + 1),
+                    serialNo: Number(item?.serialNo) || originalIndex + 1,
                     relation: String(item?.relation?.displayName ?? item?.relation?.code ?? item?.relation ?? ""),
                     gender: String(item?.gender ?? ""),
                     dob: String(item?.dateOfBirth ?? item?.dob ?? ""),
